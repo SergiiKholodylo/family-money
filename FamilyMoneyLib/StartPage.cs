@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.SqlTypes;
+using System.Diagnostics;
 using System.Dynamic;
 using System.Linq;
 
@@ -20,7 +21,7 @@ namespace FamilyMoneyLib
 
    
 
-
+    [DebuggerDisplay("Id {Id} {Name} ({Currency})") ]
     public class Account:IIdBased
     {
         public static long NewAccountId { get; } = -1;
@@ -38,6 +39,7 @@ namespace FamilyMoneyLib
         }
 
     }
+    [DebuggerDisplay("Id {Id} {Name}")]
     public class Transaction:ITransactionItem, IIdBased
     {
         public static long NewTransactionId { get; } = -1;
@@ -58,12 +60,14 @@ namespace FamilyMoneyLib
             Id = NewTransactionId;
         }
     }
+
+    [DebuggerDisplay("Id {Id}{ParentCategory} {Name}")]
     public class Category : IIdBased
     {
 
         public static long NewCategoryId { get; } = -1;
         public long Id { set; get; }
-        public Category TopCategory { set; get; }
+        public Category ParentCategory { set; get; }
         public string Name { set; get; }
         public string Description { set; get; }
 
@@ -76,7 +80,7 @@ namespace FamilyMoneyLib
 
     public class TransactionStorage
     {
-        public DbStorage<Transaction> DataBaseConnector = new DbStorage<Transaction>();
+        public IDbStorage<Transaction> DataBaseConnector = new DbStorage<Transaction>();
 
         public long AddTransaction(Transaction transaction)
         {
@@ -103,10 +107,63 @@ namespace FamilyMoneyLib
             return DataBaseConnector.GetAll();
         }
     }
+
+    public class TransactionReport
+    {
+        private readonly TransactionStorage _storage;
+
+        public TransactionReport(TransactionStorage storage)
+        {
+            _storage = storage;
+        }
+
+        public IEnumerable<Transaction> TransactionByCategory(Account account)
+        {
+
+            var report = _storage.GetAllTransactions().Where(x => x.Account.Id == account.Id);
+
+            //var invoiceSum =
+            //    DSZoho.Tables["Invoices"].AsEnumerable()
+            //        .Select(x =>
+            //            new {
+            //                InvNumber = x["invoice number"],
+            //                InvTotal = x["item price"],
+            //                Contact = x["customer name"],
+            //                InvDate = x["invoice date"],
+            //                DueDate = x["due date"],
+            //                Balance = x["balance"],
+            //            }
+            //        )
+            //        .GroupBy(s => new { s.InvNumber, s.Contact, s.InvDate, s.DueDate })
+            //        .Select(g =>
+            //            new {
+            //                InvNumber = g.Key.InvNumber,
+            //                InvDate = g.Key.InvDate,
+            //                DueDate = g.Key.DueDate,
+            //                Contact = g.Key.Contact,
+            //                InvTotal = g.Sum(x => Math.Round(Convert.ToDecimal(x.InvTotal), 2)),
+            //                Balance = g.Sum(x => Math.Round(Convert.ToDecimal(x.Balance), 2)),
+            //            }
+            //        );
+
+            var report1 = report.GroupBy(x => new
+            {
+                x.Category.ParentCategory,
+                x.Category,
+            }).Select(g => new
+            {
+                Category = g.Key.Category,
+                ParentCategory = g.Key.ParentCategory,
+                Total = g.Sum(x => x.Total)
+            });
+
+            return report;
+        }
+    }
     
     public class CategoryStorage
     {
-        public DbStorage<Category> DataBaseConnector = new DbStorage<Category>();
+        public IDbStorage<Category> DataBaseConnector = new DbStorage<Category>();
 
         public long AddCategory(Category category)
         {
@@ -136,7 +193,7 @@ namespace FamilyMoneyLib
 
     public class AccountStorage
     {
-        public DbStorage<Account> DataBaseConnector = new DbStorage<Account>();
+        public IDbStorage<Account> DataBaseConnector = new DbStorage<Account>();
 
         public long AddAccount(Account account)
         {
@@ -165,7 +222,7 @@ namespace FamilyMoneyLib
     }
 
 
-    public class DbStorage<T> where T : IIdBased, new()
+    public class DbStorage<T> : IDbStorage<T> where T : IIdBased, new()
     {
         private readonly List<T> _storage = new List<T>();
         public long Add(T t)
@@ -179,7 +236,7 @@ namespace FamilyMoneyLib
         public T Get(long id)
         {
             var found = _storage.FirstOrDefault(x => x.Id == id);
-            if(found == null)
+            if (found == null)
                 return new T();
             return found;
 
@@ -199,7 +256,7 @@ namespace FamilyMoneyLib
 
         public IEnumerable<T> GetAll()
         {
-            return _storage; 
+            return _storage;
         }
 
         private long GetId()
