@@ -4,6 +4,7 @@ using System.Data.SqlTypes;
 using System.Diagnostics;
 using System.Dynamic;
 using System.Linq;
+using FamilyMoneyLib.Storages;
 
 namespace FamilyMoneyLib
 {
@@ -11,6 +12,7 @@ namespace FamilyMoneyLib
     {
         long Id { set; get; }
     }
+
     public interface ITransactionItem
     {
          long Id { set; get; }
@@ -75,6 +77,30 @@ namespace FamilyMoneyLib
         {
             Id = NewCategoryId;
         }
+
+        public bool HasCategoryAsParent(Category parent)
+        {
+            var position = this;
+            while (position.ParentCategory != null)
+            {
+                if (position.ParentCategory == parent) return true;
+                position = position.ParentCategory;
+            }
+            return false;
+        }
+
+        public int GetCategoryLevel()
+        {
+            var level = 1;
+            var position = this;
+            while (position.ParentCategory != null)
+            {
+                position = position.ParentCategory;
+                level++;
+            }
+            return level;
+
+        }
     }
 
 
@@ -106,61 +132,13 @@ namespace FamilyMoneyLib
         {
             return DataBaseConnector.GetAll();
         }
-    }
 
-    public class TransactionReport
-    {
-        private readonly TransactionStorage _storage;
-
-        public TransactionReport(TransactionStorage storage)
+        public IEnumerable<Transaction> GetTransactionByCategory(Category category)
         {
-            _storage = storage;
-        }
-
-        public IEnumerable<Transaction> TransactionByCategory(Account account)
-        {
-
-            var report = _storage.GetAllTransactions().Where(x => x.Account.Id == account.Id);
-
-            //var invoiceSum =
-            //    DSZoho.Tables["Invoices"].AsEnumerable()
-            //        .Select(x =>
-            //            new {
-            //                InvNumber = x["invoice number"],
-            //                InvTotal = x["item price"],
-            //                Contact = x["customer name"],
-            //                InvDate = x["invoice date"],
-            //                DueDate = x["due date"],
-            //                Balance = x["balance"],
-            //            }
-            //        )
-            //        .GroupBy(s => new { s.InvNumber, s.Contact, s.InvDate, s.DueDate })
-            //        .Select(g =>
-            //            new {
-            //                InvNumber = g.Key.InvNumber,
-            //                InvDate = g.Key.InvDate,
-            //                DueDate = g.Key.DueDate,
-            //                Contact = g.Key.Contact,
-            //                InvTotal = g.Sum(x => Math.Round(Convert.ToDecimal(x.InvTotal), 2)),
-            //                Balance = g.Sum(x => Math.Round(Convert.ToDecimal(x.Balance), 2)),
-            //            }
-            //        );
-
-            var report1 = report.GroupBy(x => new
-            {
-                x.Category.ParentCategory,
-                x.Category,
-            }).Select(g => new
-            {
-                Category = g.Key.Category,
-                ParentCategory = g.Key.ParentCategory,
-                Total = g.Sum(x => x.Total)
-            });
-
-            return report;
+            return DataBaseConnector.GetAll().Where(x=>x.Category == category);
         }
     }
-    
+
     public class CategoryStorage
     {
         public IDbStorage<Category> DataBaseConnector = new DbStorage<Category>();
@@ -188,6 +166,11 @@ namespace FamilyMoneyLib
         public IEnumerable<Category> GetAllCategories()
         {
             return DataBaseConnector.GetAll();
+        }
+
+        public IEnumerable<Category> GetSubcategories(Category category)
+        {
+            return DataBaseConnector.GetAll().Where(x => x.ParentCategory == category);
         }
     }
 
@@ -222,53 +205,13 @@ namespace FamilyMoneyLib
     }
 
 
-    public class DbStorage<T> : IDbStorage<T> where T : IIdBased, new()
+    
+
+    public class StorageException : Exception
     {
-        private readonly List<T> _storage = new List<T>();
-        public long Add(T t)
+        public StorageException() : base()
         {
-            var id = GetId();
-            t.Id = id;
-            _storage.Add(t);
-            return id;
-        }
 
-        public T Get(long id)
-        {
-            var found = _storage.FirstOrDefault(x => x.Id == id);
-            if (found == null)
-                return new T();
-            return found;
-
-        }
-
-        public void Update(T t)
-        {
-            Delete(t.Id);
-            _storage.Add(t);
-        }
-
-        public void Delete(long id)
-        {
-            var toDelete = Get(id);
-            _storage.Remove(toDelete);
-        }
-
-        public IEnumerable<T> GetAll()
-        {
-            return _storage;
-        }
-
-        private long GetId()
-        {
-            var rnd = new Random();
-            while (true)
-            {
-                var newId = (long)rnd.Next(0xFFFF);
-                if (_storage.Exists(x => x.Id == newId))
-                    continue;
-                return newId;
-            }
         }
     }
 }

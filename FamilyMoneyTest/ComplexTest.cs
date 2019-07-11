@@ -71,10 +71,16 @@ namespace FamilyMoneyTest
         [TestMethod]
         public void TestTransactionReport()
         {
+
+            var root = new Category{
+                Name = "Root",
+                Description = "Root category"
+                };
             var food = new Category
             {
                 Name = "Food",
-                Description = "Food except fast-food"
+                Description = "Food except fast-food",
+                ParentCategory = root
             };
             var vegetables = new Category
             {
@@ -90,7 +96,8 @@ namespace FamilyMoneyTest
             };
             var clothes = new Category
             {
-                Name = "Clothes"
+                Name = "Clothes",
+                ParentCategory = root
             };
             var gerdaClothes = new Category
             {
@@ -114,10 +121,12 @@ namespace FamilyMoneyTest
             {
                 Account = account,
                 Category = fish,
+                Name = "Cod",
                 Total = 20
             };
             var transaction2 = new Transaction
             {
+                Name = "Tomato",
                 Account = account,
                 Category = vegetables,
                 Total = 50
@@ -125,6 +134,7 @@ namespace FamilyMoneyTest
 
             var transaction3 = new Transaction
             {
+                Name = "Onion",
                 Account = account,
                 Category = vegetables,
                 Total = 133
@@ -132,19 +142,29 @@ namespace FamilyMoneyTest
 
             var transaction4 = new Transaction
             {
+                Name = "Turtleneck",
                 Account = account,
                 Category = c00perClothes,
                 Total = 2000
             };
 
             var transactionStorage = new TransactionStorage();
+            var categoryStorage = new CategoryStorage();
 
+            categoryStorage.AddCategory(root);
+            categoryStorage.AddCategory(food);
+            categoryStorage.AddCategory(vegetables);
+            categoryStorage.AddCategory(fish);
+            categoryStorage.AddCategory(clothes);
+            categoryStorage.AddCategory(gerdaClothes);
+            categoryStorage.AddCategory(c00perClothes);
+            
             transactionStorage.AddTransaction(transaction1);
             transactionStorage.AddTransaction(transaction2);
             transactionStorage.AddTransaction(transaction3);
             transactionStorage.AddTransaction(transaction4);
 
-            var report = new TransactionReport(transactionStorage);
+            var report = new TransactionReport(transactionStorage, categoryStorage);
             var transactionByCategory = report.TransactionByCategory(account);
 
             Assert.AreEqual(4, transactionByCategory.Count());

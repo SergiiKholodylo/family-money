@@ -140,5 +140,74 @@ namespace FamilyMoneyTest
             Assert.AreEqual(0, 0);
         }
 
+        [TestMethod]
+        public void GetSubcategoriesTest()
+        {
+            var storage = GetCategoryStorage();
+            var categories = storage.GetAllCategories();
+            var food = categories.FirstOrDefault(x => x.Name.Equals("Food"));
+
+
+            var foodSubcategories = storage.GetSubcategories(food);
+
+
+            Assert.AreEqual(2, foodSubcategories.Count());
+        }
+
+
+        private CategoryStorage GetCategoryStorage()
+        {
+            var storage = new CategoryStorage();
+
+            var food = new Category
+            {
+                Name = "Food",
+                Description = "Food except fast-food"
+            };
+            var vegetables = new Category
+            {
+                Name = "Vegetables",
+                Description = "Vegetables",
+                ParentCategory = food
+            };
+            var tomato = new Category
+            {
+                Name = "Tomato",
+                Description = "Vegetables",
+                ParentCategory = vegetables
+            };
+            var fish = new Category
+            {
+                Name = "Fish",
+                Description = "My favorite category!",
+                ParentCategory = food
+            };
+            var clothes = new Category
+            {
+                Name = "Clothes"
+            };
+            var gerdaClothes = new Category
+            {
+                Name = "Gerda Clothes",
+                ParentCategory = clothes
+            };
+            var c00perClothes = new Category
+            {
+                Name = "C00per Clothes",
+                ParentCategory = clothes
+            };
+
+            storage.AddCategory(food);
+            storage.AddCategory(vegetables);
+            storage.AddCategory(tomato);
+            storage.AddCategory(fish);
+            storage.AddCategory(clothes);
+            storage.AddCategory(gerdaClothes);
+            storage.AddCategory(c00perClothes);
+
+
+            return storage;
+        }
+
     }
 }
