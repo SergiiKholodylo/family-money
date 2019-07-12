@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using FamilyMoneyLib;
+﻿using FamilyMoneyLib.NetStandard.Bases;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace FamilyMoneyTest

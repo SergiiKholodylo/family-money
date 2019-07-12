@@ -1,5 +1,3 @@
-using System.Linq;
-using FamilyMoneyLib;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace FamilyMoneyTest

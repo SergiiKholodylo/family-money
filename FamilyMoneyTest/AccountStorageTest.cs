@@ -1,5 +1,6 @@
 ﻿using System.Linq;
-using FamilyMoneyLib;
+using FamilyMoneyLib.NetStandard.Bases;
+using FamilyMoneyLib.NetStandard.Storages;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace FamilyMoneyTest
