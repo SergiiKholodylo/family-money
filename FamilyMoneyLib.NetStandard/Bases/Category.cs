@@ -1,45 +1,24 @@
 ﻿using System.Diagnostics;
 
+
 namespace FamilyMoneyLib.NetStandard.Bases
 {
 
-    [DebuggerDisplay("Id {Id}{ParentCategory} {Name}")]
-    public class Category : IIdBased
+    [DebuggerDisplay("Category {Name} {Description}")]
+    public class Category : ICategory
     {
-
-        public static long NewCategoryId { get; } = -1;
-        public long Id { set; get; }
-        public Category ParentCategory { set; get; }
         public string Name { set; get; }
         public string Description { set; get; }
 
-        public Category()
+        internal Category()
         {
-            Id = NewCategoryId;
         }
 
-        public bool HasCategoryAsParent(Category parent)
+        internal Category(string name, string description)
         {
-            var position = this;
-            while (position.ParentCategory != null)
-            {
-                if (position.ParentCategory == parent) return true;
-                position = position.ParentCategory;
-            }
-            return false;
+            Name = name;
+            Description = description;
         }
 
-        public int GetCategoryLevel()
-        {
-            var level = 1;
-            var position = this;
-            while (position.ParentCategory != null)
-            {
-                position = position.ParentCategory;
-                level++;
-            }
-            return level;
-
-        }
     }
 }

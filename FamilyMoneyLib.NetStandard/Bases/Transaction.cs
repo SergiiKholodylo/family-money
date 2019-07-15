@@ -1,29 +1,30 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 
 namespace FamilyMoneyLib.NetStandard.Bases
 {
 
-    [DebuggerDisplay("Id {Id} {Name}")]
-    public class Transaction : ITransactionItem, IIdBased
+    [DebuggerDisplay("Transaction {Name} Total {Total}")]
+    public class Transaction : ITransaction
     {
-        public static long NewTransactionId { get; } = -1;
-
         public DateTime Timestamp { set; get; }
-        public Account Account { set; get; }
-
-        public long Id { set; get; }
-        public Category Category { set; get; }
+        public IAccount Account { set; get; }
+        public ICategory Category { set; get; }
         public string Name { set; get; }
         public decimal Total { set; get; }
 
-        private List<ITransactionItem> _complexTransactionItems = new List<ITransactionItem>();
-
-        public Transaction()
+        internal Transaction()
         {
             Timestamp = DateTime.Now;
-            Id = NewTransactionId;
+        }
+
+        internal Transaction(IAccount account, ICategory category, string name, decimal total, DateTime? timestamp)
+        {
+            Account = account;
+            Category = category;
+            Name = name;
+            Total = total;
+            Timestamp = timestamp ?? DateTime.Now;
         }
     }
 }

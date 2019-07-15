@@ -3,22 +3,25 @@ using System.Diagnostics;
 
 namespace FamilyMoneyLib.NetStandard.Bases
 {
-    [DebuggerDisplay("Id {Id} {Name} ({Currency})")]
-    public class Account : IIdBased
+    [DebuggerDisplay("Account {Name} ({Currency})")]
+    public class Account : IAccount
     {
-        public static long NewAccountId { get; } = -1;
-
-        public long Id { set; get; }
         public DateTime Timestamp { set; get; }
         public string Name { set; get; }
         public string Description { set; get; }
         public string Currency { set; get; }
 
-        public Account()
+        internal Account()
         {
             Timestamp = DateTime.Now;
-            Id = NewAccountId;
         }
 
+        internal Account(string name, string description, string currency)
+        {
+            Timestamp = DateTime.Now;
+            Name = name;
+            Description = description;
+            Currency = currency;
+        }
     }
 }

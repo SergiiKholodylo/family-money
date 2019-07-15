@@ -18,7 +18,12 @@ namespace FamilyMoney.UWP
 
         private void AppBarButton_Click(object sender, Windows.UI.Xaml.RoutedEventArgs e)
         {
-            this.Frame.Navigate(typeof(Transactions));
+            this.Frame.Navigate(typeof(Accounts));
+        }
+
+        private void AppBarButton_Click_1(object sender, Windows.UI.Xaml.RoutedEventArgs e)
+        {
+            this.Frame.Navigate(typeof(Categories));
         }
     }
 }

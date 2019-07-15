@@ -13,9 +13,9 @@
             <AppBarButton Label="New Transaction" Icon="Add" />
 
             <AppBarSeparator />
-            <AppBarButton Label="Transactions" Icon="Calculator" Click="AppBarButton_Click" />
-            <AppBarButton Label="Accounts" Icon="Folder" />
-            <AppBarButton Label="Categories" Icon="Bookmarks" />
+            <AppBarButton Label="Transactions" Icon="Calculator"  />
+            <AppBarButton Label="Accounts" Icon="Folder" Click="AppBarButton_Click" />
+            <AppBarButton Label="Categories" Icon="Bookmarks" Click="AppBarButton_Click_1" />
             <AppBarButton Label="Report" Icon="ViewAll" />
 
             <CommandBar.SecondaryCommands>
