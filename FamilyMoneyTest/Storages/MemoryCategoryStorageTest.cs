@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Linq;
 using FamilyMoneyLib.NetStandard.Bases;
 using FamilyMoneyLib.NetStandard.Factories;
 using FamilyMoneyLib.NetStandard.Storages;
@@ -59,7 +56,7 @@ namespace FamilyMoneyTest.Storages
 
 
         [TestMethod]
-        public void UpdateAccountClass()
+        public void UpdateAccountTest()
         {
             var storage = new MemoryCategoryStorage();
             var category = CreateCategory();

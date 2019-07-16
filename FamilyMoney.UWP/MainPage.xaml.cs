@@ -10,7 +10,7 @@ namespace FamilyMoney.UWP
     /// </summary>
     public sealed partial class MainPage : Page
     {
-
+        public static GlobalSettings GlobalSettings = new GlobalSettings();
         public MainPage()
         {
             this.InitializeComponent();
@@ -24,6 +24,11 @@ namespace FamilyMoney.UWP
         private void AppBarButton_Click_1(object sender, Windows.UI.Xaml.RoutedEventArgs e)
         {
             this.Frame.Navigate(typeof(Categories));
+        }
+
+        private void AppBarButton_Click_2(object sender, Windows.UI.Xaml.RoutedEventArgs e)
+        {
+            this.Frame.Navigate(typeof(Transactions));
         }
     }
 }

@@ -38,7 +38,17 @@ namespace FamilyMoney.UWP.Views
 
         private void AppBarButton_Click_1(object sender, RoutedEventArgs e)
         {
-            this.Frame.Navigate(typeof(MainPage));
+            this.Frame.Navigate(typeof(Transactions));
+        }
+
+        private void AppBarButton_Click_2(object sender, RoutedEventArgs e)
+        {
+            this.Frame.Navigate(typeof(Accounts));
+        }
+
+        private void AppBarButton_Click_3(object sender, RoutedEventArgs e)
+        {
+            this.Frame.Navigate(typeof(Categories));
         }
 
         //private async void AppBarButton_Click(object sender, RoutedEventArgs e)

@@ -11,8 +11,8 @@ namespace FamilyMoney.UWP.ViewModels
 {
     public class AccountViewModel:INotifyPropertyChanged
     {
-        private ObservableCollection<IAccount> _accounts = new ObservableCollection<IAccount>();
-        private readonly AccountManager _manager;
+        private ObservableCollection<IAccount> _accounts;
+        private readonly IAccountManager _manager;
 
         public ObservableCollection<IAccount> Accounts
         {
@@ -27,9 +27,8 @@ namespace FamilyMoney.UWP.ViewModels
 
         public AccountViewModel()
         {
-            IAccountFactory factory = new RegularAccountFactory();
-            IAccountStorage storage = new MemoryAccountStorage();
-            _manager = new AccountManager(factory, storage);
+            _manager = MainPage.GlobalSettings.AccountManager;
+            Accounts = new ObservableCollection<IAccount>(_manager.GetAllAccounts());
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

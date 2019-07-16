@@ -5,34 +5,59 @@
     xmlns:local="using:FamilyMoney.UWP.Views"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:bases="using:FamilyMoneyLib.NetStandard.Bases"
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
     <Page.BottomAppBar>
         <CommandBar>
-            <AppBarButton Label="New Transaction" Icon="Add" />
+            <AppBarButton Label="New Transaction" Icon="Add" Click="AppBarButton_Click" />
 
             <AppBarSeparator />
-            <AppBarButton Label="Transactions" Icon="Calculator" Click="AppBarButton_Click" />
-            <AppBarButton Label="Accounts" Icon="Folder" />
-            <AppBarButton Label="Categories" Icon="Bookmarks" />
+            <AppBarButton Label="Transactions" Icon="Calculator" Click="AppBarButton_Click_1" />
+            <AppBarButton Label="Accounts" Icon="Folder" Click="AppBarButton_Click_2" />
+            <AppBarButton Label="Categories" Icon="Bookmarks" Click="AppBarButton_Click_3" />
             <AppBarButton Label="Report" Icon="ViewAll" />
 
-            <CommandBar.SecondaryCommands>
-                <AppBarButton Label="Create an account" />
-                <AppBarButton Label="Create a category" />
-            </CommandBar.SecondaryCommands>
-
             <CommandBar.Content>
-                <TextBlock Text="Main account - 205 UAH" />
+                <TextBlock Text="{x:Bind ViewModel.CurrentInfo}" />
             </CommandBar.Content>
         </CommandBar>
     </Page.BottomAppBar>
 
     <Grid>
         <StackPanel>
-            <ComboBox Header="Account" x:Name="cbAccount" ItemsSource="{x:Bind ViewModel.Accounts}" HorizontalAlignment="Stretch"/>
-            <ListView Header="Transactions" x:Name="lvTransactions" ItemsSource="{x:Bind ViewModel.Transactions}" BorderBrush="Black" BorderThickness="1,1,1,1"/>
+            <ComboBox Header="Account"
+                      x:Name="CbAccount"
+                      ItemsSource="{x:Bind ViewModel.Accounts}"
+                      HorizontalAlignment="Stretch" SelectionChanged="CbAccount_SelectionChanged">
+                <ComboBox.ItemTemplate>
+                    <DataTemplate x:DataType="bases:IAccount">
+                        <StackPanel>
+                            <TextBlock Text="{Binding Name}"></TextBlock>
+                            <TextBlock Text="{Binding Currency}"></TextBlock>
+                        </StackPanel>
+                    </DataTemplate>
+                </ComboBox.ItemTemplate>
+            </ComboBox>
+            <ListView Header="Transactions"
+                      x:Name="LvTransactions"
+                      ItemsSource="{x:Bind ViewModel.Transactions}">
+                <ListView.ItemTemplate>
+                    <DataTemplate x:DataType="bases:ITransaction">
+                        <Grid HorizontalAlignment="Stretch">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="100" />
+                                <ColumnDefinition Width="300" />
+                                <ColumnDefinition Width="60" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Column="0" Text="{x:Bind Timestamp.DayOfYear}" />
+                            <TextBlock Grid.Column="1" Text="{x:Bind Name}" />
+                            <TextBlock Grid.Column="2" Text="{x:Bind Total}" />
+                        </Grid>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
         </StackPanel>
     </Grid>
 </Page>

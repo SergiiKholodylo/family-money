@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Linq;
 using FamilyMoneyLib.NetStandard.Factories;
 using FamilyMoneyLib.NetStandard.Managers;
 using FamilyMoneyLib.NetStandard.Storages;
@@ -18,10 +15,9 @@ namespace FamilyMoneyTest.Managers
             var storage = new MemoryCategoryStorage();
             var factory = new RegularCategoryFactory();
             var manager = new CategoryManager(factory, storage);
-
-
             var categoryName = "Test Category";
             var categoryDescription = "Test Description";
+
 
             var category = manager.CreateCategory(categoryName, categoryDescription);
 
@@ -38,10 +34,11 @@ namespace FamilyMoneyTest.Managers
             var manager = new CategoryManager(factory, storage);
             var categoryName = "Test Category";
             var categoryDescription = "Test Description";
-
             var category = manager.CreateCategory(categoryName, categoryDescription);
 
-            var firstAccount = storage.GetAllCategories().First();
+
+            var firstAccount = manager.GetAllCategories().First();
+
 
             Assert.AreEqual(category.Name, firstAccount.Name);
             Assert.AreEqual(category.Description, firstAccount.Description);
@@ -53,15 +50,13 @@ namespace FamilyMoneyTest.Managers
             var storage = new MemoryCategoryStorage();
             var factory = new RegularCategoryFactory();
             var manager = new CategoryManager(factory, storage);
-
             var categoryName = "Test Category";
             var categoryDescription = "Test Description";
-
             var category = manager.CreateCategory(categoryName, categoryDescription);
-            storage.DeleteCategory(category);
 
 
-            var numberOfAccounts = storage.GetAllCategories().Count();
+            manager.DeleteCategory(category);
+            var numberOfAccounts = manager.GetAllCategories().Count();
 
 
             Assert.AreEqual(0, numberOfAccounts);
@@ -69,7 +64,7 @@ namespace FamilyMoneyTest.Managers
 
 
         [TestMethod]
-        public void UpdateAccountClass()
+        public void UpdateAccountTest()
         {
             var storage = new MemoryCategoryStorage();
             var factory = new RegularCategoryFactory();
@@ -83,10 +78,10 @@ namespace FamilyMoneyTest.Managers
             category.Description = "New Description";
 
 
-            storage.UpdateCategory(category);
+            manager.UpdateCategory(category);
 
 
-            var firstCategory = storage.GetAllCategories().First();
+            var firstCategory = manager.GetAllCategories().First();
             Assert.AreEqual(category.Name, firstCategory.Name);
             Assert.AreEqual(category.Description, firstCategory.Description);
         }

@@ -11,8 +11,8 @@ namespace FamilyMoney.UWP.ViewModels
 {
     public class CategoryViewModel:INotifyPropertyChanged
     {
-        private ObservableCollection<ICategory> _categories = new ObservableCollection<ICategory>();
-        private readonly CategoryManager _manager;
+        private ObservableCollection<ICategory> _categories;
+        private readonly ICategoryManager _manager;
 
         public ObservableCollection<ICategory> Categories
         {
@@ -22,9 +22,8 @@ namespace FamilyMoney.UWP.ViewModels
 
         public CategoryViewModel()
         {
-            var factory = new RegularCategoryFactory();
-            var storage = new MemoryCategoryStorage();
-            _manager = new CategoryManager(factory, storage);
+            _manager = MainPage.GlobalSettings.CategoryManager;
+            Categories = new ObservableCollection<ICategory>(_manager.GetAllCategories());
         }
 
         
