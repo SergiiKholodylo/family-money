@@ -72,7 +72,7 @@ namespace FamilyMoneyTest.Managers
 
 
         [TestMethod]
-        public void UpdateAccountClass()
+        public void UpdateAccountTest()
         {
             var storage = new MemoryAccountStorage();
             var factory = new RegularAccountFactory();

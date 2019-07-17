@@ -8,5 +8,6 @@ namespace FamilyMoneyLib.NetStandard.Bases
         string Description { get; set; }
         string Name { get; set; }
         DateTime Timestamp { get; set; }
+        long Id { get; set; }
     }
 }

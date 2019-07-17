@@ -9,5 +9,6 @@ namespace FamilyMoneyLib.NetStandard.Bases
         string Name { get; set; }
         DateTime Timestamp { get; set; }
         decimal Total { get; set; }
+        long Id { get; set; }
     }
 }

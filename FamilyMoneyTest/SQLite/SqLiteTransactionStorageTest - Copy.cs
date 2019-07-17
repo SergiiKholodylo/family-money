@@ -1,18 +1,19 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using FamilyMoneyLib.NetStandard.Bases;
 using FamilyMoneyLib.NetStandard.Factories;
-using FamilyMoneyLib.NetStandard.Storages;
+using FamilyMoneyLib.NetStandard.SQLite;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace FamilyMoneyTest.Storages
+namespace FamilyMoneyTest.SQLite
 {
     [TestClass]
-    public class MemoryAccountStorageTest
+    public class SqLiteAccountStorageTest
     {
         [TestMethod]
         public void CreateAccountTest()
         {
-            var storage = new MemoryAccountStorage();
+            var storage = new SqLiteAccountStorage();
             var account = CreateAccount();
 
 
@@ -27,11 +28,12 @@ namespace FamilyMoneyTest.Storages
         [TestMethod]
         public void GetAllAccountsTest()
         {
-            var storage = new MemoryAccountStorage();
+            var storage = new SqLiteAccountStorage();
             var account = CreateAccount();
+            account.Description = DateTime.Now.ToShortTimeString();
             storage.CreateAccount(account);
 
-            var firstAccount = storage.GetAllAccounts().First();
+            var firstAccount = storage.GetAllAccounts().Last();
 
             Assert.AreEqual(account.Name, firstAccount.Name);
             Assert.AreEqual(account.Description, firstAccount.Description);
@@ -41,7 +43,8 @@ namespace FamilyMoneyTest.Storages
         [TestMethod]
         public void DeleteAccountTest()
         {
-            var storage = new MemoryAccountStorage();
+            var storage = new SqLiteAccountStorage();
+            storage.DeleteAllData();
             var account = CreateAccount();
             storage.CreateAccount(account);
             storage.DeleteAccount(account);
@@ -57,7 +60,8 @@ namespace FamilyMoneyTest.Storages
         [TestMethod]
         public void UpdateAccountTest()
         {
-            var storage = new MemoryAccountStorage();
+            var storage = new SqLiteAccountStorage();
+            storage.DeleteAllData();
             var account = CreateAccount();
             storage.CreateAccount(account);
             account.Name = "New Name";

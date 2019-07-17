@@ -6,6 +6,7 @@ namespace FamilyMoneyLib.NetStandard.Bases
     [DebuggerDisplay("Account {Name} ({Currency})")]
     public class Account : IAccount
     {
+        public long Id { set; get; }
         public DateTime Timestamp { set; get; }
         public string Name { set; get; }
         public string Description { set; get; }
@@ -16,12 +17,13 @@ namespace FamilyMoneyLib.NetStandard.Bases
             Timestamp = DateTime.Now;
         }
 
-        internal Account(string name, string description, string currency)
+        internal Account(string name, string description, string currency, long id = 0)
         {
             Timestamp = DateTime.Now;
             Name = name;
             Description = description;
             Currency = currency;
+            Id = id;
         }
     }
 }

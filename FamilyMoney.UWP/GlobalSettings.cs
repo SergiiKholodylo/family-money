@@ -1,26 +1,24 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using FamilyMoneyLib.NetStandard.Factories;
+﻿using FamilyMoneyLib.NetStandard.Factories;
 using FamilyMoneyLib.NetStandard.Managers;
+using FamilyMoneyLib.NetStandard.SQLite;
 using FamilyMoneyLib.NetStandard.Storages;
 
 namespace FamilyMoney.UWP
 {
     public class GlobalSettings
     {
-        public IAccountManager AccountManager;
-        public ICategoryManager CategoryManager;
-        public ITransactionManager TransactionManager;
+        public readonly IAccountManager AccountManager;
+        public readonly ICategoryManager CategoryManager;
+        public readonly ITransactionManager TransactionManager;
 
 
         public GlobalSettings()
         {
-            AccountManager = new AccountManager(new RegularAccountFactory(), new MemoryAccountStorage());
-            CategoryManager = new CategoryManager(new RegularCategoryFactory(), new MemoryCategoryStorage());
-            TransactionManager = new TransactionManager(new RegularTransactionFactory(), new MemoryTransactionStorage());
+            var accountStorage = new SqLiteAccountStorage();
+            var categoryStorage = new SqLiteCategoryStorage();
+            AccountManager = new AccountManager(new RegularAccountFactory(), accountStorage);
+            CategoryManager = new CategoryManager(new RegularCategoryFactory(), categoryStorage);
+            TransactionManager = new TransactionManager(new RegularTransactionFactory(), new SqLiteTransactionStorage(accountStorage,categoryStorage));
         }
     }
 }

@@ -10,7 +10,7 @@ namespace FamilyMoney.UWP
     /// </summary>
     public sealed partial class MainPage : Page
     {
-        public static GlobalSettings GlobalSettings = new GlobalSettings();
+        public static readonly GlobalSettings GlobalSettings = new GlobalSettings();
         public MainPage()
         {
             this.InitializeComponent();

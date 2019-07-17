@@ -1,8 +1,11 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using Windows.ApplicationModel.Core;
+using Windows.Foundation.Metadata;
+using Windows.UI.Core;
+using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using FamilyMoney.UWP.ViewModels;
-using FamilyMoneyLib.NetStandard.Bases;
 using FamilyMoneyLib.NetStandard.Factories;
 using FamilyMoneyLib.NetStandard.Managers;
 using FamilyMoneyLib.NetStandard.Storages;
@@ -31,8 +34,17 @@ namespace FamilyMoney.UWP.Views
         {
         }
 
-        private void AppBarButton_Click(object sender, RoutedEventArgs e)
+        private async void AppBarButton_Click(object sender, RoutedEventArgs e)
         {
+            ContentDialog noWifiDialog = new ContentDialog()
+            {
+                Title = "No wifi connection",
+                Content = "Check connection and try again.",
+                CloseButtonText = "Ok"
+            };
+
+            await noWifiDialog.ShowAsync();
+
             ViewModel.AddAccount();
         }
 

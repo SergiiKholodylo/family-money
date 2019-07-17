@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using FamilyMoneyLib.NetStandard.Bases;
-using FamilyMoneyLib.NetStandard.Factories;
 using FamilyMoneyLib.NetStandard.Managers;
-using FamilyMoneyLib.NetStandard.Storages;
 
 namespace FamilyMoney.UWP.ViewModels
 {
