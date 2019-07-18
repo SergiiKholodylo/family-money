@@ -1,11 +1,9 @@
 ﻿using System;
-using Windows.ApplicationModel.Core;
-using Windows.Foundation.Metadata;
-using Windows.UI.Core;
-using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using FamilyMoney.UWP.ViewModels;
+using FamilyMoney.UWP.Views.Dialogs;
+using FamilyMoneyLib.NetStandard.Bases;
 using FamilyMoneyLib.NetStandard.Factories;
 using FamilyMoneyLib.NetStandard.Managers;
 using FamilyMoneyLib.NetStandard.Storages;
@@ -19,9 +17,6 @@ namespace FamilyMoney.UWP.Views
     /// </summary>
     public sealed partial class Accounts : Page
     {
-        private readonly IAccountFactory factory;
-        private readonly IAccountStorage storage;
-        private readonly AccountManager manager;
         public AccountViewModel ViewModel { set; get; } = new AccountViewModel();
 
         public Accounts()
@@ -30,22 +25,16 @@ namespace FamilyMoney.UWP.Views
 
         }
 
-        public void RefreshPage()
-        {
-        }
-
         private async void AppBarButton_Click(object sender, RoutedEventArgs e)
         {
-            ContentDialog noWifiDialog = new ContentDialog()
+            var addAccount = new AddAccount();
+
+            var result = await addAccount.ShowAsync();
+            if (result == ContentDialogResult.Primary)
             {
-                Title = "No wifi connection",
-                Content = "Check connection and try again.",
-                CloseButtonText = "Ok"
-            };
+                ViewModel.Refresh();
+            }
 
-            await noWifiDialog.ShowAsync();
-
-            ViewModel.AddAccount();
         }
 
         private void AppBarButton_Click_1(object sender, RoutedEventArgs e)
@@ -63,21 +52,31 @@ namespace FamilyMoney.UWP.Views
             this.Frame.Navigate(typeof(Categories));
         }
 
-        //private async void AppBarButton_Click(object sender, RoutedEventArgs e)
-        //{
-        //    CoreApplicationView newView = CoreApplication.CreateNewView();
-        //    int newViewId = 0;
-        //    await newView.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
-        //    {
-        //        Frame frame = new Frame();
-        //        frame.Navigate(typeof(AddAccount));
-        //        Window.Current.Content = frame;
-        //        // You have to activate the window in order to show it later.
-        //        Window.Current.Activate();
+        private async void DeleteItem_ItemInvoked(SwipeItem sender, SwipeItemInvokedEventArgs args)
+        {
+            var activeAccount = (IAccount)args.SwipeControl.DataContext;
+            var deleteConfirmation = new ContentDialog
+            {
+                Title = "Delete Account",
+                PrimaryButtonText = "Delete Account",
+                SecondaryButtonText = "Cancel",
+                DefaultButton = ContentDialogButton.Primary,
+                Content = $"Do you want delete account \n '{activeAccount.Name}({activeAccount.Currency})'?"
+            };
 
-        //        newViewId = ApplicationView.GetForCurrentView().Id;
-        //    });
-        //    bool viewShown = await ApplicationViewSwitcher.TryShowAsStandaloneAsync(newViewId);
-        //}
+            var result = await deleteConfirmation.ShowAsync();
+
+            if(result == ContentDialogResult.Primary)
+                ViewModel.DeleteAccount(activeAccount);
+        }
+
+        private async void ListView_DoubleTapped(object sender, Windows.UI.Xaml.Input.DoubleTappedRoutedEventArgs e)
+        {
+            var activeAccount = (IAccount) (((ListView) sender).SelectedValue);
+            var editAccount = new EditAccount(activeAccount);
+            var result = await editAccount.ShowAsync();
+            if(result == ContentDialogResult.Primary)
+                ViewModel.Refresh();
+        }
     }
 }

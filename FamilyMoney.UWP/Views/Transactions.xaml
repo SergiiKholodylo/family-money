@@ -30,7 +30,8 @@
             <ComboBox Header="Account"
                       x:Name="CbAccount"
                       ItemsSource="{x:Bind ViewModel.Accounts}"
-                      HorizontalAlignment="Stretch" SelectionChanged="CbAccount_SelectionChanged">
+                      HorizontalAlignment="Stretch" 
+                      SelectedValue="{x:Bind ViewModel.ActiveAccount, Mode=TwoWay}">
                 <ComboBox.ItemTemplate>
                     <DataTemplate x:DataType="bases:IAccount">
                         <StackPanel>
@@ -43,18 +44,66 @@
             <ListView Header="Transactions"
                       x:Name="LvTransactions"
                       ItemsSource="{x:Bind ViewModel.Transactions}">
+                <ListView.Resources>
+                    <SwipeItems x:Key="Right" Mode="Execute">
+                        <SwipeItem Text="Delete..." 
+                                   Background="#FFF4B183" 
+                                   Invoked="DeleteItem_ItemInvoked">
+                            <SwipeItem.IconSource>
+                                <FontIconSource  Glyph="&#xE10A;"/>
+                            </SwipeItem.IconSource>
+                        </SwipeItem>
+                    </SwipeItems>
+                </ListView.Resources>
                 <ListView.ItemTemplate>
                     <DataTemplate x:DataType="bases:ITransaction">
-                        <Grid HorizontalAlignment="Stretch">
+                        <SwipeControl BorderThickness="0,1,0,0" BorderBrush="{ThemeResource ButtonBackground}"
+                                      Height="68"
+                                      Width="800" MinWidth="200" 
+                                      RightItems="{StaticResource Right}">
+
+<Grid HorizontalAlignment="Stretch">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="100" />
                                 <ColumnDefinition Width="300" />
                                 <ColumnDefinition Width="60" />
                             </Grid.ColumnDefinitions>
-                            <TextBlock Grid.Column="0" Text="{x:Bind Timestamp.DayOfYear}" />
-                            <TextBlock Grid.Column="1" Text="{x:Bind Name}" />
-                            <TextBlock Grid.Column="2" Text="{x:Bind Total}" />
+                            <Grid.RowDefinitions>
+                                <RowDefinition/>
+                                <RowDefinition/>
+                                <RowDefinition/>
+                            </Grid.RowDefinitions>
+                            <TextBlock Grid.Column="0" 
+                                       Text="{x:Bind Id}" />
+                            <TextBlock Grid.Column="1" 
+                                       Text="{x:Bind Name}" />
+                            <TextBlock Grid.Column="2" 
+                                       Text="{x:Bind Total}" />
+                            <TextBlock 
+                                Grid.Column="0"
+                                Grid.Row="1"
+                                Text="{x:Bind Account.Id}"
+                            />
+
+                            <TextBlock 
+                                Grid.Column="1"
+                                Grid.Row="1"
+                                Text="{x:Bind Account.Name}"
+                                />
+                            <TextBlock 
+                                Grid.Column="0"
+                                Grid.Row="2"
+                                Text="{x:Bind Category.Id}"
+                            />
+
+                            <TextBlock 
+                                Grid.Column="1"
+                                Grid.Row="2"
+                                Text="{x:Bind Category.Name}"
+                            />
+
                         </Grid>
+                            </SwipeControl>
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>

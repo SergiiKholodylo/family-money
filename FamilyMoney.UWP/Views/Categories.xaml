@@ -19,11 +19,6 @@
             <AppBarButton Label="Categories" Icon="Bookmarks" Click="AppBarButton_Click_3" />
             <AppBarButton Label="Report" Icon="ViewAll" />
 
-            <CommandBar.SecondaryCommands>
-                <AppBarButton Label="Create an account"  />
-                <AppBarButton Label="Create a category" />
-            </CommandBar.SecondaryCommands>
-
             <CommandBar.Content>
                 <TextBlock Text="Main account - 205 UAH" />
             </CommandBar.Content>
@@ -32,20 +27,47 @@
 
     <Grid Padding="20">
         <StackPanel>
-            <ListView ItemsSource="{x:Bind ViewModel.Categories}" HorizontalAlignment="Stretch" Header="Categories List">
+            <ListView ItemsSource="{x:Bind ViewModel.Categories}" 
+                      HorizontalAlignment="Stretch" 
+                      Header="Categories List"
+                      DoubleTapped="ListView_DoubleTapped">
+
+                <ListView.Resources>
+                    <SwipeItems x:Key="Right" Mode="Execute">
+                        <SwipeItem Text="Delete..." 
+                                   Background="#FFF4B183" 
+                                   Invoked="DeleteItem_ItemInvoked">
+                            <SwipeItem.IconSource>
+                                <FontIconSource  Glyph="&#xE10A;"/>
+                            </SwipeItem.IconSource>
+                        </SwipeItem>
+                    </SwipeItems>
+                </ListView.Resources>
 
                 <ListView.ItemTemplate>
+
                     <DataTemplate x:DataType="bases:Category">
+                        <SwipeControl BorderThickness="0,1,0,0" BorderBrush="{ThemeResource ButtonBackground}"
+                                      Height="68"
+                                      Width="800" MinWidth="200" 
+                                      RightItems="{StaticResource Right}">
                         <Grid HorizontalAlignment="Stretch">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="100"/>
                                 <ColumnDefinition Width="300"/>
                                 <ColumnDefinition Width="60"/>
                             </Grid.ColumnDefinitions>
-                            <TextBlock Grid.Column="0" Text="{x:Bind Name}" />
-                            <TextBlock Grid.Column="1" Text="{x:Bind Description}" />
+                            <TextBlock Grid.Column="0" 
+                                       VerticalAlignment="Center"
+                                       Text="{x:Bind Name}" />
+                            <TextBlock Grid.Column="1"
+                                       VerticalAlignment="Center"
+                                       Text="{x:Bind Description}" />
                         </Grid>
+                            </SwipeControl>
                     </DataTemplate>
+
+
                 </ListView.ItemTemplate>
             </ListView>
         </StackPanel>

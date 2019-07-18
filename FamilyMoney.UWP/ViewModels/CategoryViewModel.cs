@@ -7,14 +7,14 @@ using FamilyMoneyLib.NetStandard.Managers;
 
 namespace FamilyMoney.UWP.ViewModels
 {
-    public class CategoryViewModel:INotifyPropertyChanged
+    public sealed class CategoryViewModel:INotifyPropertyChanged
     {
         private ObservableCollection<ICategory> _categories;
         private readonly ICategoryManager _manager;
 
         public ObservableCollection<ICategory> Categories
         {
-            set { _categories = value; OnPropertyChanged();}
+            private set { _categories = value; OnPropertyChanged();}
             get => _categories;
         }
 
@@ -30,7 +30,7 @@ namespace FamilyMoney.UWP.ViewModels
         public event PropertyChangedEventHandler PropertyChanged;
 
         [NotifyPropertyChangedInvocator]
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        private void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
@@ -38,6 +38,22 @@ namespace FamilyMoney.UWP.ViewModels
         internal void AddCategory()
         {
             Categories.Add(_manager.CreateCategory("Category","Description"));
+        }
+
+        public void Refresh()
+        {
+            Categories.Clear();
+            var allCategories = _manager.GetAllCategories();
+            foreach (var category in allCategories)
+            {
+                Categories.Add(category);
+            }
+        }
+
+        public void DeleteCategory(ICategory activeCategory)
+        {
+            _manager.DeleteCategory(activeCategory);
+            Categories.Remove(activeCategory);
         }
     }
 }

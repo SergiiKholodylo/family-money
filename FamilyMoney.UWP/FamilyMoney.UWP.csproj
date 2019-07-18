@@ -118,6 +118,9 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Convertors\DateTimeToDateTimeOffsetConvertor.cs" />
+    <Compile Include="Convertors\DateTimeToTimeSpanConverter.cs" />
+    <Compile Include="Convertors\DecimalConvertor.cs" />
     <Compile Include="GlobalSettings.cs" />
     <Compile Include="MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
@@ -129,15 +132,32 @@
     </Compile>
     <Compile Include="ViewModels\AccountViewModel.cs" />
     <Compile Include="ViewModels\CategoryViewModel.cs" />
+    <Compile Include="ViewModels\Dialogs\AddCategoryViewModel.cs" />
+    <Compile Include="ViewModels\Dialogs\AddTransactionViewModel.cs" />
+    <Compile Include="ViewModels\Dialogs\EditAccountViewModel.cs" />
+    <Compile Include="ViewModels\Dialogs\AddAccountViewModel.cs" />
+    <Compile Include="ViewModels\Dialogs\EditCategoryViewModel.cs" />
     <Compile Include="ViewModels\TransactionsViewModel.cs" />
     <Compile Include="Views\Accounts.xaml.cs">
       <DependentUpon>Accounts.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\AddAccount.xaml.cs">
+    <Compile Include="Views\Dialogs\AddAccount.xaml.cs">
       <DependentUpon>AddAccount.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Categories.xaml.cs">
       <DependentUpon>Categories.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Dialogs\AddCategory.xaml.cs">
+      <DependentUpon>AddCategory.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Dialogs\AddTransaction.xaml.cs">
+      <DependentUpon>AddTransaction.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Dialogs\EditAccount.xaml.cs">
+      <DependentUpon>EditAccount.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Dialogs\EditCategory.xaml.cs">
+      <DependentUpon>EditCategory.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Transactions.xaml.cs">
       <DependentUpon>Transactions.xaml</DependentUpon>
@@ -175,11 +195,27 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\AddAccount.xaml">
+    <Page Include="Views\Dialogs\AddAccount.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\Categories.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Dialogs\AddCategory.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Dialogs\AddTransaction.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Dialogs\EditAccount.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Dialogs\EditCategory.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

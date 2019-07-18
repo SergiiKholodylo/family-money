@@ -6,14 +6,14 @@ using FamilyMoneyLib.NetStandard.Managers;
 
 namespace FamilyMoney.UWP.ViewModels
 {
-    public class AccountViewModel:INotifyPropertyChanged
+    public sealed class AccountViewModel:INotifyPropertyChanged
     {
         private ObservableCollection<IAccount> _accounts;
         private readonly IAccountManager _manager;
 
         public ObservableCollection<IAccount> Accounts
         {
-            set
+            private set
             {
                 _accounts = value; 
                 OnPropertyChanged();
@@ -30,14 +30,25 @@ namespace FamilyMoney.UWP.ViewModels
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        private void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
-        internal void AddAccount()
+        public void Refresh()
         {
-            Accounts.Add(_manager.CreateAccount("Account", "Description", "UAH"));
+            Accounts.Clear();
+            var allAccounts = _manager.GetAllAccounts();
+            foreach (var account in allAccounts)
+            {
+                Accounts.Add(account);
+            }
+        }
+
+        public void DeleteAccount(IAccount activeAccount)
+        {
+            _manager.DeleteAccount(activeAccount);
+            Accounts.Remove(activeAccount);
         }
     }
 }

@@ -27,20 +27,41 @@
 
     <Grid Padding="20">
         <StackPanel>
-                <ListView ItemsSource="{x:Bind ViewModel.Accounts}" HorizontalAlignment="Stretch" Header="Account List">
+                <ListView ItemsSource="{x:Bind ViewModel.Accounts}" 
+                          HorizontalAlignment="Stretch" 
+                          Header="Account List" 
+                          DoubleTapped="ListView_DoubleTapped" >
+                    <ListView.Resources>
+                        <SwipeItems x:Key="Right" Mode="Execute">
+                            <SwipeItem Text="Delete..." 
+                                       Background="#FFF4B183" 
+                                       Invoked="DeleteItem_ItemInvoked">
+                                <SwipeItem.IconSource>
+                                <FontIconSource  Glyph="&#xE10A;"/>
+                            </SwipeItem.IconSource>
+                            </SwipeItem>
+                        </SwipeItems>
+                    </ListView.Resources>
 
                 <ListView.ItemTemplate>
                     <DataTemplate x:DataType="bases:Account">
-                        <Grid HorizontalAlignment="Stretch">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="100"/>
-                                <ColumnDefinition Width="300"/>
-                                <ColumnDefinition Width="60"/>
-                            </Grid.ColumnDefinitions>
-                            <TextBlock Grid.Column="0" Text="{x:Bind Name}" />
-                            <TextBlock Grid.Column="1" Text="{x:Bind Description}" />
-                            <TextBlock Grid.Column="2" Text="{x:Bind Currency}" />
-                        </Grid>
+                        <SwipeControl BorderThickness="0,1,0,0" BorderBrush="{ThemeResource ButtonBackground}"
+                                      Height="68"
+                                      Width="800" MinWidth="200" 
+                                      RightItems="{StaticResource Right}">
+
+                            <Grid HorizontalAlignment="Stretch">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="100" />
+                                    <ColumnDefinition Width="300" />
+                                    <ColumnDefinition Width="60" />
+                                    <ColumnDefinition Width="30" />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Grid.Column="0" Text="{x:Bind Name}" VerticalAlignment="Center" />
+                                <TextBlock Grid.Column="1" Text="{x:Bind Description}" VerticalAlignment="Center" />
+                                <TextBlock Grid.Column="2" Text="{x:Bind Currency}" VerticalAlignment="Center" />
+                            </Grid>
+                        </SwipeControl>
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>

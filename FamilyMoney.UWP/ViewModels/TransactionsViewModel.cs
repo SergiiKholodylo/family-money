@@ -42,26 +42,36 @@ namespace FamilyMoney.UWP.ViewModels
             get { return $"Total transactions - {Transactions.Sum(x => x.Total)}"; }
         }
 
+        public IAccount ActiveAccount
+        {
+            get => _activeAccount;
+            set
+            {
+                if(_activeAccount == value) return;
+                _activeAccount = value;
+                OnPropertyChanged();
+                RefreshTransactionByAccount();
+            }
+        }
+
 
         public TransactionsViewModel()
         {
             _manager = MainPage.GlobalSettings.TransactionManager;
             var accountManager = MainPage.GlobalSettings.AccountManager;
             Accounts = new ObservableCollection<IAccount>(accountManager.GetAllAccounts());
+            _activeAccount = Accounts.FirstOrDefault();
             RefreshTransactionByAccount();
-        }
-
-        internal void AddTransaction()
-        {
-            Transactions.Add(_manager.CreateTransaction(_activeAccount,null,"Test transaction", 120m));
         }
 
         public void RefreshTransactionByAccount()
         {
+            if(_activeAccount == null) return;
+
             var transactionManager = MainPage.GlobalSettings.TransactionManager;
 
             Transactions.Clear();
-            var accountTransactions = transactionManager.GetAllTransactions().Where(x => x.Account == _activeAccount);
+            var accountTransactions = transactionManager.GetAllTransactions().Where(x => x.Account.Id == _activeAccount.Id);
             foreach (var transaction in accountTransactions)
             {
                 Transactions.Add(transaction);
@@ -80,6 +90,22 @@ namespace FamilyMoney.UWP.ViewModels
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        public void Refresh()
+        {
+            Transactions.Clear();
+            var allTransactions = _manager.GetAllTransactions();
+            foreach (var transaction in allTransactions)
+            {
+                Transactions.Add(transaction);
+            }
+        }
+
+        public void DeleteTransaction(ITransaction activeTransaction)
+        {
+            _manager.DeleteTransaction(activeTransaction);
+            Transactions.Remove(activeTransaction);
         }
     }
 }
