@@ -118,10 +118,12 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Convertors\DateTimeToDateTimeOffsetConvertor.cs" />
-    <Compile Include="Convertors\DateTimeToTimeSpanConverter.cs" />
-    <Compile Include="Convertors\DecimalConvertor.cs" />
+    <Compile Include="Converters\DateTimeToDateTimeOffsetConvertor.cs" />
+    <Compile Include="Converters\DateTimeToTimeSpanConverter.cs" />
+    <Compile Include="Converters\DecimalConvertor.cs" />
+    <Compile Include="Converters\StringFormatConverter.cs" />
     <Compile Include="GlobalSettings.cs" />
+    <Compile Include="Helpers\ResourceExtensions.cs" />
     <Compile Include="MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
@@ -133,6 +135,7 @@
     <Compile Include="ViewModels\AccountViewModel.cs" />
     <Compile Include="ViewModels\CategoryViewModel.cs" />
     <Compile Include="ViewModels\Dialogs\AddCategoryViewModel.cs" />
+    <Compile Include="ViewModels\Dialogs\EditTransactionViewModel.cs" />
     <Compile Include="ViewModels\Dialogs\AddTransactionViewModel.cs" />
     <Compile Include="ViewModels\Dialogs\EditAccountViewModel.cs" />
     <Compile Include="ViewModels\Dialogs\AddAccountViewModel.cs" />
@@ -159,6 +162,9 @@
     <Compile Include="Views\Dialogs\EditCategory.xaml.cs">
       <DependentUpon>EditCategory.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\Dialogs\EditTransaction.xaml.cs">
+      <DependentUpon>EditTransaction.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\Transactions.xaml.cs">
       <DependentUpon>Transactions.xaml</DependentUpon>
     </Compile>
@@ -177,6 +183,7 @@
     <Content Include="Assets\Square44x44Logo.targetsize-24_altform-unplated.png" />
     <Content Include="Assets\StoreLogo.png" />
     <Content Include="Assets\Wide310x150Logo.scale-200.png" />
+    <Content Include="TODO\ResourceXAML.txt" />
   </ItemGroup>
   <ItemGroup>
     <ApplicationDefinition Include="App.xaml">
@@ -219,6 +226,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Views\Dialogs\EditTransaction.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\Transactions.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -237,6 +248,9 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="UserControl\" />
+  </ItemGroup>
+  <ItemGroup>
+    <PRIResource Include="Strings\en-us\Resources.resw" />
   </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
     <VisualStudioVersion>14.0</VisualStudioVersion>

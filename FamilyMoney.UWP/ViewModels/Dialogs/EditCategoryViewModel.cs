@@ -16,10 +16,7 @@ namespace FamilyMoney.UWP.ViewModels.Dialogs
             _category = category;
             Name = category.Name;
             Description = category.Description;
-            Id = category.Id;
         }
-
-        public long Id { set; get; }
 
         public string Name
         {

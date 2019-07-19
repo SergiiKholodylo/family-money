@@ -5,18 +5,22 @@
     xmlns:local="using:FamilyMoney.UWP.Views"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    x:Uid="AddAccountDialogUid"
     mc:Ignorable="d"
-    Title="Add Account"
-    PrimaryButtonText="Ok"
-    SecondaryButtonText="Cancel"
     PrimaryButtonClick="ContentDialog_PrimaryButtonClick"
     SecondaryButtonClick="ContentDialog_SecondaryButtonClick">
 
     <Grid>
         <StackPanel>
-            <TextBox Name="TbName" Header="Name" Text="{x:Bind ViewModel.Name, Mode=TwoWay}"/>
-            <TextBox Name="TbDescription" Header="Description" Text="{x:Bind ViewModel.Description, Mode=TwoWay}"/>
-            <TextBox Name="TbCurrency" Header="Currency" Text="{x:Bind ViewModel.Currency, Mode=TwoWay}"/>
+            <TextBox  
+                x:Uid="AddAccountAccountNameUid"
+                Text="{x:Bind ViewModel.Name, Mode=TwoWay}"/>
+            <TextBox  
+                x:Uid="AddAccountAccountDescriptionUid"
+                Text="{x:Bind ViewModel.Description, Mode=TwoWay}"/>
+            <TextBox  
+                x:Uid="AddAccountAccountCurrencyUid"
+                Text="{x:Bind ViewModel.Currency, Mode=TwoWay}"/>
         </StackPanel>
     </Grid>
 </ContentDialog>

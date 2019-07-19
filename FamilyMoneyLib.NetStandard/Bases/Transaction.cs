@@ -28,5 +28,6 @@ namespace FamilyMoneyLib.NetStandard.Bases
             Timestamp = timestamp ?? DateTime.Now;
             Id = id;
         }
+
     }
 }

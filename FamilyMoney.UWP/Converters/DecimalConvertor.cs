@@ -1,13 +1,14 @@
 ﻿using System;
 using Windows.UI.Xaml.Data;
 
-namespace FamilyMoney.UWP.Convertors
+namespace FamilyMoney.UWP.Converters
 {
     public class DecimalConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, string language)
         {
-            return value.ToString();
+            var decimalValue = (decimal) value;
+            return decimalValue.ToString("F2");
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, string language)

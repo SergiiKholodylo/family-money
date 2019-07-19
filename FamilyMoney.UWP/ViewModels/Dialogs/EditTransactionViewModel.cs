@@ -8,7 +8,7 @@ using FamilyMoneyLib.NetStandard.Bases;
 
 namespace FamilyMoney.UWP.ViewModels.Dialogs
 {
-    public sealed class AddTransactionViewModel:INotifyPropertyChanged
+    public sealed class EditTransactionViewModel:INotifyPropertyChanged
     {
         private  IAccount _account;
         private  ICategory _category;
@@ -17,13 +17,18 @@ namespace FamilyMoney.UWP.ViewModels.Dialogs
         private  decimal _total;
         private DateTimeOffset _date;
         private TimeSpan _time;
+        private readonly ITransaction _transaction;
 
-        public AddTransactionViewModel(IAccount activeAccount)
+        public EditTransactionViewModel(ITransaction transaction)
         {
-            Date = new DateTimeOffset(DateTime.Now);
-            Time =  DateTime.Now.TimeOfDay;
-            if (activeAccount != null)
-                Account = Accounts.FirstOrDefault(x => x.Id == activeAccount.Id);
+            _transaction = transaction;
+            Date = transaction.Timestamp == DateTime.MinValue ? new DateTimeOffset(DateTime.Now) : new DateTimeOffset(transaction.Timestamp);
+            Time =  transaction.Timestamp.TimeOfDay;
+            Name = transaction.Name;
+            Account = Accounts.FirstOrDefault(x=>x.Id == transaction.Account.Id);
+            Category = Categories.FirstOrDefault(x=>x.Id == transaction.Category.Id);
+            Timestamp = transaction.Timestamp;
+            Total = transaction.Total;
         }
 
         public IAccount Account
@@ -31,6 +36,7 @@ namespace FamilyMoney.UWP.ViewModels.Dialogs
             set {
                 if (_account == value) return;
                 _account = value;
+                OnPropertyChanged(nameof(Accounts));
                 OnPropertyChanged();
             }
             get => _account;
@@ -41,7 +47,9 @@ namespace FamilyMoney.UWP.ViewModels.Dialogs
             set
             {
                 if (_category == value) return;
-                _category = value; OnPropertyChanged();
+                _category = value;
+                OnPropertyChanged(nameof(Categories));
+                OnPropertyChanged();
             }
             get => _category;
         }
@@ -93,15 +101,13 @@ namespace FamilyMoney.UWP.ViewModels.Dialogs
             get => _total;
         }
 
-
         public IEnumerable<ICategory> Categories { get; } = MainPage.GlobalSettings.CategoryManager.GetAllCategories();
-        
-        public IEnumerable<IAccount> Accounts { get; } = MainPage.GlobalSettings.AccountManager.GetAllAccounts();
 
 
-        public void CreateTransaction()
+        public IEnumerable<IAccount> Accounts { get; }= MainPage.GlobalSettings.AccountManager.GetAllAccounts();
+
+        public void UpdateTransaction()
         {
-            var manager = MainPage.GlobalSettings.TransactionManager;
             Timestamp = new DateTime(
                 Date.Year,
                 Date.Month,
@@ -109,9 +115,15 @@ namespace FamilyMoney.UWP.ViewModels.Dialogs
                 Time.Hours,
                 Time.Minutes,
                 Time.Seconds
-                );
+            );
+            var manager = MainPage.GlobalSettings.TransactionManager;
+            _transaction.Name = Name;
+            _transaction.Account = Account;
+            _transaction.Category = Category;
+            _transaction.Timestamp = Timestamp;
+            _transaction.Total = Total;
 
-            manager.CreateTransaction(Account, Category, Name, Total, Timestamp);
+            manager.UpdateTransaction(_transaction);
         }
 
 

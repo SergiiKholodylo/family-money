@@ -66,7 +66,7 @@ namespace FamilyMoneyLib.NetStandard.SQLite
             _table.InitializeDatabase();
             var lines = _table.SelectAll();
 
-            var response = lines.Select(x=>ObjectToITransactionConverter.Convert(x,_accountStorage,_categoryStorage)).ToList();
+            var response = lines.Select(x=>ObjectToITransactionConverter.Convert(x,_accountStorage,_categoryStorage)).OrderByDescending(x=>x.Timestamp).ToList();
 
             return response;
         }

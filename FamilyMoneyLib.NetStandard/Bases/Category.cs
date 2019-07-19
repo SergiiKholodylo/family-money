@@ -21,6 +21,5 @@ namespace FamilyMoneyLib.NetStandard.Bases
             Description = description;
             Id = id;
         }
-
     }
 }

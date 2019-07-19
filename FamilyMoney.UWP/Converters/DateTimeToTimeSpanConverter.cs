@@ -1,11 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Windows.UI.Xaml.Data;
 
-namespace FamilyMoney.UWP.Convertors
+namespace FamilyMoney.UWP.Converters
 {
     public class DateTimeToTimeSpanConverter : IValueConverter
     {

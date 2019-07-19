@@ -6,25 +6,18 @@ using FamilyMoneyLib.NetStandard.Bases;
 
 namespace FamilyMoney.UWP.Views.Dialogs
 {
-    public sealed partial class AddTransaction : ContentDialog
+    public sealed partial class EditTransaction : ContentDialog
     {
-        public AddTransactionViewModel ViewModel;
-
-        public AddTransaction()
+        public EditTransactionViewModel ViewModel;
+        public EditTransaction(ITransaction transaction)
         {
             this.InitializeComponent();
-            ViewModel = new AddTransactionViewModel(null);
-        }
-
-        public AddTransaction(IAccount activeAccount)
-        {
-            this.InitializeComponent();
-            ViewModel = new AddTransactionViewModel(activeAccount);
+            ViewModel = new EditTransactionViewModel(transaction);
         }
 
         private void ContentDialog_PrimaryButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args)
         {
-            ViewModel.CreateTransaction();
+            ViewModel.UpdateTransaction();
         }
 
         private void ContentDialog_SecondaryButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args)

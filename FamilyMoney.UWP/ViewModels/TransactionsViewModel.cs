@@ -2,12 +2,13 @@
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using FamilyMoney.UWP.Helpers;
 using FamilyMoneyLib.NetStandard.Bases;
 using FamilyMoneyLib.NetStandard.Managers;
 
 namespace FamilyMoney.UWP.ViewModels
 {
-    public class TransactionsViewModel:INotifyPropertyChanged
+    public sealed class TransactionsViewModel:INotifyPropertyChanged
     {
         private ObservableCollection<ITransaction> _transactions = new ObservableCollection<ITransaction>();
         private readonly ITransactionManager _manager;
@@ -19,7 +20,7 @@ namespace FamilyMoney.UWP.ViewModels
             {
                 _transactions = value; 
                 OnPropertyChanged();
-                OnPropertyChanged("CurrentInfo");
+                
             }
             get => _transactions;
         }
@@ -39,7 +40,13 @@ namespace FamilyMoney.UWP.ViewModels
 
         public string CurrentInfo
         {
-            get { return $"Total transactions - {Transactions.Sum(x => x.Total)}"; }
+            
+
+        get
+        {
+            var totalTransactions = "TotalTransactions".GetLocalized();
+            return $"{totalTransactions} - {Transactions.Sum(x => x.Total)}";
+        }
         }
 
         public IAccount ActiveAccount
@@ -51,6 +58,7 @@ namespace FamilyMoney.UWP.ViewModels
                 _activeAccount = value;
                 OnPropertyChanged();
                 RefreshTransactionByAccount();
+                OnPropertyChanged("CurrentInfo");
             }
         }
 
@@ -87,7 +95,7 @@ namespace FamilyMoney.UWP.ViewModels
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        private void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }

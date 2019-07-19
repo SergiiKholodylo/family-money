@@ -6,6 +6,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:bases="using:FamilyMoneyLib.NetStandard.Bases"
+    xmlns:converters="using:FamilyMoney.UWP.Converters"
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
@@ -14,7 +15,7 @@
             <AppBarButton Label="New Transaction" Icon="Add" Click="AppBarButton_Click" />
 
             <AppBarSeparator />
-            <AppBarButton Label="Transactions" Icon="Calculator" Click="AppBarButton_Click_1" />
+            <AppBarButton x:Uid="AppBarTransactions" Icon="Calculator" Click="AppBarButton_Click_1" />
             <AppBarButton Label="Accounts" Icon="Folder" Click="AppBarButton_Click_2" />
             <AppBarButton Label="Categories" Icon="Bookmarks" Click="AppBarButton_Click_3" />
             <AppBarButton Label="Report" Icon="ViewAll" />
@@ -25,82 +26,87 @@
         </CommandBar>
     </Page.BottomAppBar>
 
+    <Page.Resources>
+        <converters:StringFormatConverter x:Key="StringFormatConverter" />
+        <converters:DecimalConverter x:Key="DecimalConverter"/>
+    </Page.Resources>
+
     <Grid>
         <StackPanel>
             <ComboBox Header="Account"
-                      x:Name="CbAccount"
                       ItemsSource="{x:Bind ViewModel.Accounts}"
                       HorizontalAlignment="Stretch" 
                       SelectedValue="{x:Bind ViewModel.ActiveAccount, Mode=TwoWay}">
                 <ComboBox.ItemTemplate>
                     <DataTemplate x:DataType="bases:IAccount">
-                        <StackPanel>
-                            <TextBlock Text="{Binding Name}"></TextBlock>
-                            <TextBlock Text="{Binding Currency}"></TextBlock>
-                        </StackPanel>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="200"/>
+                                <ColumnDefinition Width="60"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Column="0" 
+                                       Text="{Binding Name}"
+                                       />
+                            <TextBlock Grid.Column="1"
+                                       Text="{Binding Currency}"
+                                       />
+                        </Grid>
                     </DataTemplate>
                 </ComboBox.ItemTemplate>
             </ComboBox>
             <ListView Header="Transactions"
-                      x:Name="LvTransactions"
-                      ItemsSource="{x:Bind ViewModel.Transactions}">
+                      ItemsSource="{x:Bind ViewModel.Transactions}"
+                      DoubleTapped="ListView_DoubleTapped"
+                      >
                 <ListView.Resources>
-                    <SwipeItems x:Key="Right" Mode="Execute">
+                    <FontIconSource x:Key="DeleteIcon" Glyph="&#xE107;"/>
+
+
+                    <SwipeItems x:Key="Right" Mode="Reveal">
                         <SwipeItem Text="Delete..." 
-                                   Background="#FFF4B183" 
+                                   Background="Red" 
+                                   Foreground="White"
+                                   IconSource="{StaticResource DeleteIcon}"
                                    Invoked="DeleteItem_ItemInvoked">
-                            <SwipeItem.IconSource>
-                                <FontIconSource  Glyph="&#xE10A;"/>
-                            </SwipeItem.IconSource>
                         </SwipeItem>
                     </SwipeItems>
                 </ListView.Resources>
                 <ListView.ItemTemplate>
                     <DataTemplate x:DataType="bases:ITransaction">
-                        <SwipeControl BorderThickness="0,1,0,0" BorderBrush="{ThemeResource ButtonBackground}"
-                                      Height="68"
-                                      Width="800" MinWidth="200" 
-                                      RightItems="{StaticResource Right}">
+                        <SwipeControl BorderThickness="0,1,0,0" 
+                                      BorderBrush="{ThemeResource ButtonBackground}"
+                                      Height="40"
+
+                                      MinWidth="300" 
+                                      RightItems="{StaticResource Right}"
+                                      >
 
 <Grid HorizontalAlignment="Stretch">
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="100" />
-                                <ColumnDefinition Width="300" />
+                                <ColumnDefinition Width="80" />
+                                    <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="150" />
                                 <ColumnDefinition Width="60" />
                             </Grid.ColumnDefinitions>
-                            <Grid.RowDefinitions>
-                                <RowDefinition/>
-                                <RowDefinition/>
-                                <RowDefinition/>
-                            </Grid.RowDefinitions>
                             <TextBlock Grid.Column="0" 
-                                       Text="{x:Bind Id}" />
+                                       FontSize="12"
+                                       VerticalAlignment="Center"
+                                       Text="{x:Bind Timestamp, Converter={StaticResource StringFormatConverter}, ConverterParameter='{}{0:dd/MM/yyy}'}" 
+                                       />
                             <TextBlock Grid.Column="1" 
+                                       VerticalAlignment="Center"
+                                       FontSize="12"
+                                       FontWeight="Bold"
                                        Text="{x:Bind Name}" />
                             <TextBlock Grid.Column="2" 
-                                       Text="{x:Bind Total}" />
-                            <TextBlock 
-                                Grid.Column="0"
-                                Grid.Row="1"
-                                Text="{x:Bind Account.Id}"
-                            />
-
-                            <TextBlock 
-                                Grid.Column="1"
-                                Grid.Row="1"
-                                Text="{x:Bind Account.Name}"
-                                />
-                            <TextBlock 
-                                Grid.Column="0"
-                                Grid.Row="2"
-                                Text="{x:Bind Category.Id}"
-                            />
-
-                            <TextBlock 
-                                Grid.Column="1"
-                                Grid.Row="2"
-                                Text="{x:Bind Category.Name}"
-                            />
+                                       VerticalAlignment="Center"
+                                       FontSize="12"
+                                       Text="{x:Bind Category.Name}" />
+                            <TextBlock Grid.Column="3" 
+                                       VerticalAlignment="Center"
+                                       HorizontalAlignment="Right"
+                                       FontWeight="Bold"
+                                       Text="{x:Bind Total, Converter={StaticResource DecimalConverter}}" />
 
                         </Grid>
                             </SwipeControl>

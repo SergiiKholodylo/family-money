@@ -17,11 +17,8 @@ namespace FamilyMoney.UWP.ViewModels.Dialogs
             Name = account.Name;
             Description = account.Description;
             Currency = account.Currency;
-            Id = account.Id;
             _account = account;
         }
-
-        public long Id { set; get; }
 
         public string Name
         {

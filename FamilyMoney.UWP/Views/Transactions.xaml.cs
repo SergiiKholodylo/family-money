@@ -2,6 +2,8 @@
 using System.Linq;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Input;
+using FamilyMoney.UWP.Helpers;
 using FamilyMoney.UWP.ViewModels;
 using FamilyMoney.UWP.Views.Dialogs;
 using FamilyMoneyLib.NetStandard.Bases;
@@ -26,7 +28,7 @@ namespace FamilyMoney.UWP.Views
         private async void AppBarButton_Click(object sender, RoutedEventArgs e)
         {
             var addTransaction
-                = new AddTransaction();
+                = new AddTransaction(ViewModel.ActiveAccount);
 
             var result = await addTransaction.ShowAsync();
             if (result == ContentDialogResult.Primary)
@@ -49,20 +51,14 @@ namespace FamilyMoney.UWP.Views
             this.Frame.Navigate(typeof(Categories));
         }
 
-        private void CbAccount_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            var selected = (IAccount)e.AddedItems.FirstOrDefault();
-            ViewModel.SetActiveAccount(selected);
-        }
-
         private async void DeleteItem_ItemInvoked(SwipeItem sender, SwipeItemInvokedEventArgs args)
         {
             var activeTransaction = (ITransaction)args.SwipeControl.DataContext;
             var deleteConfirmation = new ContentDialog
             {
-                Title = "Delete Transaction",
-                PrimaryButtonText = "Delete Transaction",
-                SecondaryButtonText = "Cancel",
+                Title = "DeleteTransaction".GetLocalized(),
+                PrimaryButtonText = "DeleteTransaction".GetLocalized(),
+                SecondaryButtonText = "Cancel".GetLocalized(),
                 DefaultButton = ContentDialogButton.Primary,
                 Content = $"Do you want delete transaction \n '{activeTransaction.Name}({activeTransaction.Total})'?"
             };
@@ -71,6 +67,15 @@ namespace FamilyMoney.UWP.Views
 
             if (result == ContentDialogResult.Primary)
                 ViewModel.DeleteTransaction(activeTransaction);
+        }
+
+        private async void ListView_DoubleTapped(object sender, DoubleTappedRoutedEventArgs e)
+        {
+            var activeTransaction = (ITransaction)(((ListView)sender).SelectedValue);
+            var editTransaction = new EditTransaction(activeTransaction);
+            var result = await editTransaction.ShowAsync();
+            if (result == ContentDialogResult.Primary)
+                ViewModel.RefreshTransactionByAccount();
         }
     }
 }
