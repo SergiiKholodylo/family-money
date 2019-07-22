@@ -70,7 +70,7 @@ namespace FamilyMoneyLib.NetStandard.SQLite
             _table.InitializeDatabase();
             var lines = _table.SelectAll();
 
-            var response = lines.Select(x => ObjectToITransactionConverter.Convert(x, _accountStorage, _categoryStorage,_accountFactory,_categoryFactory)).OrderByDescending(x => x.Timestamp).ToList();
+            var response = lines.Select(x => ObjectToITransactionConverter.Convert(x, TransactionFactory, _accountStorage, _categoryStorage)).OrderByDescending(x => x.Timestamp).ToList();
 
             return response;
         }
@@ -104,9 +104,9 @@ namespace FamilyMoneyLib.NetStandard.SQLite
             return sqlDataString;
         }
 
-        public static ITransaction Convert(object[] line, IAccountStorage accountStorage, ICategoryStorage categoryStorage,IAccountFactory accountFactory, ICategoryFactory categoryFactory)
+        public static ITransaction Convert(object[] line, ITransactionFactory transactionFactory,
+            IAccountStorage accountStorage, ICategoryStorage categoryStorage)
         {
-            var factory = new RegularTransactionFactory();
             var id = (long) line[0];
             var timestamp = DateTime.Parse(line[1].ToString());
             var accountId = (long)(line[2]);
@@ -115,7 +115,7 @@ namespace FamilyMoneyLib.NetStandard.SQLite
             var total = decimal.Parse(line[5].ToString());
             var account = accountStorage.GetAllAccounts().FirstOrDefault(x => x.Id == accountId);
             var category = categoryStorage.GetAllCategories().FirstOrDefault(x => x.Id == categoryId);
-            var transaction = factory.CreateTransaction(account,category,name,total);
+            var transaction = transactionFactory.CreateTransaction(account,category,name,total);
             transaction.Id = id;
             transaction.Timestamp = timestamp;
 

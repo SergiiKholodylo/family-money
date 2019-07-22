@@ -48,7 +48,7 @@ namespace FamilyMoneyLib.NetStandard.SQLite
             _table.InitializeDatabase();
             var lines = _table.SelectAll();
 
-            return lines.Select(ObjectToICategoryConverter.Convert).ToList();
+            return lines.Select(objects => ObjectToICategoryConverter.Convert(objects,CategoryFactory)).ToList();
         }
 
         public override void UpdateCategory(ICategory category)
@@ -67,10 +67,9 @@ namespace FamilyMoneyLib.NetStandard.SQLite
 
     public static class ObjectToICategoryConverter
     {
-        public static ICategory Convert(object[] line)
+        public static ICategory Convert(object[] line, ICategoryFactory categoryFactory)
         {
-            var factory = new RegularCategoryFactory();
-            var account = factory.CreateCategory(line[1].ToString(), line[2].ToString());
+            var account = categoryFactory.CreateCategory(line[1].ToString(), line[2].ToString());
             account.Id = (long)line[0];
 
             return account;

@@ -6,11 +6,11 @@ namespace FamilyMoneyLib.NetStandard.Storages
 {
     public abstract class TransactionStorageBase:ITransactionStorage
     {
-        private ITransactionFactory _transactionFactory;
+        protected readonly ITransactionFactory TransactionFactory;
 
         protected TransactionStorageBase(ITransactionFactory transactionFactory)
         {
-            _transactionFactory = transactionFactory;
+            TransactionFactory = transactionFactory;
         }
 
         public abstract ITransaction CreateTransaction(ITransaction transaction);

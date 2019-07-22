@@ -6,11 +6,11 @@ namespace FamilyMoneyLib.NetStandard.Storages
 {
     public abstract class CategoryStorageBase:ICategoryStorage
     {
-        private ICategoryFactory _categoryFactory;
+        protected readonly ICategoryFactory CategoryFactory;
 
         protected CategoryStorageBase(ICategoryFactory categoryFactory)
         {
-            _categoryFactory = categoryFactory;
+            CategoryFactory = categoryFactory;
         }
 
         public abstract ICategory CreateCategory(ICategory category);

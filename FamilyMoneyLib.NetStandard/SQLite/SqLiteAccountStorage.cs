@@ -62,7 +62,7 @@ namespace FamilyMoneyLib.NetStandard.SQLite
             _table.InitializeDatabase();
             var lines = _table.SelectAll();
 
-            return lines.Select(ObjectToIAccountConverter.Convert).ToList();
+            return lines.Select(objects => ObjectToIAccountConverter.Convert(objects,AccountFactory)).ToList();
         }
 
         public void DeleteAllData()
@@ -74,10 +74,9 @@ namespace FamilyMoneyLib.NetStandard.SQLite
 
     public static class ObjectToIAccountConverter
     {
-        public static IAccount Convert(object[] line)
+        public static IAccount Convert(object[] line, IAccountFactory accountFactory)
         {
-            var factory = new RegularAccountFactory();
-            var account = factory.CreateAccount(line[2].ToString(), line[3].ToString(), line[4].ToString());
+            var account = accountFactory.CreateAccount(line[2].ToString(), line[3].ToString(), line[4].ToString());
             account.Id = (long) line[0];
             account.Timestamp = DateTime.Parse(line[1].ToString());
 

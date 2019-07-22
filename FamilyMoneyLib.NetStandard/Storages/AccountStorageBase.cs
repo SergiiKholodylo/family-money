@@ -6,11 +6,11 @@ namespace FamilyMoneyLib.NetStandard.Storages
 {
     public abstract class AccountStorageBase:IAccountStorage
     {
-        protected IAccountFactory _accountFactory;
+        protected readonly IAccountFactory AccountFactory;
 
         protected AccountStorageBase(IAccountFactory factory)
         {
-            _accountFactory = factory;
+            AccountFactory = factory;
         }
 
         public abstract IAccount CreateAccount(IAccount account);
