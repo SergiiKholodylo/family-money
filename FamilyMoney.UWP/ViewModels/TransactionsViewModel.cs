@@ -86,13 +86,6 @@ namespace FamilyMoney.UWP.ViewModels
             }
         }
 
-        internal void SetActiveAccount(IAccount account)
-        {
-            _activeAccount = account;
-
-            RefreshTransactionByAccount();
-        }
-
         public event PropertyChangedEventHandler PropertyChanged;
 
         private void OnPropertyChanged([CallerMemberName] string propertyName = null)
