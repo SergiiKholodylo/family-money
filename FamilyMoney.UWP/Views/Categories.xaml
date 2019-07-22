@@ -11,13 +11,26 @@
 
     <Page.BottomAppBar>
         <CommandBar>
-            <AppBarButton Label="New Category" Icon="Add" Click="AppBarButton_Click"/>
-
+            <AppBarButton 
+                Label="New Category" 
+                Icon="Add" 
+                Click="AppBarButton_Click"/>
             <AppBarSeparator />
-            <AppBarButton Label="Transactions" Icon="Calculator" Click="AppBarButton_Click_1" />
-            <AppBarButton Label="Accounts" Icon="Folder" Click="AppBarButton_Click_2" />
-            <AppBarButton Label="Categories" Icon="Bookmarks" Click="AppBarButton_Click_3" />
-            <AppBarButton Label="Report" Icon="ViewAll" />
+            <AppBarButton 
+                x:Uid="TransactionAppBar" 
+                Icon="Calculator" 
+                Click="AppBarButton_Click_1" />
+            <AppBarButton 
+                x:Uid="AccountAppBar" 
+                Icon="Folder" 
+                Click="AppBarButton_Click_2" />
+            <AppBarButton 
+                x:Uid="CategoryAppBar" 
+                Icon="Bookmarks" 
+                Click="AppBarButton_Click_3" />
+            <AppBarButton 
+                x:Uid="ReportAppBar"
+                Icon="ViewAll" />
 
             <CommandBar.Content>
                 <TextBlock Text="Main account - 205 UAH" />
@@ -29,12 +42,12 @@
         <StackPanel>
             <ListView ItemsSource="{x:Bind ViewModel.Categories}" 
                       HorizontalAlignment="Stretch" 
-                      Header="Categories List"
+                      x:Uid="CategoriesList"
                       DoubleTapped="ListView_DoubleTapped">
 
                 <ListView.Resources>
                     <SwipeItems x:Key="Right" Mode="Execute">
-                        <SwipeItem Text="Delete..." 
+                        <SwipeItem x:Uid="DeleteSwipeItem"
                                    Background="#FFF4B183" 
                                    Invoked="DeleteItem_ItemInvoked">
                             <SwipeItem.IconSource>

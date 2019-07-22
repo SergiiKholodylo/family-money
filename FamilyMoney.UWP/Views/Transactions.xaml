@@ -12,13 +12,32 @@
 
     <Page.BottomAppBar>
         <CommandBar>
-            <AppBarButton Label="New Transaction" Icon="Add" Click="AppBarButton_Click" />
+            <AppBarButton Label=
+                          "New Transaction" 
+                          x:Uid="NewTransactionButton"
+                          Icon="Add" 
+                          Click="AppBarButton_Click" />
 
             <AppBarSeparator />
-            <AppBarButton x:Uid="AppBarTransactions" Icon="Calculator" Click="AppBarButton_Click_1" />
-            <AppBarButton Label="Accounts" Icon="Folder" Click="AppBarButton_Click_2" />
-            <AppBarButton Label="Categories" Icon="Bookmarks" Click="AppBarButton_Click_3" />
-            <AppBarButton Label="Report" Icon="ViewAll" />
+            <AppBarButton 
+                x:Uid="TransactionAppBar" 
+                Icon="Calculator" 
+                Click="AppBarButton_Click_1" 
+                />
+            <AppBarButton 
+                x:Uid="AccountAppBar"
+                Icon="Folder" 
+                Click="AppBarButton_Click_2" 
+                />
+            <AppBarButton 
+                x:Uid="CategoryAppBar" 
+                Icon="Bookmarks" 
+                Click="AppBarButton_Click_3" 
+                />
+            <AppBarButton
+                x:Uid="ReportAppBar" 
+                Icon="ViewAll" 
+                />
 
             <CommandBar.Content>
                 <TextBlock Text="{x:Bind ViewModel.CurrentInfo}" />
@@ -33,7 +52,7 @@
 
     <Grid>
         <StackPanel>
-            <ComboBox Header="Account"
+            <ComboBox x:Uid="AccountComboBox"
                       ItemsSource="{x:Bind ViewModel.Accounts}"
                       HorizontalAlignment="Stretch" 
                       SelectedValue="{x:Bind ViewModel.ActiveAccount, Mode=TwoWay}">
@@ -54,7 +73,7 @@
                     </DataTemplate>
                 </ComboBox.ItemTemplate>
             </ComboBox>
-            <ListView Header="Transactions"
+            <ListView x:Uid="TransactionListView"
                       ItemsSource="{x:Bind ViewModel.Transactions}"
                       DoubleTapped="ListView_DoubleTapped"
                       >
@@ -63,7 +82,7 @@
 
 
                     <SwipeItems x:Key="Right" Mode="Reveal">
-                        <SwipeItem Text="Delete..." 
+                        <SwipeItem x:Uid="DeleteSwipeItem" 
                                    Background="Red" 
                                    Foreground="White"
                                    IconSource="{StaticResource DeleteIcon}"

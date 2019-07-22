@@ -23,16 +23,16 @@
         <StackPanel>
             <DatePicker 
                 Date="{x:Bind ViewModel.Date, Mode=TwoWay}" 
-                Header="Transaction Date"
+                x:Uid="TransactionDatePicker"
                 />
             <TimePicker 
                 Time="{x:Bind ViewModel.Time, Mode=TwoWay}" 
-                Header="Transaction Time"
+                x:Uid="TransactionTimePicker"
                 />
-            <ComboBox Header="Account"
-                      HorizontalAlignment="Stretch"
+            <ComboBox HorizontalAlignment="Stretch"
                       ItemsSource="{x:Bind ViewModel.Accounts}"
                       SelectedValue="{x:Bind ViewModel.Account, Mode=TwoWay}"
+                      x:Uid="AccountComboBox"
                       >
                 <ComboBox.ItemTemplate>
                     <DataTemplate x:DataType="bases:IAccount">
@@ -43,10 +43,10 @@
                 </ComboBox.ItemTemplate>
 
             </ComboBox>
-            <ComboBox Header="Category"
-                      HorizontalAlignment="Stretch"
+            <ComboBox HorizontalAlignment="Stretch"
                       ItemsSource="{x:Bind ViewModel.Categories}"
                       SelectedValue="{x:Bind ViewModel.Category, Mode=TwoWay}"
+                      x:Uid="categoryComboBox"
                       >
                 <ComboBox.ItemTemplate>
                     <DataTemplate x:DataType="bases:ICategory">
@@ -58,10 +58,10 @@
 
             </ComboBox>
 
-            <TextBox Header="Name" 
+            <TextBox x:Uid="NameTextBox"
                      Text="{x:Bind ViewModel.Name, Mode=TwoWay}"/>
             <TextBox 
-                Header="Total" 
+                x:Uid="TotalTextBox" 
                 Text="{x:Bind ViewModel.Total, Mode=TwoWay, Converter={StaticResource DecimalConverter}}"
                 />
         </StackPanel>

@@ -14,9 +14,16 @@
 
     <Grid>
         <StackPanel>
-            <TextBox Name="TbName" Header="Name" Text="{x:Bind ViewModel.Name, Mode=TwoWay}"/>
-            <TextBox Name="TbDescription" Header="Description" Text="{x:Bind ViewModel.Description, Mode=TwoWay}"/>
-            <TextBox Name="TbCurrency" Header="Currency" Text="{x:Bind ViewModel.Currency, Mode=TwoWay}"/>
+            <TextBox 
+                x:Uid="NameTextBox"                
+                Text="{x:Bind ViewModel.Name, Mode=TwoWay}"/>
+            <TextBox
+                x:Uid="DescriptionTextBox"
+                Header="Description" 
+                Text="{x:Bind ViewModel.Description, Mode=TwoWay}"/>
+            <TextBox 
+                x:Uid="CurrencyTextBox"
+                Text="{x:Bind ViewModel.Currency, Mode=TwoWay}"/>
         </StackPanel>
     </Grid>
 </ContentDialog>
