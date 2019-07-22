@@ -12,7 +12,9 @@ namespace FamilyMoneyTest.Storages
         [TestMethod]
         public void CreateTransactionTest()
         {
-            var storage = new MemoryTransactionStorage();
+            var factory = new RegularTransactionFactory();
+            var storage = new MemoryTransactionStorage(factory);
+
             var transaction = CreateTransaction();
 
 
@@ -28,13 +30,13 @@ namespace FamilyMoneyTest.Storages
         [TestMethod]
         public void GetAllTransactionsTest()
         {
-            var storage = new MemoryTransactionStorage();
             var factory = new RegularTransactionFactory();
+            var storage = new MemoryTransactionStorage(factory);
             var transaction = CreateTransaction();
             storage.CreateTransaction(transaction);
 
 
-            var firstTransaction = storage.GetAllTransactions(factory).First();
+            var firstTransaction = storage.GetAllTransactions().First();
             
 
             Assert.AreEqual(transaction.Name, firstTransaction.Name);
@@ -46,16 +48,16 @@ namespace FamilyMoneyTest.Storages
         [TestMethod]
         public void DeleteTransactionTest()
         {
-            var storage = new MemoryTransactionStorage();
             var factory = new RegularTransactionFactory();
+            var storage = new MemoryTransactionStorage(factory);
             var transaction = CreateTransaction();
             storage.CreateTransaction(transaction);
 
-            var numberOfTransactionsAfterCreate = storage.GetAllTransactions(factory).Count();
+            var numberOfTransactionsAfterCreate = storage.GetAllTransactions().Count();
             storage.DeleteTransaction(transaction);
 
 
-            var numberOfTransactions = storage.GetAllTransactions(factory).Count();
+            var numberOfTransactions = storage.GetAllTransactions().Count();
 
 
             Assert.AreEqual(0, numberOfTransactions);
@@ -65,15 +67,15 @@ namespace FamilyMoneyTest.Storages
         [TestMethod]
         public void UpdateTransactionTest()
         {
-            var storage = new MemoryTransactionStorage();
             var factory = new RegularTransactionFactory();
+            var storage = new MemoryTransactionStorage(factory);
             var transaction = CreateTransaction();
             storage.CreateTransaction(transaction);
             transaction.Total = 120;
 
 
             storage.UpdateTransaction(transaction);
-            var storedTransaction = storage.GetAllTransactions(factory).First();
+            var storedTransaction = storage.GetAllTransactions().First();
 
 
             Assert.AreEqual(transaction.Total, storedTransaction.Total);

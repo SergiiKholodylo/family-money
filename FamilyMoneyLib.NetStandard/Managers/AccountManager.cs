@@ -34,7 +34,7 @@ namespace FamilyMoneyLib.NetStandard.Managers
 
         public IEnumerable<IAccount> GetAllAccounts()
         {
-            return _accountStorage.GetAllAccounts(_accountFactory);
+            return _accountStorage.GetAllAccounts();
         }
     }
 

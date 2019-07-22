@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using FamilyMoneyLib.NetStandard.Bases;
-using FamilyMoneyLib.NetStandard.Factories;
 
 namespace FamilyMoneyLib.NetStandard.Storages
 {
@@ -8,7 +7,7 @@ namespace FamilyMoneyLib.NetStandard.Storages
     {
         ICategory CreateCategory(ICategory category);
         void DeleteCategory(ICategory category);
-        IEnumerable<ICategory> GetAllCategories(ICategoryFactory factory);
+        IEnumerable<ICategory> GetAllCategories();
         void UpdateCategory(ICategory category);
     }
 }

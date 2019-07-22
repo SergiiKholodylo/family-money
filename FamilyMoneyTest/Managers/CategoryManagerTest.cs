@@ -12,8 +12,8 @@ namespace FamilyMoneyTest.Managers
         [TestMethod]
         public void CreateCategoryTest()
         {
-            var storage = new MemoryCategoryStorage();
             var factory = new RegularCategoryFactory();
+            var storage = new MemoryCategoryStorage(factory);
             var manager = new CategoryManager(factory, storage);
             var categoryName = "Test Category";
             var categoryDescription = "Test Description";
@@ -29,8 +29,8 @@ namespace FamilyMoneyTest.Managers
         [TestMethod]
         public void GetAllAccountsTest()
         {
-            var storage = new MemoryCategoryStorage();
             var factory = new RegularCategoryFactory();
+            var storage = new MemoryCategoryStorage(factory);
             var manager = new CategoryManager(factory, storage);
             var categoryName = "Test Category";
             var categoryDescription = "Test Description";
@@ -47,8 +47,8 @@ namespace FamilyMoneyTest.Managers
         [TestMethod]
         public void DeleteAccountTest()
         {
-            var storage = new MemoryCategoryStorage();
             var factory = new RegularCategoryFactory();
+            var storage = new MemoryCategoryStorage(factory);
             var manager = new CategoryManager(factory, storage);
             var categoryName = "Test Category";
             var categoryDescription = "Test Description";
@@ -66,8 +66,8 @@ namespace FamilyMoneyTest.Managers
         [TestMethod]
         public void UpdateAccountTest()
         {
-            var storage = new MemoryCategoryStorage();
             var factory = new RegularCategoryFactory();
+            var storage = new MemoryCategoryStorage(factory);
             var manager = new CategoryManager(factory, storage);
 
             var categoryName = "Test Category";

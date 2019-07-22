@@ -12,8 +12,8 @@ namespace FamilyMoneyTest.Managers
         [TestMethod]
         public void CreateTransactionTest()
         {
-            var storage = new MemoryTransactionStorage();
             var factory = new RegularTransactionFactory();
+            var storage = new MemoryTransactionStorage(factory);
             var accountFactory = new RegularAccountFactory();
             var categoryFactory = new RegularCategoryFactory();
             var account = accountFactory.CreateAccount("Account", "Description", "UAH");
@@ -32,8 +32,8 @@ namespace FamilyMoneyTest.Managers
         [TestMethod]
         public void GetAllTransactionsTest()
         {
-            var storage = new MemoryTransactionStorage();
             var factory = new RegularTransactionFactory();
+            var storage = new MemoryTransactionStorage(factory);
             var accountFactory = new RegularAccountFactory();
             var categoryFactory = new RegularCategoryFactory();
             var account = accountFactory.CreateAccount("Account", "Description", "UAH");
@@ -54,8 +54,8 @@ namespace FamilyMoneyTest.Managers
         [TestMethod]
         public void DeleteTransactionTest()
         {
-            var storage = new MemoryTransactionStorage();
             var factory = new RegularTransactionFactory();
+            var storage = new MemoryTransactionStorage(factory);
             var accountFactory = new RegularAccountFactory();
             var categoryFactory = new RegularCategoryFactory();
             var account = accountFactory.CreateAccount("Account", "Description", "UAH");
@@ -76,8 +76,9 @@ namespace FamilyMoneyTest.Managers
         public void UpdateTransactionTest()
         {
             var newTransactionAmount = 250m;
-            var storage = new MemoryTransactionStorage();
             var factory = new RegularTransactionFactory();
+            var storage = new MemoryTransactionStorage(factory);
+
             var accountFactory = new RegularAccountFactory();
             var categoryFactory = new RegularCategoryFactory();
             var account = accountFactory.CreateAccount("Account", "Description", "UAH");

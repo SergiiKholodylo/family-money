@@ -12,7 +12,8 @@ namespace FamilyMoneyTest.Storages
         [TestMethod]
         public void CreateAccountTest()
         {
-            var storage = new MemoryCategoryStorage();
+            var factory = new RegularCategoryFactory();
+            var storage = new MemoryCategoryStorage(factory);
             var category = CreateCategory();
 
 
@@ -26,12 +27,12 @@ namespace FamilyMoneyTest.Storages
         [TestMethod]
         public void GetAllAccountsTest()
         {
-            var storage = new MemoryCategoryStorage();
             var factory = new RegularCategoryFactory();
+            var storage = new MemoryCategoryStorage(factory);
             var category = CreateCategory();
             storage.CreateCategory(category);
 
-            var firstCategory= storage.GetAllCategories(factory).First();
+            var firstCategory= storage.GetAllCategories().First();
 
             Assert.AreEqual(category.Name, firstCategory.Name);
             Assert.AreEqual(category.Description, firstCategory.Description);
@@ -40,16 +41,16 @@ namespace FamilyMoneyTest.Storages
         [TestMethod]
         public void DeleteAccountTest()
         {
-            var storage = new MemoryCategoryStorage();
             var factory = new RegularCategoryFactory();
+            var storage = new MemoryCategoryStorage(factory);
             var category = CreateCategory();
             storage.CreateCategory(category);
 
-            var numberOfCategoriesAfterCreate = storage.GetAllCategories(factory).Count();
+            var numberOfCategoriesAfterCreate = storage.GetAllCategories().Count();
             storage.DeleteCategory(category);
 
 
-            var numberOfCategories = storage.GetAllCategories(factory).Count();
+            var numberOfCategories = storage.GetAllCategories().Count();
 
 
             Assert.AreEqual(0, numberOfCategories);
@@ -60,8 +61,8 @@ namespace FamilyMoneyTest.Storages
         [TestMethod]
         public void UpdateAccountTest()
         {
-            var storage = new MemoryCategoryStorage();
             var factory = new RegularCategoryFactory();
+            var storage = new MemoryCategoryStorage(factory);
             var category = CreateCategory();
             storage.CreateCategory(category);
             category.Name = "New Name";
@@ -72,7 +73,7 @@ namespace FamilyMoneyTest.Storages
 
 
             var firstCategory
-                = storage.GetAllCategories(factory).First();
+                = storage.GetAllCategories().First();
             Assert.AreEqual(category.Name, firstCategory.Name);
             Assert.AreEqual(category.Description, firstCategory.Description);
         }

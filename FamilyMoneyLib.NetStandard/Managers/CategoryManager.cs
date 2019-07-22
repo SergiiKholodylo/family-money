@@ -34,7 +34,7 @@ namespace FamilyMoneyLib.NetStandard.Managers
 
         public IEnumerable<ICategory> GetAllCategories()
         {
-            return _categoryStorage.GetAllCategories(_categoryFactory);
+            return _categoryStorage.GetAllCategories();
         }
     }
 }

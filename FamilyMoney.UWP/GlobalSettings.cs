@@ -1,7 +1,6 @@
 ﻿using FamilyMoneyLib.NetStandard.Factories;
 using FamilyMoneyLib.NetStandard.Managers;
 using FamilyMoneyLib.NetStandard.SQLite;
-using FamilyMoneyLib.NetStandard.Storages;
 
 namespace FamilyMoney.UWP
 {
@@ -14,13 +13,15 @@ namespace FamilyMoney.UWP
 
         public GlobalSettings()
         {
-            var accountStorage = new SqLiteAccountStorage();
-            var categoryStorage = new SqLiteCategoryStorage();
             var accountFactory = new RegularAccountFactory();
             var categoryFactory = new RegularCategoryFactory();
+            var accountStorage = new SqLiteAccountStorage(accountFactory);
+            var categoryStorage = new SqLiteCategoryStorage(categoryFactory);
+
             AccountManager = new AccountManager(accountFactory, accountStorage);
             CategoryManager = new CategoryManager(categoryFactory, categoryStorage);
-            TransactionManager = new TransactionManager(new RegularTransactionFactory(), new SqLiteTransactionStorage(accountStorage,categoryStorage,accountFactory,categoryFactory));
+            var transactionFactory = new RegularTransactionFactory();
+            TransactionManager = new TransactionManager(transactionFactory, new SqLiteTransactionStorage(transactionFactory, accountStorage,categoryStorage,accountFactory,categoryFactory));
         }
     }
 }

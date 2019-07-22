@@ -13,7 +13,8 @@ namespace FamilyMoneyTest.SQLite
         [TestMethod]
         public void CreateCategoryTest()
         {
-            var storage = new SqLiteCategoryStorage();
+            var factory = new RegularCategoryFactory();
+            var storage = new SqLiteCategoryStorage(factory);
             var category = CreateCategory();
 
 
@@ -27,13 +28,13 @@ namespace FamilyMoneyTest.SQLite
         [TestMethod]
         public void GetAllCategoriesTest()
         {
-            var storage = new SqLiteCategoryStorage();
             var factory = new RegularCategoryFactory();
+            var storage = new SqLiteCategoryStorage(factory);
             var category = CreateCategory();
             category.Description = DateTime.Now.ToShortTimeString();
             storage.CreateCategory(category);
 
-            var firstCategory = storage.GetAllCategories(factory).Last();
+            var firstCategory = storage.GetAllCategories().Last();
 
             Assert.AreEqual(category.Name, firstCategory.Name);
             Assert.AreEqual(category.Description, firstCategory.Description);
@@ -42,15 +43,15 @@ namespace FamilyMoneyTest.SQLite
         [TestMethod]
         public void DeleteCategoryTest()
         {
-            var storage = new SqLiteCategoryStorage();
             var factory = new RegularCategoryFactory();
+            var storage = new SqLiteCategoryStorage(factory);
             storage.DeleteAllData();
             var category = CreateCategory();
             storage.CreateCategory(category);
             storage.DeleteCategory(category);
 
 
-            var numberOfCategories = storage.GetAllCategories(factory).Count();
+            var numberOfCategories = storage.GetAllCategories().Count();
 
 
             Assert.AreEqual(0, numberOfCategories);
@@ -60,8 +61,8 @@ namespace FamilyMoneyTest.SQLite
         [TestMethod]
         public void UpdateCategoryTest()
         {
-            var storage = new SqLiteCategoryStorage();
             var factory = new RegularCategoryFactory();
+            var storage = new SqLiteCategoryStorage(factory);
             storage.DeleteAllData();
             var category = CreateCategory();
             storage.CreateCategory(category);
@@ -72,7 +73,7 @@ namespace FamilyMoneyTest.SQLite
             storage.UpdateCategory(category);
 
 
-            var firstCategory = storage.GetAllCategories(factory).First();
+            var firstCategory = storage.GetAllCategories().First();
             Assert.AreEqual(category.Name, firstCategory.Name);
             Assert.AreEqual(category.Description, firstCategory.Description);
         }

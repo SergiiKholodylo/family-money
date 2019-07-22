@@ -7,7 +7,7 @@ using FamilyMoneyLib.NetStandard.Storages;
 
 namespace FamilyMoneyLib.NetStandard.SQLite
 {
-    public class SqLiteAccountStorage : IAccountStorage
+    public class SqLiteAccountStorage : AccountStorageBase,IAccountStorage
     {
         /*
          Account Table Structure
@@ -31,27 +31,33 @@ namespace FamilyMoneyLib.NetStandard.SQLite
         private readonly SqLiteTable _table = new SqLiteTable("familyMoney.db", "Accounts",
             $"({AccountTableStructure})");
 
-        public IAccount CreateAccount(IAccount account)
+        public SqLiteAccountStorage(IAccountFactory factory) : base(factory)
+        {
+
+        }
+        
+
+        public override IAccount CreateAccount(IAccount account)
         {
             _table.InitializeDatabase();
             account.Id = _table.AddData(ObjectToIAccountConverter.ConvertForInsertString(account));
             return account;
         }
 
-        public  void DeleteAccount(IAccount account)
+        public override void DeleteAccount(IAccount account)
         {
             _table.InitializeDatabase();
             _table.DeleteRecordById(account.Id);
         }
 
-        public  void UpdateAccount(IAccount account)
+        public override void UpdateAccount(IAccount account)
         {
             _table.InitializeDatabase();
             _table.UpdateData(ObjectToIAccountConverter.ConvertForUpdateString(account),account.Id);
 
         }
 
-        public IEnumerable<IAccount> GetAllAccounts(IAccountFactory factory)
+        public override IEnumerable<IAccount> GetAllAccounts()
         {
             _table.InitializeDatabase();
             var lines = _table.SelectAll();

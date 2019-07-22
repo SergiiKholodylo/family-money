@@ -4,27 +4,31 @@ using FamilyMoneyLib.NetStandard.Factories;
 
 namespace FamilyMoneyLib.NetStandard.Storages
 {
-    public class MemoryTransactionStorage : ITransactionStorage
+    public class MemoryTransactionStorage : TransactionStorageBase, ITransactionStorage
     {
         private readonly List<ITransaction> _transactions = new List<ITransaction>();
 
-        public ITransaction CreateTransaction(ITransaction transaction)
+        public MemoryTransactionStorage(ITransactionFactory transactionFactory) : base(transactionFactory)
+        {
+        }
+
+        public override ITransaction CreateTransaction(ITransaction transaction)
         {
             _transactions.Add(transaction);
             return transaction;
         }
 
-        public void DeleteTransaction(ITransaction transaction)
+        public override void DeleteTransaction(ITransaction transaction)
         {
             _transactions.Remove(transaction);
         }
 
-        public void UpdateTransaction(ITransaction transaction)
+        public override void UpdateTransaction(ITransaction transaction)
         {
 
         }
 
-        public IEnumerable<ITransaction> GetAllTransactions(ITransactionFactory factory)
+        public override IEnumerable<ITransaction> GetAllTransactions()
         {
             return _transactions.ToArray();
         }

@@ -7,7 +7,7 @@ using FamilyMoneyLib.NetStandard.Storages;
 
 namespace FamilyMoneyLib.NetStandard.SQLite
 {
-    public class SqLiteTransactionStorage : ITransactionStorage
+    public class SqLiteTransactionStorage : TransactionStorageBase,ITransactionStorage
     {
         /*
          Account Table Structure
@@ -39,7 +39,7 @@ namespace FamilyMoneyLib.NetStandard.SQLite
         private readonly ICategoryFactory _categoryFactory;
 
 
-        public SqLiteTransactionStorage(SqLiteAccountStorage accountStorage, SqLiteCategoryStorage categoryStorage, RegularAccountFactory accountFactory, RegularCategoryFactory categoryFactory)
+        public SqLiteTransactionStorage(ITransactionFactory transactionFactory,SqLiteAccountStorage accountStorage, SqLiteCategoryStorage categoryStorage, RegularAccountFactory accountFactory, RegularCategoryFactory categoryFactory):base(transactionFactory)
         {
             _accountStorage = accountStorage;
             _categoryStorage = categoryStorage;
@@ -48,20 +48,24 @@ namespace FamilyMoneyLib.NetStandard.SQLite
             _categoryFactory = categoryFactory;
         }
 
-        public ITransaction CreateTransaction(ITransaction transaction)
+        public SqLiteTransactionStorage(ITransactionFactory transactionFactory) : base(transactionFactory)
+        {
+        }
+
+        public override ITransaction CreateTransaction(ITransaction transaction)
         {
             _table.InitializeDatabase();
             transaction.Id = _table.AddData(ObjectToITransactionConverter.ConvertForInsertString(transaction));
             return transaction;
         }
 
-        public void DeleteTransaction(ITransaction transaction)
+        public override void DeleteTransaction(ITransaction transaction)
         {
             _table.InitializeDatabase();
             _table.DeleteRecordById(transaction.Id);
         }
 
-        public IEnumerable<ITransaction> GetAllTransactions(ITransactionFactory factory)
+        public override IEnumerable<ITransaction> GetAllTransactions()
         {
             _table.InitializeDatabase();
             var lines = _table.SelectAll();
@@ -71,7 +75,7 @@ namespace FamilyMoneyLib.NetStandard.SQLite
             return response;
         }
 
-        public void UpdateTransaction(ITransaction transaction)
+        public override void UpdateTransaction(ITransaction transaction)
         {
             _table.InitializeDatabase();
             _table.UpdateData(ObjectToITransactionConverter.ConvertForUpdateString(transaction), transaction.Id);
@@ -109,8 +113,8 @@ namespace FamilyMoneyLib.NetStandard.SQLite
             var categoryId = (long)(line[3]);
             var name = line[4].ToString();
             var total = decimal.Parse(line[5].ToString());
-            var account = accountStorage.GetAllAccounts(accountFactory).FirstOrDefault(x => x.Id == accountId);
-            var category = categoryStorage.GetAllCategories(categoryFactory).FirstOrDefault(x => x.Id == categoryId);
+            var account = accountStorage.GetAllAccounts().FirstOrDefault(x => x.Id == accountId);
+            var category = categoryStorage.GetAllCategories().FirstOrDefault(x => x.Id == categoryId);
             var transaction = factory.CreateTransaction(account,category,name,total);
             transaction.Id = id;
             transaction.Timestamp = timestamp;

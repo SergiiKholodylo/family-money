@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using FamilyMoneyLib.NetStandard.Bases;
 using FamilyMoneyLib.NetStandard.Factories;
@@ -7,7 +6,7 @@ using FamilyMoneyLib.NetStandard.Storages;
 
 namespace FamilyMoneyLib.NetStandard.SQLite
 {
-    public class SqLiteCategoryStorage : ICategoryStorage
+    public class SqLiteCategoryStorage : CategoryStorageBase, ICategoryStorage
     {
         /*
          Account Table Structure
@@ -27,20 +26,24 @@ namespace FamilyMoneyLib.NetStandard.SQLite
         private readonly SqLiteTable _table = new SqLiteTable("familyMoney.db", "Category",
             $"({CategoryTableStructure})");
 
-        public ICategory CreateCategory(ICategory category)
+        public SqLiteCategoryStorage(ICategoryFactory categoryFactory) : base(categoryFactory)
+        {
+        }
+
+        public override ICategory CreateCategory(ICategory category)
         {
             _table.InitializeDatabase();
             category.Id = _table.AddData(ObjectToICategoryConverter.ConvertForInsertString(category));
             return category;
         }
 
-        public void DeleteCategory(ICategory category)
+        public override void DeleteCategory(ICategory category)
         {
             _table.InitializeDatabase();
             _table.DeleteRecordById(category.Id);
         }
 
-        public IEnumerable<ICategory> GetAllCategories(ICategoryFactory factory)
+        public override IEnumerable<ICategory> GetAllCategories()
         {
             _table.InitializeDatabase();
             var lines = _table.SelectAll();
@@ -48,7 +51,7 @@ namespace FamilyMoneyLib.NetStandard.SQLite
             return lines.Select(ObjectToICategoryConverter.Convert).ToList();
         }
 
-        public void UpdateCategory(ICategory category)
+        public override void UpdateCategory(ICategory category)
         {
             _table.InitializeDatabase();
             _table.UpdateData(ObjectToICategoryConverter.ConvertForUpdateString(category), category.Id);

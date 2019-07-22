@@ -4,29 +4,33 @@ using FamilyMoneyLib.NetStandard.Factories;
 
 namespace FamilyMoneyLib.NetStandard.Storages
 {
-    public class MemoryCategoryStorage : ICategoryStorage
+    public class MemoryCategoryStorage : CategoryStorageBase, ICategoryStorage
     {
         private readonly List<ICategory> _categories = new List<ICategory>();
 
-        public ICategory CreateCategory(ICategory category)
+        public override ICategory CreateCategory(ICategory category)
         {
             _categories.Add(category);
             return category;
         }
 
-        public void DeleteCategory(ICategory category)
+        public override void DeleteCategory(ICategory category)
         {
             _categories.Remove(category);
         }
 
-        public void UpdateCategory(ICategory category)
+        public override void UpdateCategory(ICategory category)
         {
 
         }
 
-        public IEnumerable<ICategory> GetAllCategories(ICategoryFactory factory)
+        public override IEnumerable<ICategory> GetAllCategories()
         {
             return _categories.ToArray();
+        }
+
+        public MemoryCategoryStorage(ICategoryFactory categoryFactory) : base(categoryFactory)
+        {
         }
     }
 }

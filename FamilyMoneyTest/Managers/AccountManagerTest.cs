@@ -12,8 +12,9 @@ namespace FamilyMoneyTest.Managers
         [TestMethod]
         public void CreateAccountTest()
         {
-            var storage = new MemoryAccountStorage();
             var factory = new RegularAccountFactory();
+            var storage = new MemoryAccountStorage(factory);
+            
 
             var manager = new AccountManager(factory, storage);
             var accountName = "Test Account";
@@ -32,8 +33,8 @@ namespace FamilyMoneyTest.Managers
         [TestMethod]
         public void GetAllAccountsTest()
         {
-            var storage = new MemoryAccountStorage();
             var factory = new RegularAccountFactory();
+            var storage = new MemoryAccountStorage(factory);
 
             var manager = new AccountManager(factory, storage);
             var accountName = "Test Account";
@@ -42,7 +43,7 @@ namespace FamilyMoneyTest.Managers
 
             var account = manager.CreateAccount(accountName, accountDescription, accountCurrency);
 
-            var firstAccount = storage.GetAllAccounts(factory).First();
+            var firstAccount = storage.GetAllAccounts().First();
 
             Assert.AreEqual(account.Name, firstAccount.Name);
             Assert.AreEqual(account.Description, firstAccount.Description);
@@ -52,9 +53,8 @@ namespace FamilyMoneyTest.Managers
         [TestMethod]
         public void DeleteAccountTest()
         {
-            var storage = new MemoryAccountStorage();
             var factory = new RegularAccountFactory();
-
+            var storage = new MemoryAccountStorage(factory);
             var manager = new AccountManager(factory, storage);
             var accountName = "Test Account";
             var accountDescription = "Test Description";
@@ -64,7 +64,7 @@ namespace FamilyMoneyTest.Managers
             storage.DeleteAccount(account);
 
 
-            var numberOfAccounts = storage.GetAllAccounts(factory).Count();
+            var numberOfAccounts = storage.GetAllAccounts().Count();
 
 
             Assert.AreEqual(0, numberOfAccounts);
@@ -74,9 +74,8 @@ namespace FamilyMoneyTest.Managers
         [TestMethod]
         public void UpdateAccountTest()
         {
-            var storage = new MemoryAccountStorage();
             var factory = new RegularAccountFactory();
-
+            var storage = new MemoryAccountStorage(factory);
             var manager = new AccountManager(factory, storage);
             var accountName = "Test Account";
             var accountDescription = "Test Description";
@@ -90,7 +89,7 @@ namespace FamilyMoneyTest.Managers
             storage.UpdateAccount(account);
 
 
-            var firstAccount = storage.GetAllAccounts(factory).First();
+            var firstAccount = storage.GetAllAccounts().First();
             Assert.AreEqual(account.Name, firstAccount.Name);
             Assert.AreEqual(account.Description, firstAccount.Description);
         }
