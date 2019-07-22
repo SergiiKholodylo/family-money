@@ -83,18 +83,29 @@ namespace FamilyMoneyLib.NetStandard.SQLite
             return account;
         }
 
-        public static string ConvertForUpdateString(IAccount account)
+        public static IEnumerable<KeyValuePair<string,object>> ConvertForUpdateString(IAccount account)
         {
-            var sqlDataString =
-                $"timestamp = '{account.Timestamp}',name = '{account.Name}', description = '{account.Description}',currency = '{account.Currency}'";
-            return sqlDataString;
+
+            var returnList = new List<KeyValuePair<string, object>>
+            {
+                new KeyValuePair<string, object>("timestamp", account.Timestamp),
+                new KeyValuePair<string, object>("name", account.Name),
+                new KeyValuePair<string, object>("description", account.Description),
+                new KeyValuePair<string, object>("currency", account.Currency)
+            };
+            return returnList;
         }
 
-        public static string ConvertForInsertString(IAccount account)
+        public static IEnumerable<KeyValuePair<string, object>> ConvertForInsertString(IAccount account)
         {
-            var sqlDataString =
-                $"NULL,'{account.Timestamp}','{account.Name}', '{account.Description}','{account.Currency}'";
-            return sqlDataString;
+            var returnList = new List<KeyValuePair<string, object>>
+            {
+                new KeyValuePair<string, object>("timestamp", account.Timestamp),
+                new KeyValuePair<string, object>("name", account.Name),
+                new KeyValuePair<string, object>("description", account.Description),
+                new KeyValuePair<string, object>("currency", account.Currency)
+            };
+            return returnList;
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Data;
 using Microsoft.Data.Sqlite;
 
 namespace FamilyMoneyLib.NetStandard.SQLite
@@ -53,18 +54,41 @@ namespace FamilyMoneyLib.NetStandard.SQLite
 
         }
 
-        public long AddData(string values)
+        public long AddData(IEnumerable<KeyValuePair<string, object>> parameters)
         {
+            /*
+            this.command.CommandText = "INSERT INTO StringData (field1, field2) VALUES(@param1, @param2)";
+            this.command.CommandType = CommandType.Text;
+            this.command.Parameters.Add(new SQLiteParameter("@param1", data.Data));
+            this.command.Parameters.Add(new SQLiteParameter("@param2", data.ByteIndex));
+             */
             long id;
             using (var db =
                 new SqliteConnection($"Filename={_database}"))
             {
                 db.Open();
 
+                var fields = string.Empty;
+                var values = string.Empty;
+
+                foreach (var parameter in parameters)
+                {
+                    fields += parameter.Key + ",";
+                    values += "@" + parameter.Key + ",";
+                }
+
+                fields = fields.Substring(0, fields.Length > 0 ? fields.Length - 1 : 0);
+                values = values.Substring(0, values.Length > 0 ? values.Length - 1 : 0);
+
                 var insertCommand = new SqliteCommand
                 {
-                    Connection = db, CommandText = $"INSERT INTO {_tableName} VALUES ({values});SELECT last_insert_rowid();"
+                    Connection = db, CommandText = $"INSERT INTO {_tableName} ({fields}) VALUES ({values});SELECT last_insert_rowid();",CommandType = CommandType.Text
                 };
+
+                foreach (var parameter in parameters)
+                {
+                    insertCommand.Parameters.Add(new SqliteParameter("@"+parameter.Key, parameter.Value));
+                }
 
                 // Use parameterized query to prevent SQL injection attacks
 
@@ -79,22 +103,32 @@ namespace FamilyMoneyLib.NetStandard.SQLite
         }
 
 
-        public void UpdateData(string values, long id)
+        public void UpdateData(IEnumerable<KeyValuePair<string, object>> parameters, long id)
         {
             using (var db =
                 new SqliteConnection($"Filename={_database}"))
             {
+                var values = string.Empty;
+                foreach (var parameter in parameters)
+                {
+                    values += parameter.Key + " = @" + parameter.Key + ",";
+                }
+                values = values.Substring(0, values.Length > 0 ? values.Length - 1 : 0);
+
                 db.Open();
 
-                var updateCommandCommand = new SqliteCommand
+                var updateCommand = new SqliteCommand
                 {
-                    Connection = db,
+                    Connection = db,CommandType = CommandType.Text,
                     CommandText = $"UPDATE {_tableName} SET {values} WHERE Id={id}"
                 };
-
+                foreach (var parameter in parameters)
+                {
+                    updateCommand.Parameters.Add(new SqliteParameter("@" + parameter.Key, parameter.Value));
+                }
                 // Use parameterized query to prevent SQL injection attacks
 
-                updateCommandCommand.ExecuteReader();
+                updateCommand.ExecuteReader();
                 db.Close();
             }
         }

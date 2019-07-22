@@ -90,18 +90,30 @@ namespace FamilyMoneyLib.NetStandard.SQLite
 
     public static class ObjectToITransactionConverter
     {
-        public static string ConvertForInsertString(ITransaction transaction)
+        public static List<KeyValuePair<string, object>> ConvertForInsertString(ITransaction transaction)
         {
-            var sqlDataString =
-                $"NULL,'{transaction.Timestamp}','{transaction.Account.Id}','{transaction.Category.Id}','{transaction.Name}', '{transaction.Total}'";
-            return sqlDataString;
+            var returnList = new List<KeyValuePair<string, object>>
+            {
+                new KeyValuePair<string, object>("timestamp", transaction.Timestamp),
+                new KeyValuePair<string, object>("accountId", transaction.Account.Id),
+                new KeyValuePair<string, object>("categoryId", transaction.Category.Id),
+                new KeyValuePair<string, object>("name", transaction.Name),
+                new KeyValuePair<string, object>("total", transaction.Total),
+            };
+            return returnList;
         }
 
-        public static string ConvertForUpdateString(ITransaction transaction)
+        public static List<KeyValuePair<string, object>> ConvertForUpdateString(ITransaction transaction)
         {
-            var sqlDataString =
-                $"timestamp = '{transaction.Timestamp}',accountId = '{transaction.Account.Id}',categoryId = '{transaction.Category.Id}',name = '{transaction.Name}', total = '{transaction.Total}'";
-            return sqlDataString;
+            var returnList = new List<KeyValuePair<string, object>>
+            {
+                new KeyValuePair<string, object>("timestamp", transaction.Timestamp),
+                new KeyValuePair<string, object>("accountId", transaction.Account.Id),
+                new KeyValuePair<string, object>("categoryId", transaction.Category.Id),
+                new KeyValuePair<string, object>("name", transaction.Name),
+                new KeyValuePair<string, object>("total", transaction.Total),
+            };
+            return returnList;
         }
 
         public static ITransaction Convert(object[] line, ITransactionFactory transactionFactory,

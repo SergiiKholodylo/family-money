@@ -75,18 +75,25 @@ namespace FamilyMoneyLib.NetStandard.SQLite
             return account;
         }
 
-        public static string ConvertForUpdateString(ICategory account)
+        public static List<KeyValuePair<string, object>> ConvertForUpdateString(ICategory category)
         {
-            var sqlDataString =
-                $"name = '{account.Name}', description = '{account.Description}'";
-            return sqlDataString;
+            var returnList = new List<KeyValuePair<string, object>>
+            {
+                new KeyValuePair<string, object>("name", category.Name),
+                new KeyValuePair<string, object>("description", category.Description),
+            };
+            return returnList;
         }
 
-        public static string ConvertForInsertString(ICategory account)
+        public static List<KeyValuePair<string, object>> ConvertForInsertString(ICategory category)
         {
-            var sqlDataString =
-                $"NULL,'{account.Name}', '{account.Description}'";
-            return sqlDataString;
+            var returnList = new List<KeyValuePair<string, object>>
+            {
+                new KeyValuePair<string, object>("name", category.Name),
+                new KeyValuePair<string, object>("description", category.Description),
+            };
+            return returnList;
         }
+
     }
 }

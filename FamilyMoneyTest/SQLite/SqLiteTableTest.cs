@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using FamilyMoneyLib.NetStandard.SQLite;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -43,12 +44,16 @@ namespace FamilyMoneyTest.SQLite
             sql.InitializeDatabase();
             sql.DeleteDatabase();
             sql.InitializeDatabase();
+            var record = new List<KeyValuePair<string, object>>
+            {
+                new KeyValuePair<string, object>("Text_Entry", "\'Some Text \'")
+            };
 
-            sql.AddData("NULL,'test'");
-            sql.AddData("NULL,'test'");
-            sql.AddData("NULL,'test'");
-            sql.AddData("NULL,'test'");
-            sql.AddData("NULL,'test'");
+            sql.AddData(record);
+            sql.AddData(record);
+            sql.AddData(record);
+            sql.AddData(record);
+            sql.AddData(record);
             var lines = sql.SelectAll();
 
             sql.DeleteDatabase();
@@ -64,11 +69,16 @@ namespace FamilyMoneyTest.SQLite
                 "(id INTEGER PRIMARY KEY, Text_Entry NVARCHAR(2048) NULL)");
 
             sql.InitializeDatabase();
-            sql.AddData("NULL,'test'");
-            sql.AddData("NULL,'test'");
-            sql.AddData("NULL,'test'");
-            sql.AddData("NULL,'test'");
-            var lastRecord = sql.AddData("NULL,'test'");
+            var record = new List<KeyValuePair<string, object>>
+            {
+                new KeyValuePair<string, object>("Text_Entry", "\'Some Text \'")
+            };
+
+            sql.AddData(record);
+            sql.AddData(record);
+            sql.AddData(record);
+            sql.AddData(record);
+            var lastRecord = sql.AddData(record);
 
 
             sql.DeleteRecordById(lastRecord);
