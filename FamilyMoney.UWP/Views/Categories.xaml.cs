@@ -14,7 +14,7 @@ namespace FamilyMoney.UWP.Views
     /// </summary>
     public sealed partial class Categories : Page
     {
-        public CategoryViewModel ViewModel = new CategoryViewModel();
+        public readonly CategoryViewModel ViewModel = new CategoryViewModel();
 
         public Categories()
         {
@@ -23,7 +23,7 @@ namespace FamilyMoney.UWP.Views
 
         private async void AppBarButton_Click(object sender, RoutedEventArgs e)
         {
-            var addAccount = new AddCategory();
+            var addAccount = new EditCategory();
 
             var result = await addAccount.ShowAsync();
             if (result == ContentDialogResult.Primary)

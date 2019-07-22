@@ -1,4 +1,6 @@
-﻿using Windows.UI.Xaml.Controls;
+﻿using System;
+using Windows.UI.Xaml.Controls;
+using FamilyMoney.UWP.Helpers;
 using FamilyMoney.UWP.ViewModels.Dialogs;
 using FamilyMoneyLib.NetStandard.Bases;
 
@@ -9,16 +11,34 @@ namespace FamilyMoney.UWP.Views.Dialogs
     public sealed partial class EditCategory : ContentDialog
     {
         public EditCategoryViewModel ViewModel;
+        private readonly Action _saveCategoryAction;
 
-        public EditCategory(ICategory category)
+        public EditCategory(ICategory category=null)
         {
             this.InitializeComponent();
-            ViewModel = new EditCategoryViewModel(category);
+            if (category == null)
+            {
+                ViewModel = new EditCategoryViewModel();
+                _saveCategoryAction = delegate { ViewModel.CreateNewCategory(); };
+                Title = "Create Category".GetLocalized();
+                PrimaryButtonText = "Create Category".GetLocalized();
+                SecondaryButtonText = "Cancel".GetLocalized();
+            }
+            else
+            {
+                ViewModel = new EditCategoryViewModel(category);
+                _saveCategoryAction = delegate { ViewModel.UpdateCategory(); };
+                Title = "Edit Category".GetLocalized();
+                PrimaryButtonText = "Edit Category".GetLocalized();
+                SecondaryButtonText = "Cancel".GetLocalized();
+            }
+
+            
         }
 
         private void ContentDialog_PrimaryButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args)
         {
-            ViewModel.UpdateCategory();
+            _saveCategoryAction();
         }
 
         private void ContentDialog_SecondaryButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args)

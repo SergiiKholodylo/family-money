@@ -12,6 +12,11 @@ namespace FamilyMoney.UWP.ViewModels.Dialogs
         private string _currency;
         private readonly IAccount _account;
 
+        public EditAccountViewModel()
+        {
+
+        }
+
         public EditAccountViewModel(IAccount account)
         {
             Name = account.Name;
@@ -36,6 +41,12 @@ namespace FamilyMoney.UWP.ViewModels.Dialogs
         {
             set { _currency = value; OnPropertyChanged(); }
             get => _currency;
+        }
+
+        public void CreateNewAccount()
+        {
+            var manager = MainPage.GlobalSettings.AccountManager;
+            manager.CreateAccount(Name, Description, Currency);
         }
 
         public void UpdateAccount()

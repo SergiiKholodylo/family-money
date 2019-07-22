@@ -28,7 +28,7 @@ namespace FamilyMoney.UWP.Views
         private async void AppBarButton_Click(object sender, RoutedEventArgs e)
         {
             var addTransaction
-                = new AddTransaction(ViewModel.ActiveAccount);
+                = new EditTransaction(ViewModel.ActiveAccount);
 
             var result = await addTransaction.ShowAsync();
             if (result == ContentDialogResult.Primary)

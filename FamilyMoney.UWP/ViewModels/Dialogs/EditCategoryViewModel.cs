@@ -11,6 +11,11 @@ namespace FamilyMoney.UWP.ViewModels.Dialogs
         private string _description;
         private readonly ICategory _category;
 
+        public EditCategoryViewModel()
+        {
+
+        }
+
         public EditCategoryViewModel(ICategory category)
         {
             _category = category;
@@ -30,6 +35,11 @@ namespace FamilyMoney.UWP.ViewModels.Dialogs
             get => _description;
         }
 
+        public void CreateNewCategory()
+        {
+            var manager = MainPage.GlobalSettings.CategoryManager;
+            manager.CreateCategory(Name, Description);
+        }
 
         public void UpdateCategory()
         {

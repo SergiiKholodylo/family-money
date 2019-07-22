@@ -19,6 +19,14 @@ namespace FamilyMoney.UWP.ViewModels.Dialogs
         private TimeSpan _time;
         private readonly ITransaction _transaction;
 
+        public EditTransactionViewModel(IAccount activeAccount)
+        {
+            Date = new DateTimeOffset(DateTime.Now);
+            Time = DateTime.Now.TimeOfDay;
+            if (activeAccount != null)
+                Account = Accounts.FirstOrDefault(x => x.Id == activeAccount.Id);
+        }
+
         public EditTransactionViewModel(ITransaction transaction)
         {
             _transaction = transaction;
@@ -105,6 +113,21 @@ namespace FamilyMoney.UWP.ViewModels.Dialogs
 
 
         public IEnumerable<IAccount> Accounts { get; }= MainPage.GlobalSettings.AccountManager.GetAllAccounts();
+
+        public void CreateTransaction()
+        {
+            var manager = MainPage.GlobalSettings.TransactionManager;
+            Timestamp = new DateTime(
+                Date.Year,
+                Date.Month,
+                Date.Day,
+                Time.Hours,
+                Time.Minutes,
+                Time.Seconds
+            );
+
+            manager.CreateTransaction(Account, Category, Name, Total, Timestamp);
+        }
 
         public void UpdateTransaction()
         {

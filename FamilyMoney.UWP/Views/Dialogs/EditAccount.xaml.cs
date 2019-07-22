@@ -1,17 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
-using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Navigation;
+using FamilyMoney.UWP.Helpers;
 using FamilyMoney.UWP.ViewModels.Dialogs;
 using FamilyMoneyLib.NetStandard.Bases;
 
@@ -22,15 +11,33 @@ namespace FamilyMoney.UWP.Views.Dialogs
     public sealed partial class EditAccount : ContentDialog
     {
         public EditAccountViewModel ViewModel;
-        public EditAccount(IAccount account)
+        private readonly Action _saveAccountAction;
+        public EditAccount(IAccount account = null)
         {
             this.InitializeComponent();
-            ViewModel = new EditAccountViewModel(account);
+            if (account == null)
+            {
+                ViewModel = new EditAccountViewModel();
+                _saveAccountAction = delegate { ViewModel.CreateNewAccount(); };
+                Title = "Create Account".GetLocalized();
+                PrimaryButtonText = "Create Account".GetLocalized();
+                SecondaryButtonText = "Cancel".GetLocalized();
+            }
+            else
+            {
+                ViewModel = new EditAccountViewModel(account);
+                _saveAccountAction = delegate { ViewModel.UpdateAccount(); };
+                Title = "Edit Account".GetLocalized();
+                PrimaryButtonText = "Edit Account".GetLocalized();
+                SecondaryButtonText = "Cancel".GetLocalized();
+
+            }
+
         }
 
         private void ContentDialog_PrimaryButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args)
         {
-            ViewModel.UpdateAccount();
+            _saveAccountAction();
         }
 
         private void ContentDialog_SecondaryButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args)

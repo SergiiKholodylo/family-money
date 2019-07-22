@@ -64,7 +64,7 @@ namespace FamilyMoneyTest.SQLite
             storage.DeleteAllData();
             var account = CreateAccount();
             storage.CreateAccount(account);
-            account.Name = "New Name";
+            account.Name = "New N'ame";
             account.Description = "New Description";
 
 
@@ -80,7 +80,7 @@ namespace FamilyMoneyTest.SQLite
         {
             var factory = new RegularAccountFactory();
             var accountName = "Test Account";
-            var accountDescription = "Test Description";
+            var accountDescription = "Test Descr'iption";
             var accountCurrency = "USD";
 
 

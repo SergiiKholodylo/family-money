@@ -181,8 +181,23 @@
   <data name="Cancel" xml:space="preserve">
     <value>Cancel</value>
   </data>
+  <data name="Create Account" xml:space="preserve">
+    <value>Create Account Resource</value>
+  </data>
+  <data name="Create Category" xml:space="preserve">
+    <value>Create Category</value>
+  </data>
+  <data name="Create Transaction" xml:space="preserve">
+    <value>Create Transaction</value>
+  </data>
   <data name="DeleteTransaction" xml:space="preserve">
     <value>Delete Transaction</value>
+  </data>
+  <data name="Edit Account" xml:space="preserve">
+    <value>Edit Account Resource</value>
+  </data>
+  <data name="Edit Category" xml:space="preserve">
+    <value>Edit Category</value>
   </data>
   <data name="Ok" xml:space="preserve">
     <value>Ok</value>
@@ -192,5 +207,8 @@
   </data>
   <data name="TotalTransactions" xml:space="preserve">
     <value>Total Transactions</value>
+  </data>
+  <data name="Update Transaction" xml:space="preserve">
+    <value>Update Transaction</value>
   </data>
 </root>

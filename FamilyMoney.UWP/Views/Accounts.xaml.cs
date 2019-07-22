@@ -4,9 +4,6 @@ using Windows.UI.Xaml.Controls;
 using FamilyMoney.UWP.ViewModels;
 using FamilyMoney.UWP.Views.Dialogs;
 using FamilyMoneyLib.NetStandard.Bases;
-using FamilyMoneyLib.NetStandard.Factories;
-using FamilyMoneyLib.NetStandard.Managers;
-using FamilyMoneyLib.NetStandard.Storages;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
 
@@ -27,7 +24,7 @@ namespace FamilyMoney.UWP.Views
 
         private async void AppBarButton_Click(object sender, RoutedEventArgs e)
         {
-            var addAccount = new AddAccount();
+            var addAccount = new EditAccount();
 
             var result = await addAccount.ShowAsync();
             if (result == ContentDialogResult.Primary)
