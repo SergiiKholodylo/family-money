@@ -41,7 +41,7 @@ namespace FamilyMoneyLib.NetStandard.Managers
 
         public IEnumerable<ITransaction> GetAllTransactions()
         {
-            return _transactionStorage.GetAllTransactions();
+            return _transactionStorage.GetAllTransactions(_transactionFactory);
         }
     }
 }

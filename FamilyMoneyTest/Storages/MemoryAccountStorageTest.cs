@@ -28,10 +28,11 @@ namespace FamilyMoneyTest.Storages
         public void GetAllAccountsTest()
         {
             var storage = new MemoryAccountStorage();
+            var factory = new RegularAccountFactory();
             var account = CreateAccount();
             storage.CreateAccount(account);
 
-            var firstAccount = storage.GetAllAccounts().First();
+            var firstAccount = storage.GetAllAccounts(factory).First();
 
             Assert.AreEqual(account.Name, firstAccount.Name);
             Assert.AreEqual(account.Description, firstAccount.Description);
@@ -42,12 +43,13 @@ namespace FamilyMoneyTest.Storages
         public void DeleteAccountTest()
         {
             var storage = new MemoryAccountStorage();
+            var factory = new RegularAccountFactory();
             var account = CreateAccount();
             storage.CreateAccount(account);
             storage.DeleteAccount(account);
 
 
-            var numberOfAccounts = storage.GetAllAccounts().Count();
+            var numberOfAccounts = storage.GetAllAccounts(factory).Count();
 
 
             Assert.AreEqual(0, numberOfAccounts);
@@ -58,6 +60,7 @@ namespace FamilyMoneyTest.Storages
         public void UpdateAccountTest()
         {
             var storage = new MemoryAccountStorage();
+            var factory = new RegularAccountFactory();
             var account = CreateAccount();
             storage.CreateAccount(account);
             account.Name = "New Name";
@@ -67,7 +70,7 @@ namespace FamilyMoneyTest.Storages
             storage.UpdateAccount(account);
 
 
-            var firstAccount = storage.GetAllAccounts().First();
+            var firstAccount = storage.GetAllAccounts(factory).First();
             Assert.AreEqual(account.Name, firstAccount.Name);
             Assert.AreEqual(account.Description, firstAccount.Description);
         }

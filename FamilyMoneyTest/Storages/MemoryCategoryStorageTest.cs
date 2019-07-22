@@ -27,10 +27,11 @@ namespace FamilyMoneyTest.Storages
         public void GetAllAccountsTest()
         {
             var storage = new MemoryCategoryStorage();
+            var factory = new RegularCategoryFactory();
             var category = CreateCategory();
             storage.CreateCategory(category);
 
-            var firstCategory= storage.GetAllCategories().First();
+            var firstCategory= storage.GetAllCategories(factory).First();
 
             Assert.AreEqual(category.Name, firstCategory.Name);
             Assert.AreEqual(category.Description, firstCategory.Description);
@@ -40,14 +41,15 @@ namespace FamilyMoneyTest.Storages
         public void DeleteAccountTest()
         {
             var storage = new MemoryCategoryStorage();
+            var factory = new RegularCategoryFactory();
             var category = CreateCategory();
             storage.CreateCategory(category);
 
-            var numberOfCategoriesAfterCreate = storage.GetAllCategories().Count();
+            var numberOfCategoriesAfterCreate = storage.GetAllCategories(factory).Count();
             storage.DeleteCategory(category);
 
 
-            var numberOfCategories = storage.GetAllCategories().Count();
+            var numberOfCategories = storage.GetAllCategories(factory).Count();
 
 
             Assert.AreEqual(0, numberOfCategories);
@@ -59,6 +61,7 @@ namespace FamilyMoneyTest.Storages
         public void UpdateAccountTest()
         {
             var storage = new MemoryCategoryStorage();
+            var factory = new RegularCategoryFactory();
             var category = CreateCategory();
             storage.CreateCategory(category);
             category.Name = "New Name";
@@ -69,7 +72,7 @@ namespace FamilyMoneyTest.Storages
 
 
             var firstCategory
-                = storage.GetAllCategories().First();
+                = storage.GetAllCategories(factory).First();
             Assert.AreEqual(category.Name, firstCategory.Name);
             Assert.AreEqual(category.Description, firstCategory.Description);
         }

@@ -42,7 +42,7 @@ namespace FamilyMoneyTest.Managers
 
             var account = manager.CreateAccount(accountName, accountDescription, accountCurrency);
 
-            var firstAccount = storage.GetAllAccounts().First();
+            var firstAccount = storage.GetAllAccounts(factory).First();
 
             Assert.AreEqual(account.Name, firstAccount.Name);
             Assert.AreEqual(account.Description, firstAccount.Description);
@@ -64,7 +64,7 @@ namespace FamilyMoneyTest.Managers
             storage.DeleteAccount(account);
 
 
-            var numberOfAccounts = storage.GetAllAccounts().Count();
+            var numberOfAccounts = storage.GetAllAccounts(factory).Count();
 
 
             Assert.AreEqual(0, numberOfAccounts);
@@ -90,7 +90,7 @@ namespace FamilyMoneyTest.Managers
             storage.UpdateAccount(account);
 
 
-            var firstAccount = storage.GetAllAccounts().First();
+            var firstAccount = storage.GetAllAccounts(factory).First();
             Assert.AreEqual(account.Name, firstAccount.Name);
             Assert.AreEqual(account.Description, firstAccount.Description);
         }

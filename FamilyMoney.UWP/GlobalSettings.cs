@@ -16,9 +16,11 @@ namespace FamilyMoney.UWP
         {
             var accountStorage = new SqLiteAccountStorage();
             var categoryStorage = new SqLiteCategoryStorage();
-            AccountManager = new AccountManager(new RegularAccountFactory(), accountStorage);
-            CategoryManager = new CategoryManager(new RegularCategoryFactory(), categoryStorage);
-            TransactionManager = new TransactionManager(new RegularTransactionFactory(), new SqLiteTransactionStorage(accountStorage,categoryStorage));
+            var accountFactory = new RegularAccountFactory();
+            var categoryFactory = new RegularCategoryFactory();
+            AccountManager = new AccountManager(accountFactory, accountStorage);
+            CategoryManager = new CategoryManager(categoryFactory, categoryStorage);
+            TransactionManager = new TransactionManager(new RegularTransactionFactory(), new SqLiteTransactionStorage(accountStorage,categoryStorage,accountFactory,categoryFactory));
         }
     }
 }

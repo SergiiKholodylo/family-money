@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using FamilyMoneyLib.NetStandard.Bases;
+using FamilyMoneyLib.NetStandard.Factories;
 
 namespace FamilyMoneyLib.NetStandard.Storages
 {
@@ -23,7 +24,7 @@ namespace FamilyMoneyLib.NetStandard.Storages
 
         }
 
-        public IEnumerable<ICategory> GetAllCategories()
+        public IEnumerable<ICategory> GetAllCategories(ICategoryFactory factory)
         {
             return _categories.ToArray();
         }

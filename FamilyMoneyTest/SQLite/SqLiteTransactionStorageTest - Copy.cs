@@ -14,6 +14,7 @@ namespace FamilyMoneyTest.SQLite
         public void CreateAccountTest()
         {
             var storage = new SqLiteAccountStorage();
+            var factory = new RegularAccountFactory();
             var account = CreateAccount();
 
 
@@ -29,11 +30,12 @@ namespace FamilyMoneyTest.SQLite
         public void GetAllAccountsTest()
         {
             var storage = new SqLiteAccountStorage();
+            var factory = new RegularAccountFactory();
             var account = CreateAccount();
             account.Description = DateTime.Now.ToShortTimeString();
             storage.CreateAccount(account);
 
-            var firstAccount = storage.GetAllAccounts().Last();
+            var firstAccount = storage.GetAllAccounts(factory).Last();
 
             Assert.AreEqual(account.Name, firstAccount.Name);
             Assert.AreEqual(account.Description, firstAccount.Description);
@@ -44,13 +46,14 @@ namespace FamilyMoneyTest.SQLite
         public void DeleteAccountTest()
         {
             var storage = new SqLiteAccountStorage();
+            var factory = new RegularAccountFactory();
             storage.DeleteAllData();
             var account = CreateAccount();
             storage.CreateAccount(account);
             storage.DeleteAccount(account);
 
 
-            var numberOfAccounts = storage.GetAllAccounts().Count();
+            var numberOfAccounts = storage.GetAllAccounts(factory).Count();
 
 
             Assert.AreEqual(0, numberOfAccounts);
@@ -61,17 +64,18 @@ namespace FamilyMoneyTest.SQLite
         public void UpdateAccountTest()
         {
             var storage = new SqLiteAccountStorage();
+            var factory = new RegularAccountFactory();
             storage.DeleteAllData();
             var account = CreateAccount();
             storage.CreateAccount(account);
-            account.Name = "New N'ame";
+            account.Name = "New Name";
             account.Description = "New Description";
 
 
             storage.UpdateAccount(account);
 
 
-            var firstAccount = storage.GetAllAccounts().First();
+            var firstAccount = storage.GetAllAccounts(factory).First();
             Assert.AreEqual(account.Name, firstAccount.Name);
             Assert.AreEqual(account.Description, firstAccount.Description);
         }
@@ -80,7 +84,7 @@ namespace FamilyMoneyTest.SQLite
         {
             var factory = new RegularAccountFactory();
             var accountName = "Test Account";
-            var accountDescription = "Test Descr'iption";
+            var accountDescription = "Test Description";
             var accountCurrency = "USD";
 
 

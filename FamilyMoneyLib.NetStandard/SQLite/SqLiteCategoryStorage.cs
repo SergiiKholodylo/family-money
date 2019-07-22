@@ -32,7 +32,6 @@ namespace FamilyMoneyLib.NetStandard.SQLite
             _table.InitializeDatabase();
             category.Id = _table.AddData(ObjectToICategoryConverter.ConvertForInsertString(category));
             return category;
-
         }
 
         public void DeleteCategory(ICategory category)
@@ -41,19 +40,19 @@ namespace FamilyMoneyLib.NetStandard.SQLite
             _table.DeleteRecordById(category.Id);
         }
 
-        public void UpdateCategory(ICategory category)
-        {
-            _table.InitializeDatabase();
-            _table.UpdateData(ObjectToICategoryConverter.ConvertForUpdateString(category), category.Id);
-
-        }
-
-        public IEnumerable<ICategory> GetAllCategories()
+        public IEnumerable<ICategory> GetAllCategories(ICategoryFactory factory)
         {
             _table.InitializeDatabase();
             var lines = _table.SelectAll();
 
             return lines.Select(ObjectToICategoryConverter.Convert).ToList();
+        }
+
+        public void UpdateCategory(ICategory category)
+        {
+            _table.InitializeDatabase();
+            _table.UpdateData(ObjectToICategoryConverter.ConvertForUpdateString(category), category.Id);
+
         }
 
         public void DeleteAllData()

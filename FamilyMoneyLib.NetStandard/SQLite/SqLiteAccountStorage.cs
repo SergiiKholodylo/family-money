@@ -31,7 +31,7 @@ namespace FamilyMoneyLib.NetStandard.SQLite
         private readonly SqLiteTable _table = new SqLiteTable("familyMoney.db", "Accounts",
             $"({AccountTableStructure})");
 
-        public  IAccount CreateAccount(IAccount account)
+        public IAccount CreateAccount(IAccount account)
         {
             _table.InitializeDatabase();
             account.Id = _table.AddData(ObjectToIAccountConverter.ConvertForInsertString(account));
@@ -51,7 +51,7 @@ namespace FamilyMoneyLib.NetStandard.SQLite
 
         }
 
-        public  IEnumerable<IAccount> GetAllAccounts()
+        public IEnumerable<IAccount> GetAllAccounts(IAccountFactory factory)
         {
             _table.InitializeDatabase();
             var lines = _table.SelectAll();

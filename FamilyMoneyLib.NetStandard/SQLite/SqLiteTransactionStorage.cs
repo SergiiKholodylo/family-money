@@ -35,11 +35,17 @@ namespace FamilyMoneyLib.NetStandard.SQLite
 
         private readonly IAccountStorage _accountStorage;
         private readonly ICategoryStorage _categoryStorage;
+        private readonly IAccountFactory _accountFactory;
+        private readonly ICategoryFactory _categoryFactory;
 
-        public SqLiteTransactionStorage(IAccountStorage accountStorage, ICategoryStorage categoryStorage)
+
+        public SqLiteTransactionStorage(SqLiteAccountStorage accountStorage, SqLiteCategoryStorage categoryStorage, RegularAccountFactory accountFactory, RegularCategoryFactory categoryFactory)
         {
             _accountStorage = accountStorage;
             _categoryStorage = categoryStorage;
+
+            _accountFactory = accountFactory;
+            _categoryFactory = categoryFactory;
         }
 
         public ITransaction CreateTransaction(ITransaction transaction)
@@ -55,20 +61,20 @@ namespace FamilyMoneyLib.NetStandard.SQLite
             _table.DeleteRecordById(transaction.Id);
         }
 
-        public void UpdateTransaction(ITransaction transaction)
-        {
-            _table.InitializeDatabase();
-            _table.UpdateData(ObjectToITransactionConverter.ConvertForUpdateString(transaction), transaction.Id);
-        }
-
-        public IEnumerable<ITransaction> GetAllTransactions()
+        public IEnumerable<ITransaction> GetAllTransactions(ITransactionFactory factory)
         {
             _table.InitializeDatabase();
             var lines = _table.SelectAll();
 
-            var response = lines.Select(x=>ObjectToITransactionConverter.Convert(x,_accountStorage,_categoryStorage)).OrderByDescending(x=>x.Timestamp).ToList();
+            var response = lines.Select(x => ObjectToITransactionConverter.Convert(x, _accountStorage, _categoryStorage,_accountFactory,_categoryFactory)).OrderByDescending(x => x.Timestamp).ToList();
 
             return response;
+        }
+
+        public void UpdateTransaction(ITransaction transaction)
+        {
+            _table.InitializeDatabase();
+            _table.UpdateData(ObjectToITransactionConverter.ConvertForUpdateString(transaction), transaction.Id);
         }
 
         public void DeleteAllData()
@@ -94,7 +100,7 @@ namespace FamilyMoneyLib.NetStandard.SQLite
             return sqlDataString;
         }
 
-        public static ITransaction Convert(object[] line, IAccountStorage accountStorage, ICategoryStorage categoryStorage)
+        public static ITransaction Convert(object[] line, IAccountStorage accountStorage, ICategoryStorage categoryStorage,IAccountFactory accountFactory, ICategoryFactory categoryFactory)
         {
             var factory = new RegularTransactionFactory();
             var id = (long) line[0];
@@ -103,8 +109,8 @@ namespace FamilyMoneyLib.NetStandard.SQLite
             var categoryId = (long)(line[3]);
             var name = line[4].ToString();
             var total = decimal.Parse(line[5].ToString());
-            var account = accountStorage.GetAllAccounts().FirstOrDefault(x => x.Id == accountId);
-            var category = categoryStorage.GetAllCategories().FirstOrDefault(x => x.Id == categoryId);
+            var account = accountStorage.GetAllAccounts(accountFactory).FirstOrDefault(x => x.Id == accountId);
+            var category = categoryStorage.GetAllCategories(categoryFactory).FirstOrDefault(x => x.Id == categoryId);
             var transaction = factory.CreateTransaction(account,category,name,total);
             transaction.Id = id;
             transaction.Timestamp = timestamp;

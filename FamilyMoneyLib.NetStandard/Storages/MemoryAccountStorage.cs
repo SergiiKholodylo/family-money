@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using FamilyMoneyLib.NetStandard.Bases;
+using FamilyMoneyLib.NetStandard.Factories;
 
 namespace FamilyMoneyLib.NetStandard.Storages
 {
@@ -7,7 +8,7 @@ namespace FamilyMoneyLib.NetStandard.Storages
     {
         private readonly List<IAccount> _accounts = new List<IAccount>();
 
-        public  IAccount CreateAccount(IAccount account)
+        public IAccount CreateAccount(IAccount account)
         {
             _accounts.Add(account);
             return account;
@@ -23,7 +24,7 @@ namespace FamilyMoneyLib.NetStandard.Storages
             
         }
 
-        public  IEnumerable<IAccount> GetAllAccounts()
+        public IEnumerable<IAccount> GetAllAccounts(IAccountFactory factory)
         {
             return _accounts.ToArray();
         }

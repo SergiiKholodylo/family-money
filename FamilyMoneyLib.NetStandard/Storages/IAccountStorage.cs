@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using FamilyMoneyLib.NetStandard.Bases;
+using FamilyMoneyLib.NetStandard.Factories;
 
 namespace FamilyMoneyLib.NetStandard.Storages
 {
@@ -11,6 +12,6 @@ namespace FamilyMoneyLib.NetStandard.Storages
 
         void UpdateAccount(IAccount account);
 
-        IEnumerable<IAccount> GetAllAccounts();
+        IEnumerable<IAccount> GetAllAccounts(IAccountFactory factory);
     }
 }

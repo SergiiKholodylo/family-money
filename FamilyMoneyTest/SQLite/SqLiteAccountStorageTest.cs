@@ -16,7 +16,9 @@ namespace FamilyMoneyTest.SQLite
         {
             var accountStorage = new SqLiteAccountStorage();
             var categoryStorage = new SqLiteCategoryStorage();
-            var storage = new SqLiteTransactionStorage(accountStorage, categoryStorage);
+            var accountFactory = new RegularAccountFactory();
+            var categoryFactory = new RegularCategoryFactory();
+            var storage = new SqLiteTransactionStorage(accountStorage, categoryStorage, accountFactory, categoryFactory);
             var transaction = CreateTransaction();
 
 
@@ -34,11 +36,14 @@ namespace FamilyMoneyTest.SQLite
         {
             var accountStorage = new SqLiteAccountStorage();
             var categoryStorage = new SqLiteCategoryStorage();
-            var storage = new SqLiteTransactionStorage(accountStorage, categoryStorage);
+            var accountFactory = new RegularAccountFactory();
+            var categoryFactory = new RegularCategoryFactory();
+            var transactionFactory = new RegularTransactionFactory();
+            var storage = new SqLiteTransactionStorage(accountStorage, categoryStorage, accountFactory, categoryFactory);
             var transaction = CreateTransaction();
             storage.CreateTransaction(transaction);
 
-            var firstTransaction = storage.GetAllTransactions().Last();
+            var firstTransaction = storage.GetAllTransactions(transactionFactory).Last();
 
             Assert.AreEqual(transaction.Name, firstTransaction.Name);
             Assert.AreEqual(transaction.Category.Id, firstTransaction.Category.Id);
@@ -51,7 +56,11 @@ namespace FamilyMoneyTest.SQLite
         {
             var accountStorage = new SqLiteAccountStorage();
             var categoryStorage = new SqLiteCategoryStorage();
-            var storage = new SqLiteTransactionStorage(accountStorage, categoryStorage);
+            var accountFactory = new RegularAccountFactory();
+            var categoryFactory = new RegularCategoryFactory();
+            var transactionFactory = new RegularTransactionFactory();
+            var storage = new SqLiteTransactionStorage(accountStorage, categoryStorage, accountFactory, categoryFactory);
+
             storage.DeleteAllData();
             var transaction = CreateTransaction();
             storage.CreateTransaction(transaction);
@@ -61,7 +70,7 @@ namespace FamilyMoneyTest.SQLite
             storage.DeleteTransaction(transaction);
 
 
-            var numberOfTransactions = storage.GetAllTransactions().Count();
+            var numberOfTransactions = storage.GetAllTransactions(transactionFactory).Count();
 
 
             Assert.AreEqual(0, numberOfTransactions);
@@ -73,7 +82,11 @@ namespace FamilyMoneyTest.SQLite
         {
             var accountStorage = new SqLiteAccountStorage();
             var categoryStorage = new SqLiteCategoryStorage();
-            var storage = new SqLiteTransactionStorage(accountStorage, categoryStorage);
+            var accountFactory = new RegularAccountFactory();
+            var categoryFactory = new RegularCategoryFactory();
+            var transactionFactory = new RegularTransactionFactory();
+            var storage = new SqLiteTransactionStorage(accountStorage, categoryStorage, accountFactory, categoryFactory);
+
             storage.DeleteAllData();
             var transaction = CreateTransaction();
             storage.CreateTransaction(transaction);
@@ -85,7 +98,7 @@ namespace FamilyMoneyTest.SQLite
             storage.UpdateTransaction(transaction);
 
 
-            var firstTransaction = storage.GetAllTransactions().First();
+            var firstTransaction = storage.GetAllTransactions(transactionFactory).First();
             Assert.AreEqual(transaction.Name, firstTransaction.Name);
             Assert.AreEqual(transaction.Category.Id, firstTransaction.Category.Id);
             Assert.AreEqual(transaction.Account.Id, firstTransaction.Account.Id);
