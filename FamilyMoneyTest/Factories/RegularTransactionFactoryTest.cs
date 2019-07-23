@@ -14,7 +14,7 @@ namespace FamilyMoneyTest.Factories
             var categoryFactory = new RegularCategoryFactory();
 
             var account = accountFactory.CreateAccount("Account", "Description", "UAH");
-            var category = categoryFactory.CreateCategory("Category", "category Description");
+            var category = categoryFactory.CreateCategory("Category", "category Description",0,null);
 
             var transaction = factory.CreateTransaction(
                 account, category,"Simple Transaction", 100

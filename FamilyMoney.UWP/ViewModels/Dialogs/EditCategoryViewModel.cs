@@ -1,4 +1,6 @@
-﻿using System.ComponentModel;
+﻿using System.Collections.Generic;
+using System.ComponentModel;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using FamilyMoney.UWP.Annotations;
 using FamilyMoneyLib.NetStandard.Bases;
@@ -10,6 +12,7 @@ namespace FamilyMoney.UWP.ViewModels.Dialogs
         private string _name;
         private string _description;
         private readonly ICategory _category;
+        private ICategory _parentCategory;
 
         public EditCategoryViewModel()
         {
@@ -21,6 +24,8 @@ namespace FamilyMoney.UWP.ViewModels.Dialogs
             _category = category;
             Name = category.Name;
             Description = category.Description;
+            if(category.ParentCategory!= null)
+                ParentCategory = Categories.FirstOrDefault(x=>x.Id == category.ParentCategory.Id);
         }
 
         public string Name
@@ -35,10 +40,23 @@ namespace FamilyMoney.UWP.ViewModels.Dialogs
             get => _description;
         }
 
+        public ICategory ParentCategory
+        {
+            set
+            {
+                if(_parentCategory == value) return;
+                _parentCategory = value;
+                OnPropertyChanged();
+            }
+            get => _parentCategory;
+        }
+
+        public IEnumerable<ICategory> Categories { get; } = MainPage.GlobalSettings.CategoryManager.GetAllCategories();
+
         public void CreateNewCategory()
         {
             var manager = MainPage.GlobalSettings.CategoryManager;
-            manager.CreateCategory(Name, Description);
+            manager.CreateCategory(Name, Description, 0, ParentCategory);
         }
 
         public void UpdateCategory()
@@ -46,6 +64,7 @@ namespace FamilyMoney.UWP.ViewModels.Dialogs
             var manager = MainPage.GlobalSettings.CategoryManager;
             _category.Name = Name;
             _category.Description = Description;
+            _category.ParentCategory = ParentCategory;
             manager.UpdateCategory(_category);
         }
         public event PropertyChangedEventHandler PropertyChanged;

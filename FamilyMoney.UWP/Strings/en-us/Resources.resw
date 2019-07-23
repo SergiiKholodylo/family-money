@@ -150,6 +150,9 @@
   <data name="CategoryComboBox.Header" xml:space="preserve">
     <value>Category</value>
   </data>
+  <data name="CategoryTreeView.Header" xml:space="preserve">
+    <value>Category List</value>
+  </data>
   <data name="Create Account" xml:space="preserve">
     <value>Create Account Resource</value>
   </data>

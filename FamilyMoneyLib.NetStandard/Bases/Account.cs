@@ -4,7 +4,7 @@ using System.Diagnostics;
 namespace FamilyMoneyLib.NetStandard.Bases
 {
     [DebuggerDisplay("Account {Name} ({Currency})")]
-    public class Account : IAccount
+    public class Account : IAccount,ISecurity
     {
         public long Id { set; get; }
         public DateTime Timestamp { set; get; }
@@ -25,5 +25,8 @@ namespace FamilyMoneyLib.NetStandard.Bases
             Currency = currency;
             Id = id;
         }
+
+        public Guid OwnerId { get;  set; }
+        public Guid BaseId { get; set; }
     }
 }

@@ -16,15 +16,15 @@ namespace FamilyMoneyLib.NetStandard.Managers
             _categoryFactory = factory;
         }
 
-        public ICategory CreateCategory(string name, string description)
-        {
-            var category = _categoryFactory.CreateCategory(name, description);
-            return _categoryStorage.CreateCategory(category);
-        }
-
         public void UpdateCategory(ICategory category)
         {
             _categoryStorage.UpdateCategory(category);
+        }
+
+        public ICategory CreateCategory(string name, string description, long id, ICategory parentCategory)
+        {
+            var category = _categoryFactory.CreateCategory(name, description,id,parentCategory);
+            return _categoryStorage.CreateCategory(category);
         }
 
         public void DeleteCategory(ICategory category)

@@ -17,7 +17,7 @@ namespace FamilyMoneyTest.Managers
             var accountFactory = new RegularAccountFactory();
             var categoryFactory = new RegularCategoryFactory();
             var account = accountFactory.CreateAccount("Account", "Description", "UAH");
-            var category = categoryFactory.CreateCategory("Category", "category Description");
+            var category = categoryFactory.CreateCategory("Category", "category Description", 0, null);
             var manager = new TransactionManager(factory, storage);
 
 
@@ -37,7 +37,7 @@ namespace FamilyMoneyTest.Managers
             var accountFactory = new RegularAccountFactory();
             var categoryFactory = new RegularCategoryFactory();
             var account = accountFactory.CreateAccount("Account", "Description", "UAH");
-            var category = categoryFactory.CreateCategory("Category", "category Description");
+            var category = categoryFactory.CreateCategory("Category", "category Description", 0, null);
             var manager = new TransactionManager(factory, storage);
             manager.CreateTransaction(account, category, "Simple Transaction", 100);
 
@@ -59,7 +59,7 @@ namespace FamilyMoneyTest.Managers
             var accountFactory = new RegularAccountFactory();
             var categoryFactory = new RegularCategoryFactory();
             var account = accountFactory.CreateAccount("Account", "Description", "UAH");
-            var category = categoryFactory.CreateCategory("Category", "category Description");
+            var category = categoryFactory.CreateCategory("Category", "category Description", 0, null);
             var manager = new TransactionManager(factory, storage);
             var storedTransaction = manager.CreateTransaction(account, category, "Simple Transaction", 100);
 
@@ -82,7 +82,7 @@ namespace FamilyMoneyTest.Managers
             var accountFactory = new RegularAccountFactory();
             var categoryFactory = new RegularCategoryFactory();
             var account = accountFactory.CreateAccount("Account", "Description", "UAH");
-            var category = categoryFactory.CreateCategory("Category", "category Description");
+            var category = categoryFactory.CreateCategory("Category", "category Description", 0, null);
             var manager = new TransactionManager(factory, storage);
             var storedTransaction = manager.CreateTransaction(account, category, "Simple Transaction", 100);
             storedTransaction.Total = newTransactionAmount;

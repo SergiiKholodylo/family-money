@@ -14,7 +14,7 @@ namespace FamilyMoneyTest.Factories
             var categoryDescription = "Category Descriptor";
 
 
-            var category= factory.CreateCategory(categoryName, categoryDescription);
+            var category= factory.CreateCategory(categoryName, categoryDescription,0,null);
 
 
             Assert.AreEqual(categoryName, category.Name);

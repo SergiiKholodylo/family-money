@@ -78,14 +78,43 @@ namespace FamilyMoneyTest.Storages
             Assert.AreEqual(category.Description, firstCategory.Description);
         }
 
+        [TestMethod]
+        public void CreateTreeCategoryTest()
+        {
+            var factory = new RegularCategoryFactory();
+            var storage = new MemoryCategoryStorage(factory);
+            var category = CreateCategory();
+            storage.CreateCategory(category);
+            var childCategory = CreateChildCategory(category);
+            storage.CreateCategory(childCategory);
+
+
+            var categoryList = storage.GetAllCategories().ToArray();
+            var categoryFromStorage = categoryList.FirstOrDefault(x => x.Id == category.Id);
+            var childCategoryFromStorage = categoryList.FirstOrDefault(x => x.Id == childCategory.Id);
+
+
+            Assert.AreEqual(category.Id, categoryFromStorage.Id);
+            Assert.AreEqual(childCategory.Id, childCategoryFromStorage.Id);
+            Assert.AreEqual(childCategoryFromStorage.ParentCategory.Id, categoryFromStorage.Id);
+        }
+
         private ICategory CreateCategory()
         {
             var factory = new RegularCategoryFactory();
-            var categoryName = "Category Name";
-            var categoryDescription = "Category Description";
+            var name = "Test Category";
+            var description = "Test Description";
+            var category = factory.CreateCategory(name, description, 0, null);
 
+            return category;
+        }
 
-            var category = factory.CreateCategory(categoryName, categoryDescription);
+        private ICategory CreateChildCategory(ICategory parent)
+        {
+            var factory = new RegularCategoryFactory();
+            var name = $"Child {parent.Name} Category";
+            var description = $"Child {parent.Name} Description";
+            var category = factory.CreateCategory(name, description, 0, parent);
 
             return category;
         }

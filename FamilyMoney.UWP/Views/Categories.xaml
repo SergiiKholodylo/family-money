@@ -6,8 +6,10 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:bases="using:FamilyMoneyLib.NetStandard.Bases"
+    xmlns:controls="using:Microsoft.UI.Xaml.Controls"
+    xmlns:viewModels="using:FamilyMoney.UWP.ViewModels"
     mc:Ignorable="d"
-    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" >
 
     <Page.BottomAppBar>
         <CommandBar>
@@ -40,49 +42,28 @@
 
     <Grid Padding="20">
         <StackPanel>
-            <ListView ItemsSource="{x:Bind ViewModel.Categories}" 
-                      HorizontalAlignment="Stretch" 
-                      x:Uid="CategoriesList"
-                      DoubleTapped="ListView_DoubleTapped">
 
-                <ListView.Resources>
-                    <SwipeItems x:Key="Right" Mode="Execute">
-                        <SwipeItem x:Uid="DeleteSwipeItem"
-                                   Background="#FFF4B183" 
-                                   Invoked="DeleteItem_ItemInvoked">
-                            <SwipeItem.IconSource>
-                                <FontIconSource  Glyph="&#xE10A;"/>
-                            </SwipeItem.IconSource>
-                        </SwipeItem>
-                    </SwipeItems>
-                </ListView.Resources>
+            <controls:TreeView 
+                
+                           SelectionMode="Single"
+                           ItemsSource="{x:Bind ViewModel.CategoryTree}" 
+                           CanDragItems="False" 
+                           CanReorderItems="False" 
+                           ItemInvoked="TreeView_ItemInvoked"
+                           >
 
-                <ListView.ItemTemplate>
-
-                    <DataTemplate x:DataType="bases:Category">
-                        <SwipeControl BorderThickness="0,1,0,0" BorderBrush="{ThemeResource ButtonBackground}"
-                                      Height="68"
-                                      Width="800" MinWidth="200" 
-                                      RightItems="{StaticResource Right}">
-                        <Grid HorizontalAlignment="Stretch">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="100"/>
-                                <ColumnDefinition Width="300"/>
-                                <ColumnDefinition Width="60"/>
-                            </Grid.ColumnDefinitions>
-                            <TextBlock Grid.Column="0" 
-                                       VerticalAlignment="Center"
-                                       Text="{x:Bind Name}" />
-                            <TextBlock Grid.Column="1"
-                                       VerticalAlignment="Center"
-                                       Text="{x:Bind Description}" />
-                        </Grid>
-                            </SwipeControl>
+                <controls:TreeView.ItemTemplate>
+                    <DataTemplate x:DataType="viewModels:CategoryTreeItem">
+                        
+                            <controls:TreeViewItem
+                            ItemsSource="{x:Bind Children}"
+                            Content="{x:Bind Category.Name}" 
+                            DoubleTapped="TreeViewItem_DoubleTapped"
+                            />
+                        
                     </DataTemplate>
-
-
-                </ListView.ItemTemplate>
-            </ListView>
+                </controls:TreeView.ItemTemplate>
+            </controls:TreeView>
         </StackPanel>
     </Grid>
 </Page>

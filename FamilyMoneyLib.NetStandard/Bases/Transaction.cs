@@ -5,7 +5,7 @@ namespace FamilyMoneyLib.NetStandard.Bases
 {
 
     [DebuggerDisplay("Transaction {Name} Total {Total}")]
-    public class Transaction : ITransaction
+    public class Transaction : ITransaction,ISecurity
     {
         public long Id { set; get; }
         public DateTime Timestamp { set; get; }
@@ -13,6 +13,14 @@ namespace FamilyMoneyLib.NetStandard.Bases
         public ICategory Category { set; get; }
         public string Name { set; get; }
         public decimal Total { set; get; }
+
+        public Guid OwnerId { get; set; }
+        public Guid BaseId { get; set; }
+        public decimal Weight { set; get; }
+        public IProduct Product { set; get; }
+
+        public bool IsComplexTransaction { set; get; }
+        public ITransaction ParenTransaction { set; get; }
 
         internal Transaction()
         {

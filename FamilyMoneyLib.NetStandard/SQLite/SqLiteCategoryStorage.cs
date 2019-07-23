@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using FamilyMoneyLib.NetStandard.Bases;
 using FamilyMoneyLib.NetStandard.Factories;
 using FamilyMoneyLib.NetStandard.Storages;
@@ -21,13 +22,17 @@ namespace FamilyMoneyLib.NetStandard.SQLite
 
         private const string CategoryTableStructure = "id INTEGER PRIMARY KEY," +
                                                       "name TEXT NOT NULL, " +
-                                                      "description TEXT NOT NULL";
+                                                      "description TEXT NOT NULL," + 
+                                                      "parentCategory INTEGER, "+
+                                                      "ownerId TEXT NOT NULL, " +
+                                                      "baseId TEXT NOT NULL ";
 
         private readonly SqLiteTable _table = new SqLiteTable("familyMoney.db", "Category",
             $"({CategoryTableStructure})");
 
         public SqLiteCategoryStorage(ICategoryFactory categoryFactory) : base(categoryFactory)
         {
+
         }
 
         public override ICategory CreateCategory(ICategory category)
@@ -46,14 +51,19 @@ namespace FamilyMoneyLib.NetStandard.SQLite
         public override IEnumerable<ICategory> GetAllCategories()
         {
             _table.InitializeDatabase();
-            var lines = _table.SelectAll();
-
-            return lines.Select(objects => ObjectToICategoryConverter.Convert(objects,CategoryFactory)).ToList();
+            var lines = _table.SelectAll().ToArray();
+            var withNoParents = lines.Select(objects => ObjectToICategoryConverter.Convert(objects, CategoryFactory)).ToArray();
+            foreach (var line in lines)
+            {
+                ObjectToICategoryConverter.UpdateParents(line,withNoParents);
+            }
+            return withNoParents.ToList();
         }
 
         public override void UpdateCategory(ICategory category)
         {
             _table.InitializeDatabase();
+
             _table.UpdateData(ObjectToICategoryConverter.ConvertForUpdateString(category), category.Id);
 
         }
@@ -69,11 +79,21 @@ namespace FamilyMoneyLib.NetStandard.SQLite
     {
         public static ICategory Convert(object[] line, ICategoryFactory categoryFactory)
         {
-            var account = categoryFactory.CreateCategory(line[1].ToString(), line[2].ToString());
-            account.Id = (long)line[0];
+            var account = categoryFactory.CreateCategory(line[1].ToString(), line[2].ToString(), (long)line[0],null);
 
             return account;
         }
+
+        public static void UpdateParents(object[] line, ICategory[] withNoParents)
+        {
+            var id = (long)line[0];
+            var parentId = line[3];
+            if (parentId is System.DBNull) return;
+            var category = withNoParents.FirstOrDefault(x => x.Id == id);
+            var parentCategory = withNoParents.FirstOrDefault(x => x.Id == (long) parentId);
+            if (category != null) category.ParentCategory = parentCategory;
+        }
+
 
         public static List<KeyValuePair<string, object>> ConvertForUpdateString(ICategory category)
         {
@@ -81,6 +101,9 @@ namespace FamilyMoneyLib.NetStandard.SQLite
             {
                 new KeyValuePair<string, object>("name", category.Name),
                 new KeyValuePair<string, object>("description", category.Description),
+                new KeyValuePair<string, object>("parentCategory", category.ParentCategory?.Id),
+                new KeyValuePair<string, object>("ownerId", category.OwnerId),
+                new KeyValuePair<string, object>("baseId", category.BaseId),
             };
             return returnList;
         }
@@ -91,6 +114,10 @@ namespace FamilyMoneyLib.NetStandard.SQLite
             {
                 new KeyValuePair<string, object>("name", category.Name),
                 new KeyValuePair<string, object>("description", category.Description),
+                new KeyValuePair<string, object>("parentCategory", category.ParentCategory?.Id),
+                new KeyValuePair<string, object>("ownerId", category.OwnerId),
+                new KeyValuePair<string, object>("baseId", category.BaseId),
+
             };
             return returnList;
         }

@@ -73,6 +73,7 @@ namespace FamilyMoneyLib.NetStandard.SQLite
 
                 foreach (var parameter in parameters)
                 {
+                    if (parameter.Value == null) continue;
                     fields += parameter.Key + ",";
                     values += "@" + parameter.Key + ",";
                 }
@@ -87,6 +88,7 @@ namespace FamilyMoneyLib.NetStandard.SQLite
 
                 foreach (var parameter in parameters)
                 {
+                    if (parameter.Value == null) continue;
                     insertCommand.Parameters.Add(new SqliteParameter("@"+parameter.Key, parameter.Value));
                 }
 
@@ -111,6 +113,7 @@ namespace FamilyMoneyLib.NetStandard.SQLite
                 var values = string.Empty;
                 foreach (var parameter in parameters)
                 {
+                    if (parameter.Value == null) continue;
                     values += parameter.Key + " = @" + parameter.Key + ",";
                 }
                 values = values.Substring(0, values.Length > 0 ? values.Length - 1 : 0);
@@ -124,6 +127,7 @@ namespace FamilyMoneyLib.NetStandard.SQLite
                 };
                 foreach (var parameter in parameters)
                 {
+                    if(parameter.Value == null) continue;
                     updateCommand.Parameters.Add(new SqliteParameter("@" + parameter.Key, parameter.Value));
                 }
                 // Use parameterized query to prevent SQL injection attacks

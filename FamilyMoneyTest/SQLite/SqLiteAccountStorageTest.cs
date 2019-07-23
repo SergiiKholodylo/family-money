@@ -120,7 +120,7 @@ namespace FamilyMoneyTest.SQLite
 
 
             var account = accountManager.CreateAccount("Test account", "Account Description", "EUR");
-            var category = categoryManager.CreateCategory("Sample category", "Category Description");
+            var category = categoryManager.CreateCategory("Sample category", "Category Description", 0, null);
 
             var transaction = factory.CreateTransaction(account, category, transactionName,transactionTotal);
 

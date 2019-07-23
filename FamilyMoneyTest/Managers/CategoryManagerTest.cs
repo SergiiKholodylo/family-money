@@ -19,7 +19,7 @@ namespace FamilyMoneyTest.Managers
             var categoryDescription = "Test Description";
 
 
-            var category = manager.CreateCategory(categoryName, categoryDescription);
+            var category = manager.CreateCategory(categoryName, categoryDescription, 0, null);
 
 
             Assert.AreEqual(category.Name, categoryName);
@@ -34,7 +34,7 @@ namespace FamilyMoneyTest.Managers
             var manager = new CategoryManager(factory, storage);
             var categoryName = "Test Category";
             var categoryDescription = "Test Description";
-            var category = manager.CreateCategory(categoryName, categoryDescription);
+            var category = manager.CreateCategory(categoryName, categoryDescription, 0, null);
 
 
             var firstAccount = manager.GetAllCategories().First();
@@ -52,7 +52,7 @@ namespace FamilyMoneyTest.Managers
             var manager = new CategoryManager(factory, storage);
             var categoryName = "Test Category";
             var categoryDescription = "Test Description";
-            var category = manager.CreateCategory(categoryName, categoryDescription);
+            var category = manager.CreateCategory(categoryName, categoryDescription, 0, null);
 
 
             manager.DeleteCategory(category);
@@ -73,7 +73,7 @@ namespace FamilyMoneyTest.Managers
             var categoryName = "Test Category";
             var categoryDescription = "Test Description";
 
-            var category = manager.CreateCategory(categoryName, categoryDescription);
+            var category = manager.CreateCategory(categoryName, categoryDescription, 0, null);
             category.Name = "New Name";
             category.Description = "New Description";
 
