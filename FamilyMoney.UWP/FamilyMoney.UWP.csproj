@@ -137,6 +137,7 @@
     <Compile Include="ViewModels\Dialogs\EditTransactionViewModel.cs" />
     <Compile Include="ViewModels\Dialogs\EditAccountViewModel.cs" />
     <Compile Include="ViewModels\Dialogs\EditCategoryViewModel.cs" />
+    <Compile Include="ViewModels\ViewModelException.cs" />
     <Compile Include="ViewModels\TransactionsViewModel.cs" />
     <Compile Include="Views\Accounts.xaml.cs">
       <DependentUpon>Accounts.xaml</DependentUpon>

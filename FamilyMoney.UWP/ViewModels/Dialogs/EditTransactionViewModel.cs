@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using Windows.UI.Xaml.Controls;
 using FamilyMoney.UWP.Annotations;
 using FamilyMoneyLib.NetStandard.Bases;
+using FamilyMoneyLib.NetStandard.Managers;
 
 namespace FamilyMoney.UWP.ViewModels.Dialogs
 {
@@ -18,6 +20,7 @@ namespace FamilyMoney.UWP.ViewModels.Dialogs
         private DateTimeOffset _date;
         private TimeSpan _time;
         private readonly ITransaction _transaction;
+        private string _errorString;
 
         public EditTransactionViewModel(IAccount activeAccount)
         {
@@ -109,6 +112,12 @@ namespace FamilyMoney.UWP.ViewModels.Dialogs
             get => _total;
         }
 
+        public string ErrorString
+        {
+            set { _errorString = value; OnPropertyChanged();}
+            get => _errorString;
+        }
+
         public IEnumerable<ICategory> Categories { get; } = MainPage.GlobalSettings.CategoryManager.GetAllCategories();
 
 
@@ -116,37 +125,54 @@ namespace FamilyMoney.UWP.ViewModels.Dialogs
 
         public void CreateTransaction()
         {
-            var manager = MainPage.GlobalSettings.TransactionManager;
-            Timestamp = new DateTime(
-                Date.Year,
-                Date.Month,
-                Date.Day,
-                Time.Hours,
-                Time.Minutes,
-                Time.Seconds
-            );
+            try
+            {
+                ErrorString = string.Empty;
+                var manager = MainPage.GlobalSettings.TransactionManager;
+                Timestamp = new DateTime(
+                    Date.Year,
+                    Date.Month,
+                    Date.Day,
+                    Time.Hours,
+                    Time.Minutes,
+                    Time.Seconds
+                );
 
-            manager.CreateTransaction(Account, Category, Name, Total, Timestamp);
+                manager.CreateTransaction(Account, Category, Name, Total, Timestamp);
+            }
+            catch ( ManagerException e )
+            {
+                 ErrorString = $"You have the exception {e.Message}";
+                 throw new ViewModelException(ErrorString);
+            }
         }
 
         public void UpdateTransaction()
         {
-            Timestamp = new DateTime(
-                Date.Year,
-                Date.Month,
-                Date.Day,
-                Time.Hours,
-                Time.Minutes,
-                Time.Seconds
-            );
-            var manager = MainPage.GlobalSettings.TransactionManager;
-            _transaction.Name = Name;
-            _transaction.Account = Account;
-            _transaction.Category = Category;
-            _transaction.Timestamp = Timestamp;
-            _transaction.Total = Total;
+            try
+            {
+                Timestamp = new DateTime(
+                    Date.Year,
+                    Date.Month,
+                    Date.Day,
+                    Time.Hours,
+                    Time.Minutes,
+                    Time.Seconds
+                );
+                var manager = MainPage.GlobalSettings.TransactionManager;
+                _transaction.Name = Name;
+                _transaction.Account = Account;
+                _transaction.Category = Category;
+                _transaction.Timestamp = Timestamp;
+                _transaction.Total = Total;
 
-            manager.UpdateTransaction(_transaction);
+                manager.UpdateTransaction(_transaction);
+            }
+            catch (ManagerException e)
+            {
+                ErrorString = $"You have the exception {e.Message}";
+                throw new ViewModelException(ErrorString);
+            }
         }
 
 

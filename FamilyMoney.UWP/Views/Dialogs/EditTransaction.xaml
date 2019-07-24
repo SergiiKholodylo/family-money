@@ -64,6 +64,11 @@
                 x:Uid="TotalTextBox" 
                 Text="{x:Bind ViewModel.Total, Mode=TwoWay, Converter={StaticResource DecimalConverter}}"
                 />
+            <TextBlock 
+                Foreground="Red" 
+                Text="{x:Bind ViewModel.ErrorString, Mode=TwoWay}"
+                TextWrapping="WrapWholeWords"
+                />
         </StackPanel>
     </Grid>
 </ContentDialog>

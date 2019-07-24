@@ -19,29 +19,64 @@ namespace FamilyMoneyLib.NetStandard.Managers
 
         public ITransaction CreateTransaction(IAccount account, ICategory category, string name, decimal total)
         {
-            var transaction = _transactionFactory.CreateTransaction(account, category, name, total);
-            return _transactionStorage.CreateTransaction(transaction);
+            try
+            {
+                var transaction = _transactionFactory.CreateTransaction(account, category, name, total);
+                return _transactionStorage.CreateTransaction(transaction);
+            }
+            catch (StorageException e)
+            {
+                throw new ManagerException(e.Message);
+            }
         }
 
         public ITransaction CreateTransaction(IAccount account, ICategory category, string name, decimal total, DateTime timestamp)
         {
-            var transaction = _transactionFactory.CreateTransaction(account, category, name, total, timestamp);
-            return _transactionStorage.CreateTransaction(transaction);
+            try
+            {
+                var transaction = _transactionFactory.CreateTransaction(account, category, name, total, timestamp);
+                return _transactionStorage.CreateTransaction(transaction);
+            }
+            catch (StorageException e)
+            {
+                throw new ManagerException(e.Message);
+            }
         }
 
         public void UpdateTransaction(ITransaction transaction)
         {
-            _transactionStorage.UpdateTransaction(transaction);
+            try
+            {
+                _transactionStorage.UpdateTransaction(transaction);
+            }
+            catch (StorageException e)
+            {
+                throw new ManagerException(e.Message);
+            }
         }
 
         public void DeleteTransaction(ITransaction transaction)
         {
-            _transactionStorage.DeleteTransaction(transaction);
+            try
+            {
+                _transactionStorage.DeleteTransaction(transaction);
+            }
+            catch (StorageException e)
+            {
+                throw new ManagerException(e.Message);
+            }
         }
 
         public IEnumerable<ITransaction> GetAllTransactions()
         {
-            return _transactionStorage.GetAllTransactions();
+            try
+            {
+                return _transactionStorage.GetAllTransactions();
+            }
+            catch (StorageException e)
+            {
+                throw new ManagerException(e.Message);
+            }
         }
     }
 }
