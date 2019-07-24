@@ -1,130 +1,96 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using FamilyMoneyLib.NetStandard.Bases;
 using FamilyMoneyLib.NetStandard.Factories;
-using FamilyMoneyLib.NetStandard.Managers;
 using FamilyMoneyLib.NetStandard.SQLite;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace FamilyMoneyTest.SQLite
 {
     [TestClass]
-    public class SqLiteTransactionStorageTest
+    public class SqLiteAccountStorageTest
     {
         [TestMethod]
-        public void CreateTransactionTest()
+        public void CreateAccountTest()
         {
-            var accountFactory = new RegularAccountFactory();
-            var categoryFactory = new RegularCategoryFactory();
-            var accountStorage = new SqLiteAccountStorage(accountFactory);
-            var categoryStorage = new SqLiteCategoryStorage(categoryFactory);
-            var transactionFactory = new RegularTransactionFactory();
-            var storage = new SqLiteTransactionStorage(transactionFactory, accountStorage, categoryStorage, accountFactory, categoryFactory);
-            var transaction = CreateTransaction();
+            var factory = new RegularAccountFactory();
+            var storage = new SqLiteAccountStorage(factory);
+            var account = CreateAccount();
 
 
-            var newTransaction = storage.CreateTransaction(transaction);
+            var newAccount = storage.CreateAccount(account);
 
 
-            Assert.AreEqual(transaction.Name, newTransaction.Name);
-            Assert.AreEqual(transaction.Category.Id, newTransaction.Category.Id);
-            Assert.AreEqual(transaction.Account.Id, newTransaction.Account.Id);
-            Assert.AreEqual(transaction.Total, newTransaction.Total);
+            Assert.AreEqual(account.Name, newAccount.Name);
+            Assert.AreEqual(account.Description, newAccount.Description);
+            Assert.AreEqual(account.Currency, newAccount.Currency);
         }
 
         [TestMethod]
-        public void GetAllTransactionsTest()
+        public void GetAllAccountsTest()
         {
-            var accountFactory = new RegularAccountFactory();
-            var categoryFactory = new RegularCategoryFactory();
-            var accountStorage = new SqLiteAccountStorage(accountFactory);
-            var categoryStorage = new SqLiteCategoryStorage(categoryFactory);
-            var transactionFactory = new RegularTransactionFactory();
-            var storage = new SqLiteTransactionStorage(transactionFactory, accountStorage, categoryStorage, accountFactory, categoryFactory);
-            storage.DeleteAllData();
-            var transaction = CreateTransaction();
-            storage.CreateTransaction(transaction);
+            var factory = new RegularAccountFactory();
+            var storage = new SqLiteAccountStorage(factory);
+            var account = CreateAccount();
+            account.Description = DateTime.Now.ToShortTimeString();
+            storage.CreateAccount(account);
 
-            var firstTransaction = storage.GetAllTransactions().First();
+            var firstAccount = storage.GetAllAccounts().Last();
 
-            Assert.AreEqual(transaction.Name, firstTransaction.Name);
-            Assert.AreEqual(transaction.Category.Id, firstTransaction.Category.Id);
-            Assert.AreEqual(transaction.Account.Id, firstTransaction.Account.Id);
-            Assert.AreEqual(transaction.Total, firstTransaction.Total);
+            Assert.AreEqual(account.Name, firstAccount.Name);
+            Assert.AreEqual(account.Description, firstAccount.Description);
+            Assert.AreEqual(account.Currency, firstAccount.Currency);
         }
 
         [TestMethod]
-        public void DeleteTransactionTest()
+        public void DeleteAccountTest()
         {
-            var accountFactory = new RegularAccountFactory();
-            var categoryFactory = new RegularCategoryFactory();
-            var accountStorage = new SqLiteAccountStorage(accountFactory);
-            var categoryStorage = new SqLiteCategoryStorage(categoryFactory);
-            var transactionFactory = new RegularTransactionFactory();
-            var storage = new SqLiteTransactionStorage(transactionFactory, accountStorage, categoryStorage, accountFactory, categoryFactory);
-
+            var factory = new RegularAccountFactory();
+            var storage = new SqLiteAccountStorage(factory);
             storage.DeleteAllData();
-            var transaction = CreateTransaction();
-            storage.CreateTransaction(transaction);
+            var account = CreateAccount();
+            storage.CreateAccount(account);
+            storage.DeleteAccount(account);
 
 
-            
-            storage.DeleteTransaction(transaction);
+            var numberOfAccounts = storage.GetAllAccounts().Count();
 
 
-            var numberOfTransactions = storage.GetAllTransactions().Count();
-
-
-            Assert.AreEqual(0, numberOfTransactions);
+            Assert.AreEqual(0, numberOfAccounts);
         }
 
 
         [TestMethod]
-        public void UpdateTransactionTest()
+        public void UpdateAccountTest()
         {
-            var accountFactory = new RegularAccountFactory();
-            var categoryFactory = new RegularCategoryFactory();
-            var accountStorage = new SqLiteAccountStorage(accountFactory);
-            var categoryStorage = new SqLiteCategoryStorage(categoryFactory);
-            var transactionFactory = new RegularTransactionFactory();
-            var storage = new SqLiteTransactionStorage(transactionFactory, accountStorage, categoryStorage, accountFactory, categoryFactory);
-
+            var factory = new RegularAccountFactory();
+            var storage = new SqLiteAccountStorage(factory);
             storage.DeleteAllData();
-            var transaction = CreateTransaction();
-            storage.CreateTransaction(transaction);
-
-            transaction.Name = "New Name";
-            transaction.Total = 515.03m;
-
-
-            storage.UpdateTransaction(transaction);
+            var account = CreateAccount();
+            storage.CreateAccount(account);
+            account.Name = "New Name";
+            account.Description = "New Description";
 
 
-            var firstTransaction = storage.GetAllTransactions().First();
-            Assert.AreEqual(transaction.Name, firstTransaction.Name);
-            Assert.AreEqual(transaction.Category.Id, firstTransaction.Category.Id);
-            Assert.AreEqual(transaction.Account.Id, firstTransaction.Account.Id);
-            Assert.AreEqual(transaction.Total, firstTransaction.Total);
+            storage.UpdateAccount(account);
+
+
+            var firstAccount = storage.GetAllAccounts().First();
+            Assert.AreEqual(account.Name, firstAccount.Name);
+            Assert.AreEqual(account.Description, firstAccount.Description);
         }
 
-        private ITransaction CreateTransaction()
+        private IAccount CreateAccount()
         {
-            var accountFactory = new RegularAccountFactory();
-            var categoryFactory = new RegularCategoryFactory();
-            var accountManager = new AccountManager(accountFactory, new SqLiteAccountStorage(accountFactory));
-            var categoryManager = new CategoryManager(categoryFactory, new SqLiteCategoryStorage(categoryFactory));
-
-            var factory = new RegularTransactionFactory();
-            
-            var transactionName = "Test Transaction";
-            var transactionTotal = 213.00m;
+            var factory = new RegularAccountFactory();
+            var accountName = "Test Account";
+            var accountDescription = "Test Description";
+            var accountCurrency = "USD";
 
 
-            var account = accountManager.CreateAccount("Test account", "Account Description", "EUR");
-            var category = categoryManager.CreateCategory("Sample category", "Category Description", 0, null);
+            var account = factory.CreateAccount(accountName, accountDescription, accountCurrency);
 
-            var transaction = factory.CreateTransaction(account, category, transactionName,transactionTotal);
-
-            return transaction;
+            return account;
         }
     }
 }

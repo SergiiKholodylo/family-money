@@ -95,8 +95,8 @@ namespace FamilyMoneyLib.NetStandard.SQLite
             var returnList = new List<KeyValuePair<string, object>>
             {
                 new KeyValuePair<string, object>("timestamp", transaction.Timestamp),
-                new KeyValuePair<string, object>("accountId", transaction.Account.Id),
-                new KeyValuePair<string, object>("categoryId", transaction.Category.Id),
+                new KeyValuePair<string, object>("accountId", transaction.Account?.Id),
+                new KeyValuePair<string, object>("categoryId", transaction.Category?.Id),
                 new KeyValuePair<string, object>("name", transaction.Name),
                 new KeyValuePair<string, object>("total", transaction.Total),
                 new KeyValuePair<string, object>("ownerId", transaction.OwnerId),
@@ -118,7 +118,8 @@ namespace FamilyMoneyLib.NetStandard.SQLite
             var total = decimal.Parse(line[5].ToString());
             var account = accountStorage.GetAllAccounts().FirstOrDefault(x => x.Id == accountId);
             var category = categoryStorage.GetAllCategories().FirstOrDefault(x => x.Id == categoryId);
-            //var weight = line.
+            var weight = decimal.Parse( line[8].ToString());
+            var productId = (line[9] is System.DBNull)? 0: (long)line[9];//Add Product Storage
             var transaction = transactionFactory.CreateTransaction(account,category,name,total);
             transaction.Id = id;
             transaction.Timestamp = timestamp;
