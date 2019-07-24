@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
-using Windows.UI.Xaml.Controls;
 using FamilyMoney.UWP.Annotations;
 using FamilyMoneyLib.NetStandard.Bases;
 using FamilyMoneyLib.NetStandard.Managers;
@@ -21,9 +20,11 @@ namespace FamilyMoney.UWP.ViewModels.Dialogs
         private TimeSpan _time;
         private readonly ITransaction _transaction;
         private string _errorString;
+        private decimal _weight;
 
         public EditTransactionViewModel(IAccount activeAccount)
         {
+            Categories = MakeFlatCategoryTree(MainPage.GlobalSettings.CategoryManager.GetAllCategories().ToArray());
             Date = new DateTimeOffset(DateTime.Now);
             Time = DateTime.Now.TimeOfDay;
             if (activeAccount != null)
@@ -33,6 +34,7 @@ namespace FamilyMoney.UWP.ViewModels.Dialogs
         public EditTransactionViewModel(ITransaction transaction)
         {
             _transaction = transaction;
+            Categories = MakeFlatCategoryTree(MainPage.GlobalSettings.CategoryManager.GetAllCategories().ToArray());
             Date = transaction.Timestamp == DateTime.MinValue ? new DateTimeOffset(DateTime.Now) : new DateTimeOffset(transaction.Timestamp);
             Time =  transaction.Timestamp.TimeOfDay;
             Name = transaction.Name;
@@ -40,6 +42,38 @@ namespace FamilyMoney.UWP.ViewModels.Dialogs
             Category = Categories.FirstOrDefault(x=>x.Id == transaction.Category.Id);
             Timestamp = transaction.Timestamp;
             Total = transaction.Total;
+            Weight = transaction.Weight;
+        }
+
+        public EditTransactionViewModel()
+        {
+            Categories = MakeFlatCategoryTree(MainPage.GlobalSettings.CategoryManager.GetAllCategories().ToArray());
+        }
+
+        private IEnumerable<ICategory> MakeFlatCategoryTree(ICategory[] getAllCategories)
+        {
+            var flatTree = new List<ICategory>();
+
+            var roots = getAllCategories.Where(x => x.ParentCategory == null);
+            foreach (var category in roots)
+            {
+                flatTree.Add(category);
+                AddTreeLeaves(getAllCategories, flatTree, category);
+            }
+
+            return flatTree;
+        }
+
+        private void AddTreeLeaves(ICategory[] getAllCategories, List<ICategory> flatTree,
+            ICategory category)
+        {
+            var children = getAllCategories.Where(x => x.ParentCategory?.Id == category.Id);
+            foreach (var child in children)
+            {
+                flatTree.Add(child);
+                AddTreeLeaves(getAllCategories, flatTree, child);
+            }
+
         }
 
         public IAccount Account
@@ -112,16 +146,24 @@ namespace FamilyMoney.UWP.ViewModels.Dialogs
             get => _total;
         }
 
+        public decimal Weight
+        {
+            set { _weight = value; OnPropertyChanged();}
+            get => _weight;
+        }
+
         public string ErrorString
         {
             set { _errorString = value; OnPropertyChanged();}
             get => _errorString;
         }
 
-        public IEnumerable<ICategory> Categories { get; } = MainPage.GlobalSettings.CategoryManager.GetAllCategories();
+        public IEnumerable<ICategory> Categories { get; } 
 
 
         public IEnumerable<IAccount> Accounts { get; }= MainPage.GlobalSettings.AccountManager.GetAllAccounts();
+
+        public IEnumerable<ITransaction> Transactions { get; } = MainPage.GlobalSettings.TransactionManager.GetAllTransactions();
 
         public void CreateTransaction()
         {
@@ -138,7 +180,7 @@ namespace FamilyMoney.UWP.ViewModels.Dialogs
                     Time.Seconds
                 );
 
-                manager.CreateTransaction(Account, Category, Name, Total, Timestamp);
+                manager.CreateTransaction(Account, Category, Name, Total, Timestamp,0,Weight,null);
             }
             catch ( ManagerException e )
             {
@@ -165,6 +207,7 @@ namespace FamilyMoney.UWP.ViewModels.Dialogs
                 _transaction.Category = Category;
                 _transaction.Timestamp = Timestamp;
                 _transaction.Total = Total;
+                _transaction.Weight = Weight;
 
                 manager.UpdateTransaction(_transaction);
             }
@@ -175,6 +218,10 @@ namespace FamilyMoney.UWP.ViewModels.Dialogs
             }
         }
 
+        public IEnumerable<ITransaction> GetSuggestions(string name)
+        {
+            return Transactions.Where(x => x.Name.Contains(name));
+        }
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -182,6 +229,15 @@ namespace FamilyMoney.UWP.ViewModels.Dialogs
         private void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        public void FillFromTemplate(ITransaction selected)
+        {
+            Category = Categories.FirstOrDefault(x=>x.Id == selected.Category?.Id);
+            Total = selected.Total;
+            Name = selected.Name;
+            Weight = selected.Weight;
+            //Product = selected.Product;
         }
     }
 }

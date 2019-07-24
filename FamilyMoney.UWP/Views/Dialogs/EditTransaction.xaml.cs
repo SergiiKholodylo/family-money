@@ -69,5 +69,23 @@ namespace FamilyMoney.UWP.Views.Dialogs
         private void ContentDialog_SecondaryButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args)
         {
         }
+
+        private void AutoSuggestBox_QuerySubmitted(AutoSuggestBox sender, AutoSuggestBoxQuerySubmittedEventArgs args)
+        {
+            
+        }
+
+        private void AutoSuggestBox_SuggestionChosen(AutoSuggestBox sender, AutoSuggestBoxSuggestionChosenEventArgs args)
+        {
+            var selected = args.SelectedItem as ITransaction;
+            ViewModel.FillFromTemplate(selected);
+        }
+
+        private void AutoSuggestBox_TextChanged(AutoSuggestBox sender, AutoSuggestBoxTextChangedEventArgs args)
+        {
+            if (args.Reason != AutoSuggestionBoxTextChangeReason.UserInput) return;
+            var searchString = sender.Text;
+            sender.ItemsSource = ViewModel.GetSuggestions(searchString);
+        }
     }
 }

@@ -183,6 +183,9 @@
   <data name="NameTextBox.Header" xml:space="preserve">
     <value>Name</value>
   </data>
+  <data name="NameTextBox.PlaceholderText" xml:space="preserve">
+    <value>Product Name</value>
+  </data>
   <data name="NewAccountButton.Label" xml:space="preserve">
     <value>Create Account</value>
   </data>
@@ -221,5 +224,8 @@
   </data>
   <data name="Update Transaction" xml:space="preserve">
     <value>Update Transaction</value>
+  </data>
+  <data name="WeightTextBox.Header" xml:space="preserve">
+    <value>Weight (kg)</value>
   </data>
 </root>

@@ -43,6 +43,20 @@ namespace FamilyMoneyLib.NetStandard.Managers
             }
         }
 
+        public ITransaction CreateTransaction(IAccount account, ICategory category, string name, decimal total, DateTime timestamp,
+            long id, decimal weight, IProduct product)
+        {
+            try
+            {
+                var transaction = _transactionFactory.CreateTransaction(account, category, name, total, timestamp,id,weight,product);
+                return _transactionStorage.CreateTransaction(transaction);
+            }
+            catch (StorageException e)
+            {
+                throw new ManagerException(e.Message);
+            }
+        }
+
         public void UpdateTransaction(ITransaction transaction)
         {
             try

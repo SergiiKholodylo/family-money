@@ -6,5 +6,13 @@
         string Name { get; set; }
         long Id { get; set; }
         ICategory ParentCategory { get; set; }
+
+        bool IsChild(ICategory category);
+        bool IsParent(ICategory category);
+        int Level();
+
+        string HierarchicalName { get; }
+
+
     }
 }

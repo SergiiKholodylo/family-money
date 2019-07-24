@@ -51,19 +51,30 @@
                 <ComboBox.ItemTemplate>
                     <DataTemplate x:DataType="bases:ICategory">
                         <StackPanel>
-                            <TextBlock Text="{Binding Name}"></TextBlock>
+                            <TextBlock Text="{Binding HierarchicalName}"></TextBlock>
                         </StackPanel>
                     </DataTemplate>
                 </ComboBox.ItemTemplate>
 
             </ComboBox>
 
-            <TextBox x:Uid="NameTextBox"
+            <AutoSuggestBox x:Uid="NameTextBox" 
+                            TextChanged="AutoSuggestBox_TextChanged"
+                            QuerySubmitted="AutoSuggestBox_QuerySubmitted" 
+                            SuggestionChosen="AutoSuggestBox_SuggestionChosen" 
+                            QueryIcon="Find" 
+                            DisplayMemberPath="Name"
+
                      Text="{x:Bind ViewModel.Name, Mode=TwoWay}"/>
             <TextBox 
                 x:Uid="TotalTextBox" 
                 Text="{x:Bind ViewModel.Total, Mode=TwoWay, Converter={StaticResource DecimalConverter}}"
                 />
+
+            <TextBox 
+                x:Uid="WeightTextBox" 
+                Text="{x:Bind ViewModel.Weight, Mode=TwoWay, Converter={StaticResource DecimalConverter}, ConverterParameter='{}{0:F3}'}"
+            />
             <TextBlock 
                 Foreground="Red" 
                 Text="{x:Bind ViewModel.ErrorString, Mode=TwoWay}"

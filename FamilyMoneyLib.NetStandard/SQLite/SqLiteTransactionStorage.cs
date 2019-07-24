@@ -120,7 +120,7 @@ namespace FamilyMoneyLib.NetStandard.SQLite
             var category = categoryStorage.GetAllCategories().FirstOrDefault(x => x.Id == categoryId);
             var weight = decimal.Parse( line[8].ToString());
             var productId = (line[9] is System.DBNull)? 0: (long)line[9];//Add Product Storage
-            var transaction = transactionFactory.CreateTransaction(account,category,name,total);
+            var transaction = transactionFactory.CreateTransaction(account,category,name,total,timestamp, id,weight,null);
             transaction.Id = id;
             transaction.Timestamp = timestamp;
 
