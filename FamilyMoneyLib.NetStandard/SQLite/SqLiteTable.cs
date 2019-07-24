@@ -1,5 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Data;
+using System.Linq;
+using FamilyMoneyLib.NetStandard.Storages;
 using Microsoft.Data.Sqlite;
 
 namespace FamilyMoneyLib.NetStandard.SQLite
@@ -22,34 +25,48 @@ namespace FamilyMoneyLib.NetStandard.SQLite
 
         public void InitializeDatabase()
         {
-            using (var db =
-                new SqliteConnection($"Filename={_database}"))
+            try
             {
-                db.Open();
+                using (var db =
+                    new SqliteConnection($"Filename={_database}"))
+                {
+                    db.Open();
 
-                var tableCommand =  "CREATE TABLE IF NOT " +
-                                    $"EXISTS {_tableName} "+
-                                    _tableDefinition;
+                    var tableCommand =  "CREATE TABLE IF NOT " +
+                                        $"EXISTS {_tableName} "+
+                                        _tableDefinition;
 
-                var createTable = new SqliteCommand(tableCommand, db);
+                    var createTable = new SqliteCommand(tableCommand, db);
 
-                createTable.ExecuteReader();
+                    createTable.ExecuteReader();
+                }
+            }
+            catch (SqliteException e)
+            {
+                throw new StorageException(e.Message);
             }
         }
 
         public void DeleteDatabase()
         {
-            using (var db =
-                new SqliteConnection($"Filename={_database}"))
+            try
             {
-                db.Open();
+                using (var db =
+                    new SqliteConnection($"Filename={_database}"))
+                {
+                    db.Open();
 
-                var tableCommand = "DROP TABLE " +
-                                   $"'{_tableName}' "; 
+                    var tableCommand = "DROP TABLE " +
+                                       $"'{_tableName}' "; 
 
-                var deleteTable = new SqliteCommand(tableCommand, db);
+                    var deleteTable = new SqliteCommand(tableCommand, db);
 
-                deleteTable.ExecuteReader();
+                    deleteTable.ExecuteReader();
+                }
+            }
+            catch (SqliteException e)
+            {
+                throw new StorageException(e.Message);
             }
 
         }
@@ -62,149 +79,149 @@ namespace FamilyMoneyLib.NetStandard.SQLite
             this.command.Parameters.Add(new SQLiteParameter("@param1", data.Data));
             this.command.Parameters.Add(new SQLiteParameter("@param2", data.ByteIndex));
              */
-            long id;
-            using (var db =
-                new SqliteConnection($"Filename={_database}"))
+            try
             {
-                db.Open();
-
-                var fields = string.Empty;
-                var values = string.Empty;
-
-                foreach (var parameter in parameters)
+                long id;
+                using (var db =
+                    new SqliteConnection($"Filename={_database}"))
                 {
-                    if (parameter.Value == null) continue;
-                    fields += parameter.Key + ",";
-                    values += "@" + parameter.Key + ",";
+                    db.Open();
+
+                    var fields = string.Empty;
+                    var values = string.Empty;
+
+                    var keyValuePairs = parameters as KeyValuePair<string, object>[] ?? parameters.ToArray();
+                    foreach (var parameter in keyValuePairs)
+                    {
+                        if (parameter.Value == null) continue;
+                        fields += parameter.Key + ",";
+                        values += "@" + parameter.Key + ",";
+                    }
+
+                    fields = fields.Substring(0, fields.Length > 0 ? fields.Length - 1 : 0);
+                    values = values.Substring(0, values.Length > 0 ? values.Length - 1 : 0);
+
+                    var insertCommand = new SqliteCommand
+                    {
+                        Connection = db, CommandText = $"INSERT INTO {_tableName} ({fields}) VALUES ({values});SELECT last_insert_rowid();",CommandType = CommandType.Text
+                    };
+
+                    foreach (var parameter in keyValuePairs)
+                    {
+                        if (parameter.Value == null) continue;
+                        insertCommand.Parameters.Add(new SqliteParameter("@"+parameter.Key, parameter.Value));
+                    }
+
+                    object reader = insertCommand.ExecuteScalar();
+                    id = (long)reader;
+
+
+                    db.Close();
                 }
 
-                fields = fields.Substring(0, fields.Length > 0 ? fields.Length - 1 : 0);
-                values = values.Substring(0, values.Length > 0 ? values.Length - 1 : 0);
-
-                var insertCommand = new SqliteCommand
-                {
-                    Connection = db, CommandText = $"INSERT INTO {_tableName} ({fields}) VALUES ({values});SELECT last_insert_rowid();",CommandType = CommandType.Text
-                };
-
-                foreach (var parameter in parameters)
-                {
-                    if (parameter.Value == null) continue;
-                    insertCommand.Parameters.Add(new SqliteParameter("@"+parameter.Key, parameter.Value));
-                }
-
-                // Use parameterized query to prevent SQL injection attacks
-
-                object reader = insertCommand.ExecuteScalar();
-                id = (long)reader;
-
-
-                db.Close();
+                return id;
             }
-
-            return id;
+            catch (SqliteException e)
+            {
+                throw new StorageException(e.Message);
+            }
         }
 
 
         public void UpdateData(IEnumerable<KeyValuePair<string, object>> parameters, long id)
         {
-            using (var db =
-                new SqliteConnection($"Filename={_database}"))
+            try
             {
-                var values = string.Empty;
-                foreach (var parameter in parameters)
+                using (var db =
+                    new SqliteConnection($"Filename={_database}"))
                 {
-                    if (parameter.Value == null) continue;
-                    values += parameter.Key + " = @" + parameter.Key + ",";
-                }
-                values = values.Substring(0, values.Length > 0 ? values.Length - 1 : 0);
-
-                db.Open();
-
-                var updateCommand = new SqliteCommand
-                {
-                    Connection = db,CommandType = CommandType.Text,
-                    CommandText = $"UPDATE {_tableName} SET {values} WHERE Id={id}"
-                };
-                foreach (var parameter in parameters)
-                {
-                    if(parameter.Value == null) continue;
-                    updateCommand.Parameters.Add(new SqliteParameter("@" + parameter.Key, parameter.Value));
-                }
-                // Use parameterized query to prevent SQL injection attacks
-
-                updateCommand.ExecuteReader();
-                db.Close();
-            }
-        }
-
-        public IEnumerable<object> GetData()
-        {
-            using (var db =
-                new SqliteConnection($"Filename={_database}"))
-            {
-                db.Open();
-
-                var selectCommand = new SqliteCommand
-                    ($"SELECT * from {_tableName}", db);
-                var query = selectCommand.ExecuteReader();
-                while (query.Read())
-                {
-                    var fieldCount = query.FieldCount;
-                    var objects = new List<object>();
-                    for (var i = 0; i < fieldCount; i++)
+                    var values = string.Empty;
+                    var keyValuePairs = parameters as KeyValuePair<string, object>[] ?? parameters.ToArray();
+                    foreach (var parameter in keyValuePairs)
                     {
-                        objects.Add(query.GetValue(i));
+                        if (parameter.Value == null) continue;
+                        values += parameter.Key + " = @" + parameter.Key + ",";
+                    }
+                    values = values.Substring(0, values.Length > 0 ? values.Length - 1 : 0);
+
+                    db.Open();
+
+                    var updateCommand = new SqliteCommand
+                    {
+                        Connection = db,CommandType = CommandType.Text,
+                        CommandText = $"UPDATE {_tableName} SET {values} WHERE Id={id}"
+                    };
+                    foreach (var parameter in keyValuePairs)
+                    {
+                        if(parameter.Value == null) continue;
+                        updateCommand.Parameters.Add(new SqliteParameter("@" + parameter.Key, parameter.Value));
                     }
 
+                    updateCommand.ExecuteReader();
                     db.Close();
-                    return objects.ToArray();
                 }
             }
-
-            return default(object[]);
+            catch (SqliteException e)
+            {
+                throw new StorageException(e.Message);
+            }
         }
 
         public IEnumerable<object[]> SelectAll()
         {
-            using (var db =
-                new SqliteConnection($"Filename={_database}"))
+            try
             {
-                db.Open();
-
-                var selectCommand = new SqliteCommand
-                    ($"SELECT * from {_tableName}", db);
-                var query = selectCommand.ExecuteReader();
-                var objects = new List<object[]>();
-                while (query.Read())
+                using (var db =
+                    new SqliteConnection($"Filename={_database}"))
                 {
-                    var fieldCount = query.FieldCount;
-                    var line = new List<object>();
-                    for (var i = 0; i < fieldCount; i++)
+                    db.Open();
+
+                    var selectCommand = new SqliteCommand
+                        ($"SELECT * from {_tableName}", db);
+                    var query = selectCommand.ExecuteReader();
+                    var objects = new List<object[]>();
+                    while (query.Read())
                     {
-                        line.Add(query.GetValue(i));
+                        var fieldCount = query.FieldCount;
+                        var line = new List<object>();
+                        for (var i = 0; i < fieldCount; i++)
+                        {
+                            line.Add(query.GetValue(i));
+                        }
+
+                        objects.Add(line.ToArray());
                     }
 
-                    objects.Add(line.ToArray());
+                    db.Close();
+                    return objects;
                 }
-
-                db.Close();
-                return objects;
+            }
+            catch (SqliteException e)
+            {
+                throw new StorageException(e.Message);
             }
         }
 
         public void DeleteRecordById(long id)
         {
-            using (var db =
-                new SqliteConnection($"Filename={_database}"))
+            try
             {
-                db.Open();
+                using (var db =
+                    new SqliteConnection($"Filename={_database}"))
+                {
+                    db.Open();
 
-                var tableCommand = "DELETE FROM " +
-                                   $"'{_tableName}' WHERE id={id}";
+                    var tableCommand = "DELETE FROM " +
+                                       $"'{_tableName}' WHERE id={id}";
 
-                var createTable = new SqliteCommand(tableCommand, db);
+                    var createTable = new SqliteCommand(tableCommand, db);
 
-                createTable.ExecuteReader();
+                    createTable.ExecuteReader();
+                }
+            }
+            catch (SqliteException e)
+            {
+                throw new StorageException(e.Message);
             }
         }
     }

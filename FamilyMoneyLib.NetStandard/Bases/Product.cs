@@ -8,5 +8,6 @@ namespace FamilyMoneyLib.NetStandard.Bases
     {
         public long Id { set; get; }
         public string Name { set; get; }
+        public ICategory LastCategory { set; get; }
     }
 }

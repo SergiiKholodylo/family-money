@@ -7,7 +7,7 @@ using FamilyMoneyLib.NetStandard.Storages;
 
 namespace FamilyMoneyLib.NetStandard.SQLite
 {
-    public class SqLiteTransactionStorage : TransactionStorageBase,ITransactionStorage
+    public class SqLiteTransactionStorage : TransactionStorageBase
     {
         /*
          Account Table Structure
@@ -28,24 +28,24 @@ namespace FamilyMoneyLib.NetStandard.SQLite
                                                      "accountId INTEGER NOT NULL,"+
                                                      "categoryId INTEGER NOT NULL,"+
                                                      "name TEXT NOT NULL, " +
-                                                     "total NUMERIC NOT NULL";
+                                                     "total NUMERIC NOT NULL, " +
+                                                     "ownerId TEXT NOT NULL, " +
+                                                     "baseId TEXT NOT NULL, "+
+                                                     "weight NUMERIC,"+
+                                                     "productId INTEGER";
 
         private readonly SqLiteTable _table = new SqLiteTable("familyMoney.db", "Transactions",
             $"({AccountTableStructure})");
 
         private readonly IAccountStorage _accountStorage;
         private readonly ICategoryStorage _categoryStorage;
-        private readonly IAccountFactory _accountFactory;
-        private readonly ICategoryFactory _categoryFactory;
+
 
 
         public SqLiteTransactionStorage(ITransactionFactory transactionFactory,SqLiteAccountStorage accountStorage, SqLiteCategoryStorage categoryStorage, RegularAccountFactory accountFactory, RegularCategoryFactory categoryFactory):base(transactionFactory)
         {
             _accountStorage = accountStorage;
             _categoryStorage = categoryStorage;
-
-            _accountFactory = accountFactory;
-            _categoryFactory = categoryFactory;
         }
 
         public SqLiteTransactionStorage(ITransactionFactory transactionFactory) : base(transactionFactory)
@@ -55,7 +55,7 @@ namespace FamilyMoneyLib.NetStandard.SQLite
         public override ITransaction CreateTransaction(ITransaction transaction)
         {
             _table.InitializeDatabase();
-            transaction.Id = _table.AddData(ObjectToITransactionConverter.ConvertForInsertString(transaction));
+            transaction.Id = _table.AddData(ObjectToITransactionConverter.ConvertToKeyPairList(transaction));
             return transaction;
         }
 
@@ -78,7 +78,7 @@ namespace FamilyMoneyLib.NetStandard.SQLite
         public override void UpdateTransaction(ITransaction transaction)
         {
             _table.InitializeDatabase();
-            _table.UpdateData(ObjectToITransactionConverter.ConvertForUpdateString(transaction), transaction.Id);
+            _table.UpdateData(ObjectToITransactionConverter.ConvertToKeyPairList(transaction), transaction.Id);
         }
 
         public void DeleteAllData()
@@ -90,7 +90,7 @@ namespace FamilyMoneyLib.NetStandard.SQLite
 
     public static class ObjectToITransactionConverter
     {
-        public static List<KeyValuePair<string, object>> ConvertForInsertString(ITransaction transaction)
+        public static List<KeyValuePair<string, object>> ConvertToKeyPairList(ITransaction transaction)
         {
             var returnList = new List<KeyValuePair<string, object>>
             {
@@ -99,19 +99,10 @@ namespace FamilyMoneyLib.NetStandard.SQLite
                 new KeyValuePair<string, object>("categoryId", transaction.Category.Id),
                 new KeyValuePair<string, object>("name", transaction.Name),
                 new KeyValuePair<string, object>("total", transaction.Total),
-            };
-            return returnList;
-        }
-
-        public static List<KeyValuePair<string, object>> ConvertForUpdateString(ITransaction transaction)
-        {
-            var returnList = new List<KeyValuePair<string, object>>
-            {
-                new KeyValuePair<string, object>("timestamp", transaction.Timestamp),
-                new KeyValuePair<string, object>("accountId", transaction.Account.Id),
-                new KeyValuePair<string, object>("categoryId", transaction.Category.Id),
-                new KeyValuePair<string, object>("name", transaction.Name),
-                new KeyValuePair<string, object>("total", transaction.Total),
+                new KeyValuePair<string, object>("ownerId", transaction.OwnerId),
+                new KeyValuePair<string, object>("baseId", transaction.BaseId),
+                new KeyValuePair<string, object>("weight", transaction.Weight),
+                new KeyValuePair<string, object>("productId", transaction.Product?.Id),
             };
             return returnList;
         }
@@ -127,6 +118,7 @@ namespace FamilyMoneyLib.NetStandard.SQLite
             var total = decimal.Parse(line[5].ToString());
             var account = accountStorage.GetAllAccounts().FirstOrDefault(x => x.Id == accountId);
             var category = categoryStorage.GetAllCategories().FirstOrDefault(x => x.Id == categoryId);
+            //var weight = line.
             var transaction = transactionFactory.CreateTransaction(account,category,name,total);
             transaction.Id = id;
             transaction.Timestamp = timestamp;

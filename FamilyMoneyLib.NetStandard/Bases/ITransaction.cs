@@ -2,7 +2,7 @@
 
 namespace FamilyMoneyLib.NetStandard.Bases
 {
-    public interface ITransaction
+    public interface ITransaction:ISecurity
     {
         IAccount Account { get; set; }
         ICategory Category { get; set; }
@@ -10,5 +10,7 @@ namespace FamilyMoneyLib.NetStandard.Bases
         DateTime Timestamp { get; set; }
         decimal Total { get; set; }
         long Id { get; set; }
+        decimal Weight { get; set; }
+        IProduct Product { get; set; }
     }
 }

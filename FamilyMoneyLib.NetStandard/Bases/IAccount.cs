@@ -2,7 +2,7 @@
 
 namespace FamilyMoneyLib.NetStandard.Bases
 {
-    public interface IAccount
+    public interface IAccount:ISecurity
     {
         string Currency { get; set; }
         string Description { get; set; }
