@@ -77,17 +77,21 @@ namespace FamilyMoneyLib.NetStandard.SQLite
 
     public static class ObjectToICategoryConverter
     {
-        public static ICategory Convert(object[] line, ICategoryFactory categoryFactory)
+        public static ICategory Convert(IDictionary<string, object> line, ICategoryFactory categoryFactory)
         {
-            var account = categoryFactory.CreateCategory(line[1].ToString(), line[2].ToString(), (long)line[0],null);
+            var id = (long)line["id"];
+            var name = line["name"].ToString();
+            var description = line["description"].ToString();
+
+            var account = categoryFactory.CreateCategory(name,description,id,null);
 
             return account;
         }
 
-        public static void UpdateParents(object[] line, ICategory[] withNoParents)
+        public static void UpdateParents(IDictionary<string, object> line, ICategory[] withNoParents)
         {
-            var id = (long)line[0];
-            var parentId = line[3];
+            var id = (long)line["id"];
+            var parentId = line["parentCategory"];
             if (parentId is System.DBNull) return;
             var category = withNoParents.FirstOrDefault(x => x.Id == id);
             var parentCategory = withNoParents.FirstOrDefault(x => x.Id == (long) parentId);

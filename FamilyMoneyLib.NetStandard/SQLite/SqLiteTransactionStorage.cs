@@ -107,19 +107,19 @@ namespace FamilyMoneyLib.NetStandard.SQLite
             return returnList;
         }
 
-        public static ITransaction Convert(object[] line, ITransactionFactory transactionFactory,
+        public static ITransaction Convert(IDictionary<string, object> line, ITransactionFactory transactionFactory,
             IAccountStorage accountStorage, ICategoryStorage categoryStorage)
         {
-            var id = (long) line[0];
-            var timestamp = DateTime.Parse(line[1].ToString());
-            var accountId = (long)(line[2]);
-            var categoryId = (long)(line[3]);
-            var name = line[4].ToString();
-            var total = decimal.Parse(line[5].ToString());
+            var id = (long) line["id"];
+            var timestamp = DateTime.Parse(line["timestamp"].ToString());
+            var accountId = (long)(line["accountId"]);
+            var categoryId = (long)(line["categoryId"]);
+            var name = line["name"].ToString();
+            var total = decimal.Parse(line["total"].ToString());
             var account = accountStorage.GetAllAccounts().FirstOrDefault(x => x.Id == accountId);
             var category = categoryStorage.GetAllCategories().FirstOrDefault(x => x.Id == categoryId);
-            var weight = decimal.Parse( line[8].ToString());
-            var productId = (line[9] is System.DBNull)? 0: (long)line[9];//Add Product Storage
+            var weight = decimal.Parse( line["weight"].ToString());
+            var productId = (line["productId"] is System.DBNull)? 0: (long)line["productId"];//Add Product Storage
             var transaction = transactionFactory.CreateTransaction(account,category,name,total,timestamp, id,weight,null);
             transaction.Id = id;
             transaction.Timestamp = timestamp;

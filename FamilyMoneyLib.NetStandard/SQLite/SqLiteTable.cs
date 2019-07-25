@@ -167,7 +167,7 @@ namespace FamilyMoneyLib.NetStandard.SQLite
             }
         }
 
-        public IEnumerable<object[]> SelectAll()
+        public IEnumerable<IDictionary<string, object>> SelectAll()
         {
             try
             {
@@ -179,17 +179,18 @@ namespace FamilyMoneyLib.NetStandard.SQLite
                     var selectCommand = new SqliteCommand
                         ($"SELECT * from {_tableName}", db);
                     var query = selectCommand.ExecuteReader();
-                    var objects = new List<object[]>();
+                    var objects = new List<IDictionary<string, object>>();
                     while (query.Read())
                     {
                         var fieldCount = query.FieldCount;
-                        var line = new List<object>();
+                        var line = new Dictionary<string, object>();
                         for (var i = 0; i < fieldCount; i++)
                         {
-                            line.Add(query.GetValue(i));
+                            var name = query.GetName(i);
+                            line.Add(name, query.GetValue(i));
                         }
 
-                        objects.Add(line.ToArray());
+                        objects.Add(line);
                     }
 
                     db.Close();

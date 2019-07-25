@@ -74,11 +74,14 @@ namespace FamilyMoneyLib.NetStandard.SQLite
 
     public static class ObjectToIAccountConverter
     {
-        public static IAccount Convert(object[] line, IAccountFactory accountFactory)
+        public static IAccount Convert(IDictionary<string, object> line, IAccountFactory accountFactory)
         {
-            var account = accountFactory.CreateAccount(line[2].ToString(), line[3].ToString(), line[4].ToString());
-            account.Id = (long) line[0];
-            account.Timestamp = DateTime.Parse(line[1].ToString());
+            var name = line["name"].ToString();
+            var description = line["description"].ToString();
+            var currency = line["currency"].ToString();
+            var account = accountFactory.CreateAccount(name,description,currency);
+            account.Id = (long) line["id"];
+            account.Timestamp = DateTime.Parse(line["timestamp"].ToString());
 
             return account;
         }
