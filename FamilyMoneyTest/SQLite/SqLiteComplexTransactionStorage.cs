@@ -9,7 +9,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace FamilyMoneyTest.SQLite
 {
     [TestClass]
-    public class SqLiteTransactionStorageTest
+    public class SqLiteComplexTransactionStorageTest
     {
         [TestMethod]
         public void CreateTransactionTest()
@@ -21,9 +21,13 @@ namespace FamilyMoneyTest.SQLite
             var transactionFactory = new RegularTransactionFactory();
             var storage = new SqLiteTransactionStorage(transactionFactory, accountStorage, categoryStorage, accountFactory, categoryFactory);
             var transaction = CreateTransaction();
-
+            var childTransaction = CreateTransaction();
+            var childTransaction1 = CreateTransaction();
 
             var newTransaction = storage.CreateTransaction(transaction);
+
+            newTransaction.AddChildrenTransaction(childTransaction);
+            newTransaction.AddChildrenTransaction(childTransaction1);
 
 
             Assert.AreEqual(transaction.Name, newTransaction.Name);

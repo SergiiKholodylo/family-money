@@ -10,7 +10,8 @@ namespace FamilyMoneyLib.NetStandard.Managers
 
         ITransaction CreateTransaction(IAccount account, ICategory category, string name, decimal total, DateTime timestamp);
 
-        ITransaction CreateTransaction(IAccount account, ICategory category, string name, decimal total, DateTime timestamp, long id, decimal weight, IProduct product);
+        ITransaction CreateTransaction(IAccount account, ICategory category, string name, decimal total, DateTime timestamp, long id, decimal weight, IProduct product, ITransaction parentTransaction);
+
         void DeleteTransaction(ITransaction transaction);
         IEnumerable<ITransaction> GetAllTransactions();
         void UpdateTransaction(ITransaction transaction);

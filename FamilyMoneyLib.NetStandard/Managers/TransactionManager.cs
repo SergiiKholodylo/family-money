@@ -44,11 +44,11 @@ namespace FamilyMoneyLib.NetStandard.Managers
         }
 
         public ITransaction CreateTransaction(IAccount account, ICategory category, string name, decimal total, DateTime timestamp,
-            long id, decimal weight, IProduct product)
+            long id, decimal weight, IProduct product, ITransaction parentTransaction)
         {
             try
             {
-                var transaction = _transactionFactory.CreateTransaction(account, category, name, total, timestamp,id,weight,product);
+                var transaction = _transactionFactory.CreateTransaction(account, category, name, total, timestamp,id,weight,product, parentTransaction);
                 return _transactionStorage.CreateTransaction(transaction);
             }
             catch (StorageException e)

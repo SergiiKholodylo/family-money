@@ -12,5 +12,12 @@ namespace FamilyMoneyLib.NetStandard.Bases
         long Id { get; set; }
         decimal Weight { get; set; }
         IProduct Product { get; set; }
+        bool IsComplexTransaction { get; set; }
+        ITransaction ParentTransaction { get; set; }
+        System.Collections.Generic.List<ITransaction> ChildrenTransactions { get; set; }
+
+        void AddChildrenTransaction(ITransaction transaction);
+        void DeleteAllChildrenTransactions();
+        void DeleteChildrenTransaction(ITransaction transaction);
     }
 }

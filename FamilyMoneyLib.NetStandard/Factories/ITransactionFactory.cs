@@ -7,6 +7,6 @@ namespace FamilyMoneyLib.NetStandard.Factories
     {
         ITransaction CreateTransaction(IAccount account, ICategory category, string name, decimal total);
         ITransaction CreateTransaction(IAccount account, ICategory category, string name, decimal total, DateTime timestamp);
-        ITransaction CreateTransaction(IAccount account, ICategory category, string name, decimal total, DateTime timestamp, long id, decimal weight, IProduct product);
+        ITransaction CreateTransaction(IAccount account, ICategory category, string name, decimal total, DateTime timestamp, long id, decimal weight, IProduct product, ITransaction parentTransaction);
     }
 }

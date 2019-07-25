@@ -4,7 +4,7 @@ using FamilyMoneyLib.NetStandard.Factories;
 
 namespace FamilyMoneyLib.NetStandard.Storages
 {
-    public class MemoryTransactionStorage : TransactionStorageBase, ITransactionStorage
+    public class MemoryTransactionStorage : TransactionStorageBase
     {
         private readonly List<ITransaction> _transactions = new List<ITransaction>();
 

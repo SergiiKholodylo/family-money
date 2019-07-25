@@ -180,7 +180,7 @@ namespace FamilyMoney.UWP.ViewModels.Dialogs
                     Time.Seconds
                 );
 
-                manager.CreateTransaction(Account, Category, Name, Total, Timestamp,0,Weight,null);
+                manager.CreateTransaction(Account, Category, Name, Total, Timestamp,0,Weight,null,null);
             }
             catch ( ManagerException e )
             {

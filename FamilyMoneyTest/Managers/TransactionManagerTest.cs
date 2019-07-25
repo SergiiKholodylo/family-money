@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using FamilyMoneyLib.NetStandard.Factories;
 using FamilyMoneyLib.NetStandard.Managers;
+using FamilyMoneyLib.NetStandard.SQLite;
 using FamilyMoneyLib.NetStandard.Storages;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -9,11 +10,12 @@ namespace FamilyMoneyTest.Managers
     [TestClass]
     public class TransactionManagerTest
     {
+        
         [TestMethod]
         public void CreateTransactionTest()
         {
             var factory = new RegularTransactionFactory();
-            var storage = new MemoryTransactionStorage(factory);
+            var storage = new SqLiteTransactionStorage(factory);
             var accountFactory = new RegularAccountFactory();
             var categoryFactory = new RegularCategoryFactory();
             var account = accountFactory.CreateAccount("Account", "Description", "UAH");
