@@ -2,7 +2,6 @@
 using System.Linq;
 using FamilyMoneyLib.NetStandard.Bases;
 using FamilyMoneyLib.NetStandard.Factories;
-using FamilyMoneyLib.NetStandard.Managers;
 using FamilyMoneyLib.NetStandard.SQLite;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -19,7 +18,7 @@ namespace FamilyMoneyTest.SQLite
             var accountStorage = new SqLiteAccountStorage(accountFactory);
             var categoryStorage = new SqLiteCategoryStorage(categoryFactory);
             var transactionFactory = new RegularTransactionFactory();
-            var storage = new SqLiteTransactionStorage(transactionFactory, accountStorage, categoryStorage, accountFactory, categoryFactory);
+            var storage = new SqLiteTransactionStorage(transactionFactory, accountStorage, categoryStorage);
             var transaction = CreateTransaction();
 
 
@@ -40,7 +39,7 @@ namespace FamilyMoneyTest.SQLite
             var accountStorage = new SqLiteAccountStorage(accountFactory);
             var categoryStorage = new SqLiteCategoryStorage(categoryFactory);
             var transactionFactory = new RegularTransactionFactory();
-            var storage = new SqLiteTransactionStorage(transactionFactory, accountStorage, categoryStorage, accountFactory, categoryFactory);
+            var storage = new SqLiteTransactionStorage(transactionFactory, accountStorage, categoryStorage);
             storage.DeleteAllData();
             var transaction = CreateTransaction();
             storage.CreateTransaction(transaction);
@@ -61,7 +60,7 @@ namespace FamilyMoneyTest.SQLite
             var accountStorage = new SqLiteAccountStorage(accountFactory);
             var categoryStorage = new SqLiteCategoryStorage(categoryFactory);
             var transactionFactory = new RegularTransactionFactory();
-            var storage = new SqLiteTransactionStorage(transactionFactory, accountStorage, categoryStorage, accountFactory, categoryFactory);
+            var storage = new SqLiteTransactionStorage(transactionFactory, accountStorage, categoryStorage);
 
             storage.DeleteAllData();
             var transaction = CreateTransaction();
@@ -87,7 +86,7 @@ namespace FamilyMoneyTest.SQLite
             var accountStorage = new SqLiteAccountStorage(accountFactory);
             var categoryStorage = new SqLiteCategoryStorage(categoryFactory);
             var transactionFactory = new RegularTransactionFactory();
-            var storage = new SqLiteTransactionStorage(transactionFactory, accountStorage, categoryStorage, accountFactory, categoryFactory);
+            var storage = new SqLiteTransactionStorage(transactionFactory, accountStorage, categoryStorage);
 
             storage.DeleteAllData();
             var transaction = CreateTransaction();
@@ -111,8 +110,8 @@ namespace FamilyMoneyTest.SQLite
         {
             var accountFactory = new RegularAccountFactory();
             var categoryFactory = new RegularCategoryFactory();
-            var accountManager = new AccountManager(accountFactory, new SqLiteAccountStorage(accountFactory));
-            var categoryManager = new CategoryManager(categoryFactory, new SqLiteCategoryStorage(categoryFactory));
+            var accountManager =  new SqLiteAccountStorage(accountFactory);
+            var categoryManager =  new SqLiteCategoryStorage(categoryFactory);
 
             var factory = new RegularTransactionFactory();
             

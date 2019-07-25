@@ -5,14 +5,15 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using FamilyMoney.UWP.Annotations;
 using FamilyMoneyLib.NetStandard.Bases;
-using FamilyMoneyLib.NetStandard.Managers;
+using FamilyMoneyLib.NetStandard.Storages;
+
 
 namespace FamilyMoney.UWP.ViewModels
 {
     public sealed class CategoryViewModel:INotifyPropertyChanged
     {
         private ObservableCollection<ICategory> _categories = new ObservableCollection<ICategory>();
-        private readonly ICategoryManager _manager;
+        private readonly ICategoryStorage _storage;
         private readonly ObservableCollection<CategoryTreeItem> _categoryTree = new ObservableCollection<CategoryTreeItem>();
 
 
@@ -26,7 +27,7 @@ namespace FamilyMoney.UWP.ViewModels
 
         public CategoryViewModel()
         {
-            _manager = MainPage.GlobalSettings.CategoryManager;
+            _storage = MainPage.GlobalSettings.CategoryStorage;
             Refresh();
         }
 
@@ -44,7 +45,7 @@ namespace FamilyMoney.UWP.ViewModels
         public void Refresh()
         {
             Categories.Clear();
-            var allCategories = _manager.GetAllCategories().ToArray();
+            var allCategories = _storage.GetAllCategories().ToArray();
             _categoryTree.Clear();
             foreach (var category in allCategories)
             {
@@ -75,7 +76,7 @@ namespace FamilyMoney.UWP.ViewModels
 
         public void DeleteCategory(ICategory activeCategory)
         {
-            _manager.DeleteCategory(activeCategory);
+            _storage.DeleteCategory(activeCategory);
             Categories.Remove(activeCategory);
         }
     }

@@ -37,6 +37,7 @@ namespace FamilyMoneyLib.NetStandard.SQLite
         }
         
 
+
         public override IAccount CreateAccount(IAccount account)
         {
             _table.InitializeDatabase();

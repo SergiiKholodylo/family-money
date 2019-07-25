@@ -6,7 +6,7 @@ using System.Linq;
 namespace FamilyMoneyLib.NetStandard.Bases
 {
 
-    [DebuggerDisplay("Transaction {Name} Total {Total}")]
+    [DebuggerDisplay("Transaction {Id} {Name} Total {Total} Parent {ParentTransaction?.Id}")]
     public class Transaction : ITransaction
     {
         private decimal _total;
@@ -57,17 +57,18 @@ namespace FamilyMoneyLib.NetStandard.Bases
             Weight = weight;
             Product = product;
             ParentTransaction = parentTransaction;
-            IsComplexTransaction = ParentTransaction == null;
+            IsComplexTransaction = false;
             BaseId = Guid.NewGuid();
             OwnerId = Guid.NewGuid();
+            parentTransaction?.ChildrenTransactions.Add(this);
         }
 
-        public void AddChildrenTransaction(ITransaction transaction)
+        internal void AddChildrenTransaction(ITransaction transaction)
         {
             if(transaction == this) throw new ArgumentException();
             if(Id == transaction.Id) throw new ArgumentException();
             if(ChildrenTransactions.Contains(transaction)) throw new ArgumentException($"Transaction Already Exists!");
-            if (ChildrenTransactions.Count(x=>x.Id == transaction.Id)>0) throw new ArgumentException($"Transaction Already Exists!");
+            //if (ChildrenTransactions.Count(x=>x.Id == transaction.Id)>0) throw new ArgumentException($"Transaction Already Exists!");
 
             IsComplexTransaction = true;
             transaction.ParentTransaction = this;
@@ -75,7 +76,7 @@ namespace FamilyMoneyLib.NetStandard.Bases
             ChildrenTransactions.Add(transaction);
         }
 
-        public void DeleteChildrenTransaction(ITransaction transaction)
+        internal void DeleteChildrenTransaction(ITransaction transaction)
         {
             var toDelete = ChildrenTransactions.Where(x => x.Id == transaction.Id);
             foreach (var transaction1 in toDelete)
@@ -86,7 +87,7 @@ namespace FamilyMoneyLib.NetStandard.Bases
             IsComplexTransaction = false;
         }
 
-        public void DeleteAllChildrenTransactions()
+        internal void DeleteAllChildrenTransactions()
         {
             ChildrenTransactions.Clear();
             IsComplexTransaction = false;

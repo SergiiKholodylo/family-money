@@ -5,7 +5,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using FamilyMoney.UWP.Annotations;
 using FamilyMoneyLib.NetStandard.Bases;
-using FamilyMoneyLib.NetStandard.Managers;
+using FamilyMoneyLib.NetStandard.Storages;
 
 namespace FamilyMoney.UWP.ViewModels.Dialogs
 {
@@ -24,7 +24,7 @@ namespace FamilyMoney.UWP.ViewModels.Dialogs
 
         public EditTransactionViewModel(IAccount activeAccount)
         {
-            Categories = MakeFlatCategoryTree(MainPage.GlobalSettings.CategoryManager.GetAllCategories().ToArray());
+            Categories = MakeFlatCategoryTree(MainPage.GlobalSettings.CategoryStorage.GetAllCategories().ToArray());
             Date = new DateTimeOffset(DateTime.Now);
             Time = DateTime.Now.TimeOfDay;
             if (activeAccount != null)
@@ -34,7 +34,7 @@ namespace FamilyMoney.UWP.ViewModels.Dialogs
         public EditTransactionViewModel(ITransaction transaction)
         {
             _transaction = transaction;
-            Categories = MakeFlatCategoryTree(MainPage.GlobalSettings.CategoryManager.GetAllCategories().ToArray());
+            Categories = MakeFlatCategoryTree(MainPage.GlobalSettings.CategoryStorage.GetAllCategories().ToArray());
             Date = transaction.Timestamp == DateTime.MinValue ? new DateTimeOffset(DateTime.Now) : new DateTimeOffset(transaction.Timestamp);
             Time =  transaction.Timestamp.TimeOfDay;
             Name = transaction.Name;
@@ -47,7 +47,7 @@ namespace FamilyMoney.UWP.ViewModels.Dialogs
 
         public EditTransactionViewModel()
         {
-            Categories = MakeFlatCategoryTree(MainPage.GlobalSettings.CategoryManager.GetAllCategories().ToArray());
+            Categories = MakeFlatCategoryTree(MainPage.GlobalSettings.CategoryStorage.GetAllCategories().ToArray());
         }
 
         private IEnumerable<ICategory> MakeFlatCategoryTree(ICategory[] getAllCategories)
@@ -161,16 +161,16 @@ namespace FamilyMoney.UWP.ViewModels.Dialogs
         public IEnumerable<ICategory> Categories { get; } 
 
 
-        public IEnumerable<IAccount> Accounts { get; }= MainPage.GlobalSettings.AccountManager.GetAllAccounts();
+        public IEnumerable<IAccount> Accounts { get; }= MainPage.GlobalSettings.AccountStorage.GetAllAccounts();
 
-        public IEnumerable<ITransaction> Transactions { get; } = MainPage.GlobalSettings.TransactionManager.GetAllTransactions();
+        public IEnumerable<ITransaction> Transactions { get; } = MainPage.GlobalSettings.TransactionStorage.GetAllTransactions();
 
         public void CreateTransaction()
         {
             try
             {
                 ErrorString = string.Empty;
-                var manager = MainPage.GlobalSettings.TransactionManager;
+                var storage= MainPage.GlobalSettings.TransactionStorage;
                 Timestamp = new DateTime(
                     Date.Year,
                     Date.Month,
@@ -180,9 +180,9 @@ namespace FamilyMoney.UWP.ViewModels.Dialogs
                     Time.Seconds
                 );
 
-                manager.CreateTransaction(Account, Category, Name, Total, Timestamp,0,Weight,null,null);
+                storage.CreateTransaction(Account, Category, Name, Total, Timestamp,0,Weight,null,null);
             }
-            catch ( ManagerException e )
+            catch ( StorageException e )
             {
                  ErrorString = $"You have the exception {e.Message}";
                  throw new ViewModelException(ErrorString);
@@ -201,7 +201,7 @@ namespace FamilyMoney.UWP.ViewModels.Dialogs
                     Time.Minutes,
                     Time.Seconds
                 );
-                var manager = MainPage.GlobalSettings.TransactionManager;
+                var manager = MainPage.GlobalSettings.TransactionStorage;
                 _transaction.Name = Name;
                 _transaction.Account = Account;
                 _transaction.Category = Category;
@@ -211,7 +211,7 @@ namespace FamilyMoney.UWP.ViewModels.Dialogs
 
                 manager.UpdateTransaction(_transaction);
             }
-            catch (ManagerException e)
+            catch (StorageException e)
             {
                 ErrorString = $"You have the exception {e.Message}";
                 throw new ViewModelException(ErrorString);

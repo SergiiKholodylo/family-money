@@ -4,14 +4,14 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using FamilyMoney.UWP.Helpers;
 using FamilyMoneyLib.NetStandard.Bases;
-using FamilyMoneyLib.NetStandard.Managers;
+using FamilyMoneyLib.NetStandard.Storages;
 
 namespace FamilyMoney.UWP.ViewModels
 {
     public sealed class TransactionsViewModel:INotifyPropertyChanged
     {
         private ObservableCollection<ITransaction> _transactions = new ObservableCollection<ITransaction>();
-        private readonly ITransactionManager _manager;
+        private readonly ITransactionStorage _storage;
         private IAccount _activeAccount;
 
         public ObservableCollection<ITransaction> Transactions
@@ -65,8 +65,8 @@ namespace FamilyMoney.UWP.ViewModels
 
         public TransactionsViewModel()
         {
-            _manager = MainPage.GlobalSettings.TransactionManager;
-            var accountManager = MainPage.GlobalSettings.AccountManager;
+            _storage = MainPage.GlobalSettings.TransactionStorage;
+            var accountManager = MainPage.GlobalSettings.AccountStorage;
             Accounts = new ObservableCollection<IAccount>(accountManager.GetAllAccounts());
             _activeAccount = Accounts.FirstOrDefault();
             RefreshTransactionByAccount();
@@ -76,7 +76,7 @@ namespace FamilyMoney.UWP.ViewModels
         {
             if(_activeAccount == null) return;
 
-            var transactionManager = MainPage.GlobalSettings.TransactionManager;
+            var transactionManager = MainPage.GlobalSettings.TransactionStorage;
 
             Transactions.Clear();
             var accountTransactions = transactionManager.GetAllTransactions().Where(x => x.Account.Id == _activeAccount.Id);
@@ -96,7 +96,7 @@ namespace FamilyMoney.UWP.ViewModels
         public void Refresh()
         {
             Transactions.Clear();
-            var allTransactions = _manager.GetAllTransactions();
+            var allTransactions = _storage.GetAllTransactions();
             foreach (var transaction in allTransactions)
             {
                 Transactions.Add(transaction);
@@ -105,7 +105,7 @@ namespace FamilyMoney.UWP.ViewModels
 
         public void DeleteTransaction(ITransaction activeTransaction)
         {
-            _manager.DeleteTransaction(activeTransaction);
+            _storage.DeleteTransaction(activeTransaction);
             Transactions.Remove(activeTransaction);
         }
     }

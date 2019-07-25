@@ -51,17 +51,17 @@ namespace FamilyMoney.UWP.ViewModels.Dialogs
             get => _parentCategory;
         }
 
-        public IEnumerable<ICategory> Categories { get; } = MainPage.GlobalSettings.CategoryManager.GetAllCategories();
+        public IEnumerable<ICategory> Categories { get; } = MainPage.GlobalSettings.CategoryStorage.GetAllCategories();
 
         public void CreateNewCategory()
         {
-            var manager = MainPage.GlobalSettings.CategoryManager;
+            var manager = MainPage.GlobalSettings.CategoryStorage;
             manager.CreateCategory(Name, Description, 0, ParentCategory);
         }
 
         public void UpdateCategory()
         {
-            var manager = MainPage.GlobalSettings.CategoryManager;
+            var manager = MainPage.GlobalSettings.CategoryStorage;
             _category.Name = Name;
             _category.Description = Description;
             _category.ParentCategory = ParentCategory;

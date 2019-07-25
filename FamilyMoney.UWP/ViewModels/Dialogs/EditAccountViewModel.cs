@@ -45,13 +45,13 @@ namespace FamilyMoney.UWP.ViewModels.Dialogs
 
         public void CreateNewAccount()
         {
-            var manager = MainPage.GlobalSettings.AccountManager;
+            var manager = MainPage.GlobalSettings.AccountStorage;
             manager.CreateAccount(Name, Description, Currency);
         }
 
         public void UpdateAccount()
         {
-            var manager = MainPage.GlobalSettings.AccountManager;
+            var manager = MainPage.GlobalSettings.AccountStorage;
             _account.Currency = Currency;
             _account.Description = Description;
             _account.Name = Name;

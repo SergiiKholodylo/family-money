@@ -2,14 +2,14 @@
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using FamilyMoneyLib.NetStandard.Bases;
-using FamilyMoneyLib.NetStandard.Managers;
+using FamilyMoneyLib.NetStandard.Storages;
 
 namespace FamilyMoney.UWP.ViewModels
 {
     public sealed class AccountViewModel:INotifyPropertyChanged
     {
         private ObservableCollection<IAccount> _accounts;
-        private readonly IAccountManager _manager;
+        private readonly IAccountStorage _storage;
 
         public ObservableCollection<IAccount> Accounts
         {
@@ -24,8 +24,8 @@ namespace FamilyMoney.UWP.ViewModels
 
         public AccountViewModel()
         {
-            _manager = MainPage.GlobalSettings.AccountManager;
-            Accounts = new ObservableCollection<IAccount>(_manager.GetAllAccounts());
+            _storage = MainPage.GlobalSettings.AccountStorage;
+            Accounts = new ObservableCollection<IAccount>(_storage.GetAllAccounts());
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -38,7 +38,7 @@ namespace FamilyMoney.UWP.ViewModels
         public void Refresh()
         {
             Accounts.Clear();
-            var allAccounts = _manager.GetAllAccounts();
+            var allAccounts = _storage.GetAllAccounts();
             foreach (var account in allAccounts)
             {
                 Accounts.Add(account);
@@ -47,7 +47,7 @@ namespace FamilyMoney.UWP.ViewModels
 
         public void DeleteAccount(IAccount activeAccount)
         {
-            _manager.DeleteAccount(activeAccount);
+            _storage.DeleteAccount(activeAccount);
             Accounts.Remove(activeAccount);
         }
     }

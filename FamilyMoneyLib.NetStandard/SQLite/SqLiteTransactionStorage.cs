@@ -44,7 +44,9 @@ namespace FamilyMoneyLib.NetStandard.SQLite
 
 
 
-        public SqLiteTransactionStorage(ITransactionFactory transactionFactory,SqLiteAccountStorage accountStorage, SqLiteCategoryStorage categoryStorage, RegularAccountFactory accountFactory, RegularCategoryFactory categoryFactory):base(transactionFactory)
+        public SqLiteTransactionStorage(ITransactionFactory transactionFactory, 
+            IAccountStorage accountStorage,
+            ICategoryStorage categoryStorage):base(transactionFactory)
         {
             _accountStorage = accountStorage;
             _categoryStorage = categoryStorage;
@@ -81,10 +83,13 @@ namespace FamilyMoneyLib.NetStandard.SQLite
         public override IEnumerable<ITransaction> GetAllTransactions()
         {
             _table.InitializeDatabase();
-            var lines = _table.SelectAll();
+            var lines = _table.SelectAll().ToArray();
 
-            var response = lines.Select(x => ObjectToITransactionConverter.Convert(x, TransactionFactory, _accountStorage, _categoryStorage)).OrderByDescending(x => x.Timestamp).ToList();
-
+            var response = lines.Select(x => ObjectToITransactionConverter.Convert(x, TransactionFactory, _accountStorage, _categoryStorage)).OrderByDescending(x => x.Timestamp).ToArray();
+            foreach (var line in lines)
+            {
+                ObjectToITransactionConverter.UpdateParents(line, response);
+            }
             return response;
         }
 
@@ -92,17 +97,51 @@ namespace FamilyMoneyLib.NetStandard.SQLite
         {
             _table.InitializeDatabase();
             var allData = GetAllTransactions();
-            var children = allData.Where(x => x.ParentTransaction?.Id == transaction.Id);
-            foreach (var child in children)
-            {
-                _table.DeleteRecordById(child.Id);
-            }
+            //var children = allData.Where(x => x.ParentTransaction?.Id == transaction.Id);
+            //foreach (var child in children)
+            //{
+            //    _table.DeleteRecordById(child.Id);
+            //}
 
             _table.UpdateData(ObjectToITransactionConverter.ConvertToKeyPairList(transaction), transaction.Id);
-            foreach (var childrenTransaction in transaction.ChildrenTransactions)
-            {
-                _table.UpdateData(ObjectToITransactionConverter.ConvertToKeyPairList(childrenTransaction), childrenTransaction.Id);
-            }
+            //foreach (var childrenTransaction in transaction.ChildrenTransactions)
+            //{
+            //    _table.AddData(ObjectToITransactionConverter.ConvertToKeyPairList(childrenTransaction));
+            //}
+        }
+
+        public override void AddChildrenTransaction(Transaction transaction)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override void DeleteAllChildrenTransactions()
+        {
+            throw new NotImplementedException();
+        }
+
+        public override void DeleteChildrenTransaction(ITransaction transaction)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void AddChildrenTransaction(ITransaction parent, ITransaction child)
+        {
+            var transaction = (Transaction) parent;
+            child.ParentTransaction = parent;
+            transaction.AddChildrenTransaction(child);
+            UpdateTransaction(child);
+            UpdateTransaction(transaction);
+        }
+
+        public void DeleteAllChildrenTransactions(Transaction parent)
+        {
+            parent.DeleteAllChildrenTransactions();
+        }
+
+        public void DeleteChildrenTransaction(Transaction parent, Transaction child)
+        {
+            parent.DeleteChildrenTransaction(child);
         }
 
         public void DeleteAllData()
@@ -146,11 +185,30 @@ namespace FamilyMoneyLib.NetStandard.SQLite
             var category = categoryStorage.GetAllCategories().FirstOrDefault(x => x.Id == categoryId);
             var weight = decimal.Parse( line["weight"].ToString());
             var productId = (line["productId"] is System.DBNull)? 0: (long)line["productId"];//Add Product Storage
-            var transaction = transactionFactory.CreateTransaction(account,category,name,total,timestamp, id,weight,null,null);
+            var parentId = (line["parentId"] is System.DBNull) ? 0 : (long)line["parentId"];
+            var isComplexTransaction = (long) line["isComplexTransaction"] > 0;
+
+            var transaction = (Transaction)transactionFactory.CreateTransaction(account,category,name,total,timestamp, id,weight,null,null);
+
             transaction.Id = id;
             transaction.Timestamp = timestamp;
 
             return transaction;
+        }
+
+        public static void UpdateParents(IDictionary<string, object> line, ITransaction[] withNoParents)
+        {
+            var id = (long)line["id"];
+            var parentId = line["parentId"];
+            if (parentId is System.DBNull) return;
+            var transaction = withNoParents.FirstOrDefault(x => x.Id == id);
+            var parentTransaction = (Transaction)withNoParents.FirstOrDefault(x => x.Id == (long)parentId);
+            if (transaction != null)
+            {
+                transaction.ParentTransaction = parentTransaction;
+                parentTransaction?.AddChildrenTransaction(transaction);
+            }
+               
         }
     }
 }

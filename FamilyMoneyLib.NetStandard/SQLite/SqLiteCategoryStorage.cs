@@ -1,6 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Runtime.ExceptionServices;
 using FamilyMoneyLib.NetStandard.Bases;
 using FamilyMoneyLib.NetStandard.Factories;
 using FamilyMoneyLib.NetStandard.Storages;
@@ -73,6 +75,7 @@ namespace FamilyMoneyLib.NetStandard.SQLite
             _table.InitializeDatabase();
             _table.DeleteDatabase();
         }
+
     }
 
     public static class ObjectToICategoryConverter

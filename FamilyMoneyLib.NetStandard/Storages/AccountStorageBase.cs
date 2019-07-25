@@ -20,5 +20,10 @@ namespace FamilyMoneyLib.NetStandard.Storages
         public abstract void UpdateAccount(IAccount account);
 
         public abstract IEnumerable<IAccount> GetAllAccounts();
+        public IAccount CreateAccount(string name, string description, string currency)
+        {
+            var account = AccountFactory.CreateAccount(name, description, currency);
+            return CreateAccount(account);
+        }
     }
 }

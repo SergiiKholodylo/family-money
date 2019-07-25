@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 
 namespace FamilyMoneyLib.NetStandard.Bases
 {
@@ -15,9 +16,5 @@ namespace FamilyMoneyLib.NetStandard.Bases
         bool IsComplexTransaction { get; set; }
         ITransaction ParentTransaction { get; set; }
         System.Collections.Generic.List<ITransaction> ChildrenTransactions { get; set; }
-
-        void AddChildrenTransaction(ITransaction transaction);
-        void DeleteAllChildrenTransactions();
-        void DeleteChildrenTransaction(ITransaction transaction);
     }
 }
