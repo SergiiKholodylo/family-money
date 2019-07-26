@@ -1,5 +1,5 @@
 ﻿<ContentDialog
-    x:Class="FamilyMoney.UWP.Views.Dialogs.EditTransaction"
+    x:Class="FamilyMoney.UWP.Views.Dialogs.EditChildTransaction"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:FamilyMoney.UWP.Views.Dialogs"
@@ -21,28 +21,15 @@
 
     <Grid>
         <StackPanel>
-            <DatePicker 
-                Date="{x:Bind ViewModel.Date, Mode=TwoWay}" 
-                x:Uid="TransactionDatePicker"
-                />
-            <TimePicker 
-                Time="{x:Bind ViewModel.Time, Mode=TwoWay}" 
-                x:Uid="TransactionTimePicker"
-                />
-            <ComboBox HorizontalAlignment="Stretch"
-                      ItemsSource="{x:Bind ViewModel.Accounts}"
-                      SelectedValue="{x:Bind ViewModel.Account, Mode=TwoWay}"
-                      x:Uid="AccountComboBox"
-                      >
-                <ComboBox.ItemTemplate>
-                    <DataTemplate x:DataType="bases:IAccount">
-                        <StackPanel>
-                            <TextBlock Text="{Binding Name}"></TextBlock>
-                        </StackPanel>
-                    </DataTemplate>
-                </ComboBox.ItemTemplate>
+            <AutoSuggestBox x:Uid="NameTextBox" 
+                            TextChanged="AutoSuggestBox_TextChanged"
+                            QuerySubmitted="AutoSuggestBox_QuerySubmitted" 
+                            SuggestionChosen="AutoSuggestBox_SuggestionChosen" 
+                            QueryIcon="Find" 
+                            DisplayMemberPath="Name"
 
-            </ComboBox>
+                            Text="{x:Bind ViewModel.Name, Mode=TwoWay}"/>
+
             <ComboBox HorizontalAlignment="Stretch"
                       ItemsSource="{x:Bind ViewModel.Categories}"
                       SelectedValue="{x:Bind ViewModel.Category, Mode=TwoWay}"
@@ -55,17 +42,8 @@
                         </StackPanel>
                     </DataTemplate>
                 </ComboBox.ItemTemplate>
-
             </ComboBox>
 
-            <AutoSuggestBox x:Uid="NameTextBox" 
-                            TextChanged="AutoSuggestBox_TextChanged"
-                            QuerySubmitted="AutoSuggestBox_QuerySubmitted" 
-                            SuggestionChosen="AutoSuggestBox_SuggestionChosen" 
-                            QueryIcon="Find" 
-                            DisplayMemberPath="Name"
-
-                     Text="{x:Bind ViewModel.Name, Mode=TwoWay}"/>
             <TextBox 
                 x:Uid="TotalTextBox" 
                 Text="{x:Bind ViewModel.Total, Mode=TwoWay, Converter={StaticResource DecimalConverter}}"

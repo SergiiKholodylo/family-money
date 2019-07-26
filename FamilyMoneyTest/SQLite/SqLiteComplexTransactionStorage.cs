@@ -3,6 +3,7 @@ using System.Linq;
 using FamilyMoneyLib.NetStandard.Bases;
 using FamilyMoneyLib.NetStandard.Factories;
 using FamilyMoneyLib.NetStandard.SQLite;
+using FamilyMoneyLib.NetStandard.Storages;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace FamilyMoneyTest.SQLite
@@ -11,18 +12,18 @@ namespace FamilyMoneyTest.SQLite
     public class SqLiteComplexTransactionStorageTest
     {
         [TestMethod]
-        public void CreateTransactionTest()
+        public void CreateComplexTransactionTest()
         {
-            var accountFactory = new RegularAccountFactory();
-            var categoryFactory = new RegularCategoryFactory();
-            var accountStorage = new SqLiteAccountStorage(accountFactory);
-            var categoryStorage = new SqLiteCategoryStorage(categoryFactory);
+            var accountStorage = new SqLiteAccountStorage(new RegularAccountFactory());
+            var categoryStorage = new SqLiteCategoryStorage(new RegularCategoryFactory());
             var transactionFactory = new RegularTransactionFactory();
             var storage = new SqLiteTransactionStorage(transactionFactory, accountStorage, categoryStorage);
+            categoryStorage.DeleteAllData();
+            accountStorage.DeleteAllData();
             storage.DeleteAllData();
-            var transaction = CreateTransaction();
-            var childTransaction = CreateTransaction();
-            var childTransaction1 = CreateTransaction();
+            var transaction = CreateTransaction(accountStorage, categoryStorage, transactionFactory);
+            var childTransaction = CreateTransaction(accountStorage, categoryStorage, transactionFactory);
+            var childTransaction1 = CreateTransaction(accountStorage, categoryStorage, transactionFactory);
 
             var newTransaction = storage.CreateTransaction(transaction);
 
@@ -30,53 +31,59 @@ namespace FamilyMoneyTest.SQLite
             storage.AddChildrenTransaction(newTransaction, storage.CreateTransaction(childTransaction1));
 
 
-            var allTransactions = storage.GetAllTransactions();
+            var complexTransaction = storage.GetAllTransactions().FirstOrDefault(x=>x.IsComplexTransaction);
 
-            Assert.AreEqual(transaction.Name, newTransaction.Name);
-            Assert.AreEqual(transaction.Category.Id, newTransaction.Category.Id);
-            Assert.AreEqual(transaction.Account.Id, newTransaction.Account.Id);
-            Assert.AreEqual(transaction.Total, newTransaction.Total);
+            Assert.AreEqual(transaction.Name, complexTransaction?.Name);
+            Assert.AreEqual(transaction.Category.Id, complexTransaction?.Category?.Id);
+            Assert.AreEqual(transaction.Account.Id, complexTransaction?.Account?.Id);
+            Assert.AreEqual(transaction.Total, complexTransaction?.Total);
         }
 
         [TestMethod]
         public void GetAllTransactionsTest()
         {
+            ITransactionFactory transactionFactory = new RegularTransactionFactory();
             var accountStorage = new SqLiteAccountStorage(new RegularAccountFactory());
             var categoryStorage = new SqLiteCategoryStorage(new RegularCategoryFactory());
-            var storage = new SqLiteTransactionStorage(
-                new RegularTransactionFactory(), 
-                accountStorage, 
-                categoryStorage);
-
+            var storage = new SqLiteTransactionStorage(transactionFactory, accountStorage, categoryStorage);
+            categoryStorage.DeleteAllData();
+            accountStorage.DeleteAllData();
             storage.DeleteAllData();
-            var transaction = CreateTransaction();
-            storage.CreateTransaction(transaction);
+            var transaction = CreateTransaction(accountStorage, categoryStorage, transactionFactory);
+            var childTransaction = CreateTransaction(accountStorage, categoryStorage, transactionFactory);
+            var childTransaction1 = CreateTransaction(accountStorage, categoryStorage, transactionFactory);
 
-            var firstTransaction = storage.GetAllTransactions().First();
 
-            Assert.AreEqual(transaction.Name, firstTransaction.Name);
-            Assert.AreEqual(transaction.Category.Id, firstTransaction.Category.Id);
-            Assert.AreEqual(transaction.Account.Id, firstTransaction.Account.Id);
-            Assert.AreEqual(transaction.Total, firstTransaction.Total);
+            var newTransaction = storage.CreateTransaction(transaction);
+
+
+            storage.AddChildrenTransaction(newTransaction, storage.CreateTransaction(childTransaction));
+            storage.AddChildrenTransaction(newTransaction, storage.CreateTransaction(childTransaction1));
+            var allTransactions = storage.GetAllTransactions();
+            Assert.AreEqual(3, allTransactions.Count());
         }
 
         [TestMethod]
-        public void DeleteTransactionTest()
+        public void DeleteComplexTransactionTest()
         {
-            var accountFactory = new RegularAccountFactory();
-            var categoryFactory = new RegularCategoryFactory();
-            var accountStorage = new SqLiteAccountStorage(accountFactory);
-            var categoryStorage = new SqLiteCategoryStorage(categoryFactory);
-            var transactionFactory = new RegularTransactionFactory();
-            var storage = new SqLiteTransactionStorage(transactionFactory, accountStorage, categoryStorage);
-
+            ITransactionFactory transactionFactory = new RegularTransactionFactory();
+            var accountStorage = new SqLiteAccountStorage(new RegularAccountFactory());
+            var categoryStorage = new SqLiteCategoryStorage(new RegularCategoryFactory());
+            var storage = new SqLiteTransactionStorage(transactionFactory,accountStorage,categoryStorage);
+            categoryStorage.DeleteAllData();
+            accountStorage.DeleteAllData();
             storage.DeleteAllData();
-            var transaction = CreateTransaction();
-            storage.CreateTransaction(transaction);
+            var transaction = CreateTransaction(accountStorage, categoryStorage, transactionFactory);
+            var childTransaction = CreateTransaction(accountStorage, categoryStorage, transactionFactory);
+            var childTransaction1 = CreateTransaction(accountStorage, categoryStorage, transactionFactory);
+            var newTransaction = storage.CreateTransaction(transaction);
+            storage.AddChildrenTransaction(newTransaction, storage.CreateTransaction(childTransaction));
+            storage.AddChildrenTransaction(newTransaction, storage.CreateTransaction(childTransaction1));
 
 
-            
-            storage.DeleteTransaction(transaction);
+
+
+            storage.DeleteTransaction(newTransaction);
 
 
             var numberOfTransactions = storage.GetAllTransactions().Count();
@@ -85,44 +92,98 @@ namespace FamilyMoneyTest.SQLite
             Assert.AreEqual(0, numberOfTransactions);
         }
 
+        [TestMethod]
+        public void DeleteChildTransactionTest()
+        {
+            ITransactionFactory transactionFactory = new RegularTransactionFactory();
+            var accountStorage = new SqLiteAccountStorage(new RegularAccountFactory());
+            var categoryStorage = new SqLiteCategoryStorage(new RegularCategoryFactory());
+            var storage = new SqLiteTransactionStorage(transactionFactory, accountStorage, categoryStorage);
+            categoryStorage.DeleteAllData();
+            accountStorage.DeleteAllData();
+            storage.DeleteAllData();
+            var transaction = CreateTransaction(accountStorage, categoryStorage, transactionFactory);
+            var childTransaction = CreateTransaction(accountStorage, categoryStorage, transactionFactory);
+            var childTransaction1 = CreateTransaction(accountStorage, categoryStorage, transactionFactory);
+            var newTransaction = storage.CreateTransaction(transaction);
+            storage.AddChildrenTransaction(newTransaction, storage.CreateTransaction(childTransaction));
+            storage.AddChildrenTransaction(newTransaction, storage.CreateTransaction(childTransaction1));
+
+
+
+            storage.DeleteTransaction(childTransaction);
+
+
+            var numberOfTransactions = storage.GetAllTransactions().Count();
+            var numberOfComplex = storage.GetAllTransactions().Count(x=>x.IsComplexTransaction);
+            var numberOfNoComplex = storage.GetAllTransactions().Count(x => !x.IsComplexTransaction);
+
+            Assert.AreEqual(2, numberOfTransactions);
+            Assert.AreEqual(1, numberOfComplex);
+            Assert.AreEqual(1, numberOfNoComplex);
+        }
+
+        [TestMethod]
+        public void DeleteLastChildTransactionTest()
+        {
+            ITransactionFactory transactionFactory = new RegularTransactionFactory();
+            var accountStorage = new SqLiteAccountStorage(new RegularAccountFactory());
+            var categoryStorage = new SqLiteCategoryStorage(new RegularCategoryFactory());
+            var storage = new SqLiteTransactionStorage(transactionFactory, accountStorage, categoryStorage);
+            categoryStorage.DeleteAllData();
+            accountStorage.DeleteAllData();
+            storage.DeleteAllData();
+            var transaction = CreateTransaction(accountStorage, categoryStorage, transactionFactory);
+            var childTransaction = CreateTransaction(accountStorage, categoryStorage, transactionFactory);
+            var newTransaction = storage.CreateTransaction(transaction);
+            storage.AddChildrenTransaction(newTransaction, storage.CreateTransaction(childTransaction));
+
+
+            storage.DeleteTransaction(childTransaction);
+
+
+            var numberOfTransactions = storage.GetAllTransactions().Count();
+            var numberOfComplex = storage.GetAllTransactions().Count(x => x.IsComplexTransaction);
+            var numberOfNoComplex = storage.GetAllTransactions().Count(x => !x.IsComplexTransaction);
+
+            Assert.AreEqual(1, numberOfTransactions);
+            Assert.AreEqual(0, numberOfComplex);
+            Assert.AreEqual(1, numberOfNoComplex);
+        }
 
         [TestMethod]
         public void UpdateTransactionTest()
         {
-            var accountFactory = new RegularAccountFactory();
-            var categoryFactory = new RegularCategoryFactory();
-            var accountStorage = new SqLiteAccountStorage(accountFactory);
-            var categoryStorage = new SqLiteCategoryStorage(categoryFactory);
-            var transactionFactory = new RegularTransactionFactory();
+            ITransactionFactory transactionFactory = new RegularTransactionFactory();
+            var accountStorage = new SqLiteAccountStorage(new RegularAccountFactory());
+            var categoryStorage = new SqLiteCategoryStorage(new RegularCategoryFactory());
             var storage = new SqLiteTransactionStorage(transactionFactory, accountStorage, categoryStorage);
-
+            categoryStorage.DeleteAllData();
+            accountStorage.DeleteAllData();
             storage.DeleteAllData();
-            var transaction = CreateTransaction();
-            storage.CreateTransaction(transaction);
+            var transaction = CreateTransaction(accountStorage, categoryStorage, transactionFactory);
+            var childTransaction = CreateTransaction(accountStorage, categoryStorage, transactionFactory);
+            var childTransaction1 = CreateTransaction(accountStorage, categoryStorage, transactionFactory);
+            var newTransaction = storage.CreateTransaction(transaction);
+            storage.AddChildrenTransaction(newTransaction, storage.CreateTransaction(childTransaction));
+            storage.AddChildrenTransaction(newTransaction, storage.CreateTransaction(childTransaction1));
+            childTransaction1.Name = "New Name";
+            childTransaction1.Total = 515.03m;
 
-            transaction.Name = "New Name";
-            transaction.Total = 515.03m;
+
+            storage.UpdateTransaction(childTransaction1);
 
 
-            storage.UpdateTransaction(transaction);
-
-
-            var firstTransaction = storage.GetAllTransactions().First();
-            Assert.AreEqual(transaction.Name, firstTransaction.Name);
-            Assert.AreEqual(transaction.Category.Id, firstTransaction.Category.Id);
-            Assert.AreEqual(transaction.Account.Id, firstTransaction.Account.Id);
-            Assert.AreEqual(transaction.Total, firstTransaction.Total);
+            var firstTransaction = storage.GetAllTransactions().First(x=>x.Id == childTransaction1.Id);
+            Assert.AreEqual(childTransaction1.Name, firstTransaction.Name);
+            Assert.AreEqual(childTransaction1.Category.Id, firstTransaction.Category.Id);
+            Assert.AreEqual(childTransaction1.Account.Id, firstTransaction.Account.Id);
+            Assert.AreEqual(childTransaction1.Total, firstTransaction.Total);
         }
 
-        private ITransaction CreateTransaction()
+        private ITransaction CreateTransaction(IAccountStorage accountManager, ICategoryStorage categoryManager, ITransactionFactory factory)
         {
-            var accountFactory = new RegularAccountFactory();
-            var categoryFactory = new RegularCategoryFactory();
-            var accountManager =  new SqLiteAccountStorage(accountFactory);
-            var categoryManager = new SqLiteCategoryStorage(categoryFactory);
-
-            var factory = new RegularTransactionFactory();
-            
+        
             var transactionName = "Test Transaction";
             var transactionTotal = 213.00m;
 

@@ -26,14 +26,9 @@ namespace FamilyMoney.UWP.Views
 
         private async void AppBarButton_Click(object sender, RoutedEventArgs e)
         {
-            var addTransaction
-                = new EditTransaction(ViewModel.ActiveAccount);
-
-            var result = await addTransaction.ShowAsync();
-            if (result == ContentDialogResult.Primary)
-            {
-                ViewModel.RefreshTransactionByAccount();
-            }
+            
+            var parameter = new TransactionPageParameter(ViewModel.ActiveAccount);
+            Frame.Navigate(typeof(Transaction),parameter);
         }
         private void AppBarButton_Click_1(object sender, RoutedEventArgs e)
         {
@@ -68,13 +63,15 @@ namespace FamilyMoney.UWP.Views
                 ViewModel.DeleteTransaction(activeTransaction);
         }
 
-        private async void ListView_DoubleTapped(object sender, DoubleTappedRoutedEventArgs e)
+        private void ListView_DoubleTapped(object sender, DoubleTappedRoutedEventArgs e)
         {
             var activeTransaction = (ITransaction)(((ListView)sender).SelectedValue);
-            var editTransaction = new EditTransaction(activeTransaction);
-            var result = await editTransaction.ShowAsync();
-            if (result == ContentDialogResult.Primary)
-                ViewModel.RefreshTransactionByAccount();
+            //var editTransaction = new EditTransaction(activeTransaction);
+            //var result = await editTransaction.ShowAsync();
+            //if (result == ContentDialogResult.Primary)
+            //    ViewModel.RefreshTransactionByAccount();
+            var parameter = new TransactionPageParameter(activeTransaction);
+            Frame.Navigate(typeof(Transaction), parameter);
         }
     }
 }

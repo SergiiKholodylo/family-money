@@ -9,6 +9,7 @@ namespace FamilyMoneyLib.NetStandard.Storages
         ICategory CreateCategory(string name, string description, long id, ICategory parentCategory);
         void DeleteCategory(ICategory category);
         IEnumerable<ICategory> GetAllCategories();
+        IEnumerable<ICategory> MakeFlatCategoryTree();
         void UpdateCategory(ICategory category);
     }
 }

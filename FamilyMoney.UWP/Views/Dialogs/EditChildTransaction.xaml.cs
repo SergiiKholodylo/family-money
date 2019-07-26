@@ -8,12 +8,12 @@ using FamilyMoneyLib.NetStandard.Bases;
 
 namespace FamilyMoney.UWP.Views.Dialogs
 {
-    public sealed partial class EditTransaction : ContentDialog
+    public sealed partial class EditChildTransaction : ContentDialog
     {
-        public EditTransactionViewModel ViewModel;
+        public EditChildTransactionViewModel ViewModel;
         private Action _editTransactionAction;
 
-        public EditTransaction(ITransaction transaction = null)
+        public EditChildTransaction(ITransaction parent, IAccount activeAccount,ITransaction transaction=null)
         {
             this.InitializeComponent();
 
@@ -25,8 +25,9 @@ namespace FamilyMoney.UWP.Views.Dialogs
             {
                 InitUpdateMode();
             }
-            ViewModel = new EditTransactionViewModel(transaction);
+            ViewModel = new EditChildTransactionViewModel(parent, activeAccount,transaction);
         }
+
 
         private void InitUpdateMode()
         {
@@ -34,7 +35,7 @@ namespace FamilyMoney.UWP.Views.Dialogs
             PrimaryButtonText = "Update Transaction".GetLocalized();
             SecondaryButtonText = "Cancel".GetLocalized();
 
-            _editTransactionAction = delegate { ViewModel.UpdateTransaction(); };
+            _editTransactionAction = delegate { ViewModel.UpdateChildTransaction(); };
         }
 
         private void InitCreateMode()
@@ -44,15 +45,10 @@ namespace FamilyMoney.UWP.Views.Dialogs
             PrimaryButtonText = "Create Transaction".GetLocalized();
             SecondaryButtonText = "Cancel".GetLocalized();
 
-            _editTransactionAction = delegate { ViewModel.CreateTransaction(); };
+            _editTransactionAction = delegate { ViewModel.CreateChildTransaction(); };
         }
 
-        public EditTransaction(IAccount activeAccount)
-        {
-            this.InitializeComponent();
-            ViewModel = new EditTransactionViewModel(activeAccount);
-            InitCreateMode();
-        }
+
 
         private void ContentDialog_PrimaryButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args)
         {
@@ -60,7 +56,7 @@ namespace FamilyMoney.UWP.Views.Dialogs
             {
                 _editTransactionAction();
             }
-            catch (Exception e)
+            catch (ViewModelException)
             {
                 args.Cancel = true;
             }

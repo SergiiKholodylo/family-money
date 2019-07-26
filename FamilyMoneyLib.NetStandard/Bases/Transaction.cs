@@ -72,6 +72,8 @@ namespace FamilyMoneyLib.NetStandard.Bases
 
             IsComplexTransaction = true;
             transaction.ParentTransaction = this;
+            transaction.Timestamp = Timestamp;
+            transaction.Account = Account;
             ParentTransaction = null;
             ChildrenTransactions.Add(transaction);
         }

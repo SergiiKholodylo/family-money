@@ -124,6 +124,7 @@
     <Compile Include="Converters\StringFormatConverter.cs" />
     <Compile Include="GlobalSettings.cs" />
     <Compile Include="Helpers\ResourceExtensions.cs" />
+    <Compile Include="Helpers\TransactionHelpers.cs" />
     <Compile Include="MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
@@ -134,9 +135,10 @@
     </Compile>
     <Compile Include="ViewModels\AccountViewModel.cs" />
     <Compile Include="ViewModels\CategoryViewModel.cs" />
-    <Compile Include="ViewModels\Dialogs\EditTransactionViewModel.cs" />
+    <Compile Include="ViewModels\Dialogs\EditChildTransactionViewModel.cs" />
     <Compile Include="ViewModels\Dialogs\EditAccountViewModel.cs" />
     <Compile Include="ViewModels\Dialogs\EditCategoryViewModel.cs" />
+    <Compile Include="ViewModels\TransactionViewModel.cs" />
     <Compile Include="ViewModels\ViewModelException.cs" />
     <Compile Include="ViewModels\TransactionsViewModel.cs" />
     <Compile Include="Views\Accounts.xaml.cs">
@@ -151,8 +153,11 @@
     <Compile Include="Views\Dialogs\EditCategory.xaml.cs">
       <DependentUpon>EditCategory.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\Dialogs\EditTransaction.xaml.cs">
-      <DependentUpon>EditTransaction.xaml</DependentUpon>
+    <Compile Include="Views\Dialogs\EditChildTransaction.xaml.cs">
+      <DependentUpon>EditChildTransaction.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Transaction.xaml.cs">
+      <DependentUpon>Transaction.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Transactions.xaml.cs">
       <DependentUpon>Transactions.xaml</DependentUpon>
@@ -203,7 +208,11 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\Dialogs\EditTransaction.xaml">
+    <Page Include="Views\Dialogs\EditChildTransaction.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Transaction.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

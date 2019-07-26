@@ -141,6 +141,9 @@
   <data name="Cancel" xml:space="preserve">
     <value>Cancel</value>
   </data>
+  <data name="CancelAppBar.Label" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
   <data name="CategoriesList.Header" xml:space="preserve">
     <value>Categories List</value>
   </data>
@@ -152,6 +155,9 @@
   </data>
   <data name="CategoryTreeView.Header" xml:space="preserve">
     <value>Category List</value>
+  </data>
+  <data name="ChildTransactionListView.Header" xml:space="preserve">
+    <value>Child Transaction</value>
   </data>
   <data name="Create Account" xml:space="preserve">
     <value>Create Account Resource</value>
@@ -180,6 +186,12 @@
   <data name="Edit Category" xml:space="preserve">
     <value>Edit Category</value>
   </data>
+  <data name="IsComplexTransaction.OffContent" xml:space="preserve">
+    <value>Simple Transaction</value>
+  </data>
+  <data name="IsComplexTransaction.OnContent" xml:space="preserve">
+    <value>Complex Transaction</value>
+  </data>
   <data name="NameTextBox.Header" xml:space="preserve">
     <value>Name</value>
   </data>
@@ -202,6 +214,9 @@
     <value>Reports</value>
   </data>
   <data name="Save" xml:space="preserve">
+    <value>Save</value>
+  </data>
+  <data name="SaveAppBar.Label" xml:space="preserve">
     <value>Save</value>
   </data>
   <data name="TotalTextBox.Header" xml:space="preserve">

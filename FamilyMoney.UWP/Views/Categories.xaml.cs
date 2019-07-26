@@ -49,7 +49,7 @@ namespace FamilyMoney.UWP.Views
             this.Frame.Navigate(typeof(Categories));
         }
 
-        private async void ListView_DoubleTapped(object sender, Windows.UI.Xaml.Input.DoubleTappedRoutedEventArgs e)
+        private void ListView_DoubleTapped(object sender, Windows.UI.Xaml.Input.DoubleTappedRoutedEventArgs e)
         {
             var a = ((Microsoft.UI.Xaml.Controls.TreeView) sender).SelectedNodes.ToArray();
             var b = a.FirstOrDefault();
@@ -60,7 +60,7 @@ namespace FamilyMoney.UWP.Views
             //    ViewModel.Refresh();
         }
 
-        private async void DeleteItem_ItemInvoked(SwipeItem sender, SwipeItemInvokedEventArgs args)
+        private void DeleteItem_ItemInvoked(SwipeItem sender, SwipeItemInvokedEventArgs args)
         {
             //var activeCategory = (ICategory)args.SwipeControl.DataContext;
             //var deleteConfirmation = new ContentDialog

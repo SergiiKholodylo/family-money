@@ -51,7 +51,7 @@ namespace FamilyMoney.UWP.ViewModels.Dialogs
             get => _parentCategory;
         }
 
-        public IEnumerable<ICategory> Categories { get; } = MainPage.GlobalSettings.CategoryStorage.GetAllCategories();
+        public IEnumerable<ICategory> Categories { get; } = MainPage.GlobalSettings.CategoryStorage.MakeFlatCategoryTree();
 
         public void CreateNewCategory()
         {
