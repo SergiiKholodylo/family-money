@@ -3,7 +3,7 @@ using System.Linq;
 using FamilyMoneyLib.NetStandard.SQLite;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace FamilyMoneyTest.SQLite
+namespace ItegrationTests.SQLite
 {
     [TestClass]
     public class SqLiteTableTest

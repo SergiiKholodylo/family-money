@@ -5,7 +5,7 @@ using FamilyMoneyLib.NetStandard.Factories;
 using FamilyMoneyLib.NetStandard.SQLite;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace FamilyMoneyTest.SQLite
+namespace ItegrationTests.SQLite
 {
     [TestClass]
     public class SqLiteTransactionStorageTest
