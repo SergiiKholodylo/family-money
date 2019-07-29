@@ -6,7 +6,6 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using FamilyMoney.UWP.Annotations;
 using FamilyMoney.UWP.Helpers;
-using FamilyMoney.UWP.ViewModels.Dialogs;
 using FamilyMoneyLib.NetStandard.Bases;
 using FamilyMoneyLib.NetStandard.Storages;
 
@@ -52,10 +51,12 @@ namespace FamilyMoney.UWP.ViewModels
                 Total = transaction.Total;
                 Weight = transaction.Weight;
                 IsComplexTransaction = transaction.IsComplexTransaction;
-                ParentTransaction = transaction.ParentTransaction;
+                ParentTransaction = (ITransaction)transaction.Parent;
             }
 
-            ChildrenTransactions = transaction == null ? new ObservableCollection<ITransaction>() : new ObservableCollection<ITransaction>(transaction.ChildrenTransactions);
+            ChildrenTransactions = transaction == null ?
+                new ObservableCollection<ITransaction>() : 
+                new ObservableCollection<ITransaction>(transaction.Children.Select(x=>(ITransaction)x));
         }
 
         public ITransaction ParentTransaction { get; set; }
@@ -203,7 +204,7 @@ namespace FamilyMoney.UWP.ViewModels
                 _transaction.Timestamp = Timestamp;
                 _transaction.Total = Total;
                 _transaction.Weight = Weight;
-                _transaction.ParentTransaction = ParentTransaction;
+                _transaction.Parent = ParentTransaction;
 
                 manager.UpdateTransaction(_transaction);
             }

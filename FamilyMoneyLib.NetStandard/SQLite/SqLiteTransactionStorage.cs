@@ -60,11 +60,6 @@ namespace FamilyMoneyLib.NetStandard.SQLite
         {
             _table.InitializeDatabase();
             transaction.Id = _table.AddData(ObjectToITransactionConverter.ConvertToKeyPairList(transaction));
-            foreach (var childrenTransaction in transaction.ChildrenTransactions)
-            {
-                _table.AddData(ObjectToITransactionConverter.ConvertToKeyPairList(childrenTransaction));
-            }
-
             return transaction;
         }
 
@@ -72,7 +67,7 @@ namespace FamilyMoneyLib.NetStandard.SQLite
         {
             _table.InitializeDatabase();
             var allData = GetAllTransactions();
-            var children = allData.Where(x => x.ParentTransaction?.Id == transaction.Id);
+            var children = allData.Where(x => x.Parent?.Id == transaction.Id);
             foreach (var child in children)
             {
                 _table.DeleteRecordById(child.Id);
@@ -128,7 +123,7 @@ namespace FamilyMoneyLib.NetStandard.SQLite
         public void AddChildrenTransaction(ITransaction parent, ITransaction child)
         {
             var transaction = (Transaction) parent;
-            child.ParentTransaction = parent;
+            child.Parent = parent;
             transaction.AddChildrenTransaction(child);
             UpdateTransaction(child);
             UpdateTransaction(transaction);
@@ -167,7 +162,7 @@ namespace FamilyMoneyLib.NetStandard.SQLite
                 new KeyValuePair<string, object>("weight", transaction.Weight),
                 new KeyValuePair<string, object>("productId", transaction.Product?.Id),
                 new KeyValuePair<string, object>("isComplexTransaction", transaction.IsComplexTransaction),
-                new KeyValuePair<string, object>("parentId", transaction.ParentTransaction?.Id),
+                new KeyValuePair<string, object>("parentId", transaction.Parent?.Id),
             };
             return returnList;
         }
@@ -205,7 +200,7 @@ namespace FamilyMoneyLib.NetStandard.SQLite
             var parentTransaction = (Transaction)withNoParents.FirstOrDefault(x => x.Id == (long)parentId);
             if (transaction != null)
             {
-                transaction.ParentTransaction = parentTransaction;
+                transaction.Parent = parentTransaction;
                 parentTransaction?.AddChildrenTransaction(transaction);
             }
                

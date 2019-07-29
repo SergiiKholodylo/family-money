@@ -98,7 +98,7 @@ namespace FamilyMoneyLib.NetStandard.SQLite
             if (parentId is System.DBNull) return;
             var category = withNoParents.FirstOrDefault(x => x.Id == id);
             var parentCategory = withNoParents.FirstOrDefault(x => x.Id == (long) parentId);
-            if (category != null) category.ParentCategory = parentCategory;
+            if (category != null) category.Parent = parentCategory;
         }
 
 
@@ -108,7 +108,7 @@ namespace FamilyMoneyLib.NetStandard.SQLite
             {
                 new KeyValuePair<string, object>("name", category.Name),
                 new KeyValuePair<string, object>("description", category.Description),
-                new KeyValuePair<string, object>("parentCategory", category.ParentCategory?.Id),
+                new KeyValuePair<string, object>("parentCategory", category.Parent?.Id),
                 new KeyValuePair<string, object>("ownerId", category.OwnerId),
                 new KeyValuePair<string, object>("baseId", category.BaseId),
             };
@@ -121,7 +121,7 @@ namespace FamilyMoneyLib.NetStandard.SQLite
             {
                 new KeyValuePair<string, object>("name", category.Name),
                 new KeyValuePair<string, object>("description", category.Description),
-                new KeyValuePair<string, object>("parentCategory", category.ParentCategory?.Id),
+                new KeyValuePair<string, object>("parentCategory", category.Parent?.Id),
                 new KeyValuePair<string, object>("ownerId", category.OwnerId),
                 new KeyValuePair<string, object>("baseId", category.BaseId),
 

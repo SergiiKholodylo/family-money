@@ -133,6 +133,7 @@
     <Compile Include="Report.xaml.cs">
       <DependentUpon>Report.xaml</DependentUpon>
     </Compile>
+    <Compile Include="ViewClasses\ViewCategory.cs" />
     <Compile Include="ViewModels\AccountViewModel.cs" />
     <Compile Include="ViewModels\CategoryViewModel.cs" />
     <Compile Include="ViewModels\Dialogs\EditChildTransactionViewModel.cs" />

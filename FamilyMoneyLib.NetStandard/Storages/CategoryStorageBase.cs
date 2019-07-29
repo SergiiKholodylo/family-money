@@ -30,7 +30,7 @@ namespace FamilyMoneyLib.NetStandard.Storages
             var flatTree = new List<ICategory>();
 
             ICategory[] getAllCategories = GetAllCategories().ToArray();
-            var roots = getAllCategories.Where(x => x.ParentCategory == null);
+            var roots = getAllCategories.Where(x => x.Parent == null);
             foreach (var category in roots)
             {
                 flatTree.Add(category);
@@ -43,7 +43,7 @@ namespace FamilyMoneyLib.NetStandard.Storages
         private void AddTreeLeaves(ICategory[] getAllCategories, List<ICategory> flatTree,
             ICategory category)
         {
-            var children = getAllCategories.Where(x => x.ParentCategory?.Id == category.Id);
+            var children = getAllCategories.Where(x => x.Parent?.Id == category.Id);
             foreach (var child in children)
             {
                 flatTree.Add(child);

@@ -7,10 +7,9 @@ namespace FamilyMoneyLib.NetStandard.Bases
 {
 
     [DebuggerDisplay("Transaction {Id} {Name} Total {Total} Parent {ParentTransaction?.Id}")]
-    public class Transaction : ITransaction
+    public class Transaction : TreeNodeBase<ITransaction>, ITransaction
     {
         private decimal _total;
-        public long Id { set; get; }
         public DateTime Timestamp { set; get; }
         public IAccount Account { set; get; }
         public ICategory Category { set; get; }
@@ -25,7 +24,13 @@ namespace FamilyMoneyLib.NetStandard.Bases
             }
             get
             {
-                return IsComplexTransaction ? ChildrenTransactions.Sum(x => x.Total) : _total;
+                if (!IsComplexTransaction) return _total;
+                var total = 0m;
+                foreach (var treeNode in Children)
+                {
+                    total += ((ITransaction) treeNode).Total;
+                }
+                return total;
             }
         }
 
@@ -35,18 +40,16 @@ namespace FamilyMoneyLib.NetStandard.Bases
         public IProduct Product { set; get; }
 
         public bool IsComplexTransaction { set; get; }
-        public ITransaction ParentTransaction { set; get; }
 
-        public List<ITransaction> ChildrenTransactions { get; set; } = new List<ITransaction>();
 
-        internal Transaction()
+        internal Transaction():base()
         {
             Timestamp = DateTime.Now;
             BaseId = Guid.NewGuid();
             OwnerId = Guid.NewGuid();
         }
 
-        internal Transaction(IAccount account, ICategory category, string name, decimal total, DateTime? timestamp, long id=0, decimal weight=0, IProduct product=null, ITransaction parentTransaction = null)
+        internal Transaction(IAccount account, ICategory category, string name, decimal total, DateTime? timestamp, long id=0, decimal weight=0, IProduct product=null, ITransaction parentTransaction = null):base()
         {
             Account = account;
             Category = category;
@@ -56,34 +59,34 @@ namespace FamilyMoneyLib.NetStandard.Bases
             Id = id;
             Weight = weight;
             Product = product;
-            ParentTransaction = parentTransaction;
+            Parent = parentTransaction;
             IsComplexTransaction = false;
             BaseId = Guid.NewGuid();
             OwnerId = Guid.NewGuid();
-            parentTransaction?.ChildrenTransactions.Add(this);
+            parentTransaction?.Children.Add(this);
         }
 
         internal void AddChildrenTransaction(ITransaction transaction)
         {
             if(transaction == this) throw new ArgumentException();
             if(Id == transaction.Id) throw new ArgumentException();
-            if(ChildrenTransactions.Contains(transaction)) throw new ArgumentException($"Transaction Already Exists!");
+            if(Children.Contains(transaction)) throw new ArgumentException($"Transaction Already Exists!");
             //if (ChildrenTransactions.Count(x=>x.Id == transaction.Id)>0) throw new ArgumentException($"Transaction Already Exists!");
 
             IsComplexTransaction = true;
-            transaction.ParentTransaction = this;
+            transaction.Parent = this;
             transaction.Timestamp = Timestamp;
             transaction.Account = Account;
-            ParentTransaction = null;
-            ChildrenTransactions.Add(transaction);
+            Parent = null;
+            Children.Add(transaction);
         }
 
         internal void DeleteChildrenTransaction(ITransaction transaction)
         {
-            var toDelete = ChildrenTransactions.Where(x => x.Id == transaction.Id);
+            var toDelete = Children.Where(x => x.Id == transaction.Id);
             foreach (var transaction1 in toDelete)
             {
-                ChildrenTransactions.Remove(transaction1);
+                Children.Remove(transaction1);
             }
 
             IsComplexTransaction = false;
@@ -91,7 +94,7 @@ namespace FamilyMoneyLib.NetStandard.Bases
 
         internal void DeleteAllChildrenTransactions()
         {
-            ChildrenTransactions.Clear();
+            Children.Clear();
             IsComplexTransaction = false;
         }
     }

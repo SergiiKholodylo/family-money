@@ -96,7 +96,7 @@ namespace FamilyMoneyTest.Storages
 
             Assert.AreEqual(category.Id, categoryFromStorage.Id);
             Assert.AreEqual(childCategory.Id, childCategoryFromStorage.Id);
-            Assert.AreEqual(childCategoryFromStorage.ParentCategory.Id, categoryFromStorage.Id);
+            Assert.AreEqual(childCategoryFromStorage.Parent.Id, categoryFromStorage.Id);
         }
 
         private ICategory CreateCategory()

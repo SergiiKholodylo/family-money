@@ -7,6 +7,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:bases="using:FamilyMoneyLib.NetStandard.Bases"
     xmlns:converters="using:FamilyMoney.UWP.Converters"
+    xmlns:viewClasses="using:FamilyMoney.UWP.ViewClasses"
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
@@ -63,7 +64,7 @@
                 <ComboBox.ItemTemplate>
                     <DataTemplate x:DataType="bases:ICategory">
                         <StackPanel>
-                            <TextBlock Text="{Binding HierarchicalName}"></TextBlock>
+                            <TextBlock Text="{Binding Name}"></TextBlock>
                         </StackPanel>
                     </DataTemplate>
                 </ComboBox.ItemTemplate>

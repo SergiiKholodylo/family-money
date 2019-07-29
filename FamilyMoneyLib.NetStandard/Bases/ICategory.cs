@@ -1,18 +1,8 @@
 ﻿namespace FamilyMoneyLib.NetStandard.Bases
 {
-    public interface ICategory:ISecurity
+    public interface ICategory:ISecurity, ITreeNode<ICategory>
     {
         string Description { get; set; }
         string Name { get; set; }
-        long Id { get; set; }
-        ICategory ParentCategory { get; set; }
-
-        bool IsChild(ICategory category);
-        bool IsParent(ICategory category);
-        int Level();
-
-        string HierarchicalName { get; }
-
-
     }
 }

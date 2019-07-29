@@ -36,7 +36,7 @@ namespace ItegrationTests.SQLite
             Assert.AreEqual(transaction.Name, complexTransaction?.Name);
             Assert.AreEqual(transaction.Category.Id, complexTransaction?.Category?.Id);
             Assert.AreEqual(transaction.Account.Id, complexTransaction?.Account?.Id);
-            Assert.AreEqual(transaction.Total, complexTransaction?.Total);
+            Assert.AreEqual(426.00m, complexTransaction?.Total);
         }
 
         [TestMethod]

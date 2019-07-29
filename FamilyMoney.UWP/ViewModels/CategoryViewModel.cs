@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -49,7 +48,7 @@ namespace FamilyMoney.UWP.ViewModels
             _categoryTree.Clear();
             foreach (var category in allCategories)
             {
-                if (category.ParentCategory == null)
+                if (category.Parent == null)
                 {
                     var categoryTreeItem = new CategoryTreeItem
                     {
@@ -65,7 +64,7 @@ namespace FamilyMoney.UWP.ViewModels
         private void AddChildren(CategoryTreeItem categoryTreeItem, ICategory[] allCategories)
         {
             var children = allCategories.Where(x =>
-                x.ParentCategory != null && x.ParentCategory.Id == categoryTreeItem.Category.Id);
+                x.Parent != null && x.Parent.Id == categoryTreeItem.Category.Id);
             foreach (var child in children)
             {
                 var treeChild = new CategoryTreeItem {Category = child};

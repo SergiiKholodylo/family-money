@@ -24,8 +24,8 @@ namespace FamilyMoney.UWP.ViewModels.Dialogs
             _category = category;
             Name = category.Name;
             Description = category.Description;
-            if(category.ParentCategory!= null)
-                ParentCategory = Categories.FirstOrDefault(x=>x.Id == category.ParentCategory.Id);
+            if(category.Parent!= null)
+                ParentCategory = Categories.FirstOrDefault(x=>x.Id == category.Parent.Id);
         }
 
         public string Name
@@ -64,7 +64,7 @@ namespace FamilyMoney.UWP.ViewModels.Dialogs
             var manager = MainPage.GlobalSettings.CategoryStorage;
             _category.Name = Name;
             _category.Description = Description;
-            _category.ParentCategory = ParentCategory;
+            _category.Parent = ParentCategory;
             manager.UpdateCategory(_category);
         }
         public event PropertyChangedEventHandler PropertyChanged;

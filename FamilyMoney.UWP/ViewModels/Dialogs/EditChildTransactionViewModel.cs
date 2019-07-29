@@ -191,7 +191,7 @@ namespace FamilyMoney.UWP.ViewModels.Dialogs
                 _transaction.Timestamp = Timestamp;
                 _transaction.Total = Total;
                 _transaction.Weight = Weight;
-                _transaction.ParentTransaction = ParentTransaction;
+                _transaction.Parent = ParentTransaction;
 
                 storage.UpdateTransaction(_transaction);
             }

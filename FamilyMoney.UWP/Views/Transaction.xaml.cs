@@ -33,7 +33,7 @@ namespace FamilyMoney.UWP.Views
         {
             var parameter = e.Parameter as TransactionPageParameter;
             ViewModel = new TransactionViewModel(parameter?.ActiveTransaction);
-            if (parameter == null)
+            if (parameter?.ActiveTransaction == null)
                 _editTransactionAction = delegate { ViewModel.CreateTransaction(); };
             else
                 _editTransactionAction = delegate { ViewModel.UpdateTransaction(); };

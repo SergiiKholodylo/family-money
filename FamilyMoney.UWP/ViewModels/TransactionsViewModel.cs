@@ -79,7 +79,7 @@ namespace FamilyMoney.UWP.ViewModels
             var transactionManager = MainPage.GlobalSettings.TransactionStorage;
 
             Transactions.Clear();
-            var accountTransactions = transactionManager.GetAllTransactions().Where(x => x.Account.Id == _activeAccount.Id && x.ParentTransaction == null);
+            var accountTransactions = transactionManager.GetAllTransactions().Where(x => x.Account.Id == _activeAccount.Id && x.Parent == null);
             foreach (var transaction in accountTransactions)
             {
                 Transactions.Add(transaction);
