@@ -14,18 +14,22 @@ namespace FamilyMoney.UWP.ViewModels.Dialogs
         private readonly ICategory _category;
         private ICategory _parentCategory;
 
-        public EditCategoryViewModel()
+        public EditCategoryViewModel(ICategory category, ICategory parent)
         {
-
-        }
-
-        public EditCategoryViewModel(ICategory category)
-        {
-            _category = category;
-            Name = category.Name;
-            Description = category.Description;
-            if(category.Parent!= null)
-                ParentCategory = Categories.FirstOrDefault(x=>x.Id == category.Parent.Id);
+            if (category != null)
+            {
+                _category = category;
+                Name = category.Name;
+                Description = category.Description;
+                if (category.Parent != null)
+                    ParentCategory = Categories.FirstOrDefault(x => x.Id == category.Parent.Id);
+            }
+            else
+            {
+                if(parent != null)
+                    ParentCategory = Categories.FirstOrDefault(x => x.Id == parent.Id);
+            }
+            
         }
 
         public string Name

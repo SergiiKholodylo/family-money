@@ -1,4 +1,5 @@
-﻿using System.Collections.ObjectModel;
+﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -12,8 +13,9 @@ namespace FamilyMoney.UWP.ViewModels
     public sealed class CategoryViewModel:INotifyPropertyChanged
     {
         private ObservableCollection<ICategory> _categories = new ObservableCollection<ICategory>();
+        private IEnumerable<ICategory> _allCategories;
         private readonly ICategoryStorage _storage;
-        private readonly ObservableCollection<CategoryTreeItem> _categoryTree = new ObservableCollection<CategoryTreeItem>();
+        private ICategory _category;
 
 
         public ObservableCollection<ICategory> Categories
@@ -22,16 +24,23 @@ namespace FamilyMoney.UWP.ViewModels
             get => _categories;
         }
 
-        public ObservableCollection<CategoryTreeItem> CategoryTree => _categoryTree;
-
         public CategoryViewModel()
         {
             _storage = MainPage.GlobalSettings.CategoryStorage;
-            Refresh();
+            RefreshCategoryList();
         }
 
-        
 
+        public ICategory Category
+        {
+            set
+            {
+                if (_category == value) return;
+                _category = value;
+                OnPropertyChanged();
+            }
+            get => _category;
+        }
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -41,53 +50,35 @@ namespace FamilyMoney.UWP.ViewModels
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
-        public void Refresh()
+        public void RefreshCategoryList()
         {
             Categories.Clear();
-            var allCategories = _storage.GetAllCategories().ToArray();
-            _categoryTree.Clear();
-            foreach (var category in allCategories)
+            _allCategories = _storage.MakeFlatCategoryTree();
+
+            var parent = Category?.Id;
+
+            var newLevel = new ObservableCollection<ICategory>(_allCategories.Where(x => x?.Parent?.Id == parent));
+            
+            foreach (var category in newLevel)
             {
-                if (category.Parent == null)
-                {
-                    var categoryTreeItem = new CategoryTreeItem
-                    {
-                        Category = category
-                    };
-                    _categoryTree.Add(categoryTreeItem);
-                    
-                    AddChildren(categoryTreeItem, allCategories);
-                }
+                Categories.Add(category);
             }
+
         }
 
-        private void AddChildren(CategoryTreeItem categoryTreeItem, ICategory[] allCategories)
-        {
-            var children = allCategories.Where(x =>
-                x.Parent != null && x.Parent.Id == categoryTreeItem.Category.Id);
-            foreach (var child in children)
-            {
-                var treeChild = new CategoryTreeItem {Category = child};
-                categoryTreeItem.Children.Add(treeChild);
-                AddChildren(treeChild,allCategories);
-            }
-        }
+
 
         public void DeleteCategory(ICategory activeCategory)
         {
             _storage.DeleteCategory(activeCategory);
             Categories.Remove(activeCategory);
         }
-    }
 
-    public class CategoryTreeItem
-    {
-        public ICategory Category { set; get; }
-        public ObservableCollection<CategoryTreeItem> Children { set; get; } = new ObservableCollection<CategoryTreeItem>();
-
-        public override string ToString()
+        public void OneLevelUp()
         {
-            return Category.Name;
+            if(Category==null)return;
+            Category = (ICategory)Category.Parent;
+            RefreshCategoryList();
         }
     }
 }

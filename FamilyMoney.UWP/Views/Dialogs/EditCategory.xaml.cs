@@ -13,12 +13,12 @@ namespace FamilyMoney.UWP.Views.Dialogs
         public EditCategoryViewModel ViewModel;
         private readonly Action _saveCategoryAction;
 
-        public EditCategory(ICategory category=null)
+        public EditCategory(ICategory category=null, ICategory parent=null)
         {
             this.InitializeComponent();
             if (category == null)
             {
-                ViewModel = new EditCategoryViewModel();
+                ViewModel = new EditCategoryViewModel(category,parent);
                 _saveCategoryAction = delegate { ViewModel.CreateNewCategory(); };
                 Title = "Create Category".GetLocalized();
                 PrimaryButtonText = "Create Category".GetLocalized();
@@ -26,7 +26,7 @@ namespace FamilyMoney.UWP.Views.Dialogs
             }
             else
             {
-                ViewModel = new EditCategoryViewModel(category);
+                ViewModel = new EditCategoryViewModel(category, category);
                 _saveCategoryAction = delegate { ViewModel.UpdateCategory(); };
                 Title = "Edit Category".GetLocalized();
                 PrimaryButtonText = "Edit Category".GetLocalized();

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Input;
 using FamilyMoney.UWP.ViewModels;
 using FamilyMoney.UWP.Views.Dialogs;
 using FamilyMoneyLib.NetStandard.Bases;
@@ -25,12 +26,12 @@ namespace FamilyMoney.UWP.Views
 
         private async void AppBarButton_Click(object sender, RoutedEventArgs e)
         {
-            var addAccount = new EditCategory();
+            var addAccount = new EditCategory(null,ViewModel.Category);
 
             var result = await addAccount.ShowAsync();
             if (result == ContentDialogResult.Primary)
             {
-                ViewModel.Refresh();
+                ViewModel.RefreshCategoryList();
             }
         }
 
@@ -78,33 +79,19 @@ namespace FamilyMoney.UWP.Views
             //    ViewModel.DeleteCategory(activeCategory);
         }
 
-
-        private void TreeView_DoubleTapped(object sender, Windows.UI.Xaml.Input.DoubleTappedRoutedEventArgs e)
+        private void UIElement_OnTapped(object sender, TappedRoutedEventArgs e)
         {
-            var a = ((Microsoft.UI.Xaml.Controls.TreeView)sender).SelectedNodes.ToArray();
-            var b = a.FirstOrDefault();
-            //var activeCategory = (ICategory)(((TreeView)sender).SelectedNodes);
+            var selected = (ICategory)((Windows.UI.Xaml.FrameworkElement) e.OriginalSource).DataContext;
+            if (!selected.HasChild) return;
+            ViewModel.Category = selected;
+            ViewModel.RefreshCategoryList();
 
         }
 
-        private void TreeView_Tapped(object sender, Windows.UI.Xaml.Input.TappedRoutedEventArgs e)
+
+        private void BtTopLevel_Click(object sender, RoutedEventArgs e)
         {
-
-        }
-
-        private void TreeViewItem_DoubleTapped(object sender, Windows.UI.Xaml.Input.DoubleTappedRoutedEventArgs e)
-        {
-
-        }
-
-        private async void TreeView_ItemInvoked(Microsoft.UI.Xaml.Controls.TreeView sender, Microsoft.UI.Xaml.Controls.TreeViewItemInvokedEventArgs args)
-        {
-            var category = ((FamilyMoney.UWP.ViewModels.CategoryTreeItem) args.InvokedItem).Category;
-
-            var editAccount = new EditCategory(category);
-            var result = await editAccount.ShowAsync();
-            if (result == ContentDialogResult.Primary)
-                ViewModel.Refresh();
+            ViewModel.OneLevelUp();
         }
     }
 }

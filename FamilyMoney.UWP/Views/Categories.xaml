@@ -9,28 +9,28 @@
     xmlns:controls="using:Microsoft.UI.Xaml.Controls"
     xmlns:viewModels="using:FamilyMoney.UWP.ViewModels"
     mc:Ignorable="d"
-    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" >
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
     <Page.BottomAppBar>
         <CommandBar>
-            <AppBarButton 
-                Label="New Category" 
-                Icon="Add" 
-                Click="AppBarButton_Click"/>
+            <AppBarButton
+                Label="New Category"
+                Icon="Add"
+                Click="AppBarButton_Click" />
             <AppBarSeparator />
-            <AppBarButton 
-                x:Uid="TransactionAppBar" 
-                Icon="Calculator" 
+            <AppBarButton
+                x:Uid="TransactionAppBar"
+                Icon="Calculator"
                 Click="AppBarButton_Click_1" />
-            <AppBarButton 
-                x:Uid="AccountAppBar" 
-                Icon="Folder" 
+            <AppBarButton
+                x:Uid="AccountAppBar"
+                Icon="Folder"
                 Click="AppBarButton_Click_2" />
-            <AppBarButton 
-                x:Uid="CategoryAppBar" 
-                Icon="Bookmarks" 
+            <AppBarButton
+                x:Uid="CategoryAppBar"
+                Icon="Bookmarks"
                 Click="AppBarButton_Click_3" />
-            <AppBarButton 
+            <AppBarButton
                 x:Uid="ReportAppBar"
                 Icon="ViewAll" />
 
@@ -42,28 +42,35 @@
 
     <Grid Padding="20">
         <StackPanel>
-
-            <controls:TreeView 
-                
-                           SelectionMode="Single"
-                           ItemsSource="{x:Bind ViewModel.CategoryTree}" 
-                           CanDragItems="False" 
-                           CanReorderItems="False" 
-                           ItemInvoked="TreeView_ItemInvoked"
-                           >
-
-                <controls:TreeView.ItemTemplate>
-                    <DataTemplate x:DataType="viewModels:CategoryTreeItem">
-                        
-                            <controls:TreeViewItem
-                            ItemsSource="{x:Bind Children}"
-                            Content="{x:Bind Category.Name}" 
-                            DoubleTapped="TreeViewItem_DoubleTapped"
-                            />
-                        
+            <Button
+                Content=" Top Level "
+                Click="BtTopLevel_Click"
+            />
+            <ListView
+                ItemsSource="{x:Bind ViewModel.Categories}">
+                <ListView.ItemTemplate>
+                    <DataTemplate x:DataType="bases:ICategory">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition 
+                                    Width="20"
+                                    />
+                                <ColumnDefinition 
+                                    Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock
+                                Text=" > "
+                                Tapped="UIElement_OnTapped"
+                                />
+                            <TextBlock
+                                Grid.Column="1"
+                                Text="{x:Bind Name}"/>
+                        </Grid>
                     </DataTemplate>
-                </controls:TreeView.ItemTemplate>
-            </controls:TreeView>
+                </ListView.ItemTemplate>
+
+            </ListView>
+
         </StackPanel>
     </Grid>
 </Page>
