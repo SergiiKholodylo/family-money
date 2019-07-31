@@ -41,7 +41,7 @@ namespace FamilyMoneyLib.NetStandard.SQLite
         public override IAccount CreateAccount(IAccount account)
         {
             _table.InitializeDatabase();
-            account.Id = _table.AddData(ObjectToIAccountConverter.ConvertForInsertString(account));
+            account.Id = _table.AddData(ObjectToIAccountConverter.ConvertToKeyPairList(account));
             return account;
         }
 
@@ -54,7 +54,7 @@ namespace FamilyMoneyLib.NetStandard.SQLite
         public override void UpdateAccount(IAccount account)
         {
             _table.InitializeDatabase();
-            _table.UpdateData(ObjectToIAccountConverter.ConvertForUpdateString(account),account.Id);
+            _table.UpdateData(ObjectToIAccountConverter.ConvertToKeyPairList(account),account.Id);
 
         }
 
@@ -87,20 +87,7 @@ namespace FamilyMoneyLib.NetStandard.SQLite
             return account;
         }
 
-        public static IEnumerable<KeyValuePair<string,object>> ConvertForUpdateString(IAccount account)
-        {
-
-            var returnList = new List<KeyValuePair<string, object>>
-            {
-                new KeyValuePair<string, object>("timestamp", account.Timestamp),
-                new KeyValuePair<string, object>("name", account.Name),
-                new KeyValuePair<string, object>("description", account.Description),
-                new KeyValuePair<string, object>("currency", account.Currency)
-            };
-            return returnList;
-        }
-
-        public static IEnumerable<KeyValuePair<string, object>> ConvertForInsertString(IAccount account)
+        public static IEnumerable<KeyValuePair<string, object>> ConvertToKeyPairList(IAccount account)
         {
             var returnList = new List<KeyValuePair<string, object>>
             {

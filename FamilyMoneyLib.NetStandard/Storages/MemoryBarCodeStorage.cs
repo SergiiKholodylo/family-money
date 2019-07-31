@@ -6,10 +6,10 @@ using FamilyMoneyLib.NetStandard.Factories;
 
 namespace FamilyMoneyLib.NetStandard.Storages
 {
-    public class MemoryBarCodeStorage
+    public class MemoryBarCodeStorage : IBarCodeStorage
     {
         private readonly IBarCodeFactory _factory;
-        private Dictionary<string, IBarCode> _storage;
+        private readonly Dictionary<string, IBarCode> _storage;
 
         public MemoryBarCodeStorage(IBarCodeFactory factory)
         {
@@ -17,24 +17,25 @@ namespace FamilyMoneyLib.NetStandard.Storages
             _storage = new Dictionary<string, IBarCode>();
         }
 
-        public IBarCode CreateBarCode(string code, bool isWeight=false, int numberOfDigitsForWeight=0)
-        {
-            try
-            {
-                var barCode = _factory.CreateBarCode(code, isWeight, numberOfDigitsForWeight);
-                _storage.Add(barCode.GetProductBarCode(),barCode);
-                return barCode;
-            }
-            catch (ArgumentException e)
-            {
-                
-                throw new StorageException( $"{e.Message}");
-            }
-        }
+
 
         public void UpdateBarCode(IBarCode barCode)
         {
 
+        }
+
+        public IBarCode CreateBarCode(IBarCode barCode)
+        {
+            try
+            {
+                _storage.Add(barCode.GetProductBarCode(), barCode);
+                return barCode;
+            }
+            catch (ArgumentException e)
+            {
+
+                throw new StorageException($"{e.Message}");
+            }
         }
 
         public void DeleteBarCode(IBarCode barCode)
@@ -48,5 +49,10 @@ namespace FamilyMoneyLib.NetStandard.Storages
             return _storage.Select(x => x.Value);
         }
 
+        public ITransaction GetBarCodeTransaction(string barCode)
+        {
+            var foundBarCode = _storage.FirstOrDefault(x => x.Key.Equals(barCode)).Value;
+            return foundBarCode?.Transaction;
+        }
     }
 }

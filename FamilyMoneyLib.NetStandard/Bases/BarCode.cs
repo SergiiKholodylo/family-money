@@ -6,35 +6,39 @@ namespace FamilyMoneyLib.NetStandard.Bases
     {
         private const int BarCodeWeightFactor = 10000;
 
-        private readonly string _code;
+        public string Code { get; private set; }
 
-        private readonly bool _isWeight;
+        public  bool IsWeight { get; private set; }
 
-        private readonly int _numberOfDigitsForWeight;
+        public  int NumberOfDigitsForWeight { get; private set; }
 
         public BarCode(string code, bool isWeight = false, int numberOfDigitsForWeight = 0)
         {
             if (code.Length < numberOfDigitsForWeight) throw new ArgumentException();
 
-            _code = code;
-            _isWeight = isWeight;
-            _numberOfDigitsForWeight = numberOfDigitsForWeight;
+            Code = code;
+            IsWeight = isWeight;
+            NumberOfDigitsForWeight = numberOfDigitsForWeight;
         }
         public decimal GetWeightKg()
         {
-            if (!_isWeight) return 0;
-            if (_code.Length < _numberOfDigitsForWeight) return 0;
-            var lastNSymbols = _code.Substring(_code.Length - _numberOfDigitsForWeight);
+            if (!IsWeight) return 0;
+            if (Code.Length < NumberOfDigitsForWeight) return 0;
+            var lastNSymbols = Code.Substring(Code.Length - NumberOfDigitsForWeight);
             var weightKg = Convert.ToDecimal(lastNSymbols) / BarCodeWeightFactor;
             return weightKg;
         }
 
+        public long Id { get; set; }
+
         public string GetProductBarCode()
         {
-            if (!_isWeight) return _code;
-            var productBarCodeLength = _code.Length - _numberOfDigitsForWeight;
-            var productBarCode = _code.Substring(0, productBarCodeLength);
+            if (!IsWeight) return Code;
+            var productBarCodeLength = Code.Length - NumberOfDigitsForWeight;
+            var productBarCode = Code.Substring(0, productBarCodeLength);
             return productBarCode;
         }
+
+        public ITransaction Transaction { set; get; }
     }
 }
