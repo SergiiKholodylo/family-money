@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace FamilyMoneyLib.NetStandard.Bases
 {
-    public class BarCode
+    public class BarCode : IBarCode
     {
         private const int BarCodeWeightFactor = 10000;
 
@@ -24,10 +22,10 @@ namespace FamilyMoneyLib.NetStandard.Bases
         }
         public decimal GetWeightKg()
         {
-            if(!_isWeight) return 0;
+            if (!_isWeight) return 0;
             if (_code.Length < _numberOfDigitsForWeight) return 0;
             var lastNSymbols = _code.Substring(_code.Length - _numberOfDigitsForWeight);
-            var weightKg = Convert.ToDecimal(lastNSymbols)/ BarCodeWeightFactor;
+            var weightKg = Convert.ToDecimal(lastNSymbols) / BarCodeWeightFactor;
             return weightKg;
         }
 
@@ -35,10 +33,8 @@ namespace FamilyMoneyLib.NetStandard.Bases
         {
             if (!_isWeight) return _code;
             var productBarCodeLength = _code.Length - _numberOfDigitsForWeight;
-            var productBarCode = _code.Substring(0,productBarCodeLength);
+            var productBarCode = _code.Substring(0, productBarCodeLength);
             return productBarCode;
         }
-
-
     }
 }
