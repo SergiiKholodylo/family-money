@@ -6,7 +6,7 @@ using FamilyMoneyLib.NetStandard.SQLite;
 using FamilyMoneyLib.NetStandard.Storages;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace ItegrationTests.SQLite
+namespace IntegrationTests.SQLite
 {
     [TestClass]
     public class SqLiteComplexTransactionStorageTest
