@@ -38,7 +38,14 @@ namespace FamilyMoney.UWP.Views.Dialogs
 
         private void ContentDialog_PrimaryButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args)
         {
-            _saveCategoryAction();
+            try
+            {
+                _saveCategoryAction();
+            }
+            catch (ViewModelException)
+            {
+                args.Cancel = true;
+            }
         }
 
         private void ContentDialog_SecondaryButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args)

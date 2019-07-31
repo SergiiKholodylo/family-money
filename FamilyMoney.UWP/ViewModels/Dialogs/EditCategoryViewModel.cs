@@ -1,9 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using FamilyMoney.UWP.Annotations;
 using FamilyMoneyLib.NetStandard.Bases;
+using FamilyMoneyLib.NetStandard.Storages;
 
 namespace FamilyMoney.UWP.ViewModels.Dialogs
 {
@@ -13,6 +15,7 @@ namespace FamilyMoney.UWP.ViewModels.Dialogs
         private string _description;
         private readonly ICategory _category;
         private ICategory _parentCategory;
+        private string _errorString;
 
         public EditCategoryViewModel(ICategory category, ICategory parent)
         {
@@ -55,21 +58,43 @@ namespace FamilyMoney.UWP.ViewModels.Dialogs
             get => _parentCategory;
         }
 
+        public string ErrorString
+        {
+            set { _errorString = value; OnPropertyChanged(); }
+            get => _errorString;
+        }
+
         public IEnumerable<ICategory> Categories { get; } = MainPage.GlobalSettings.CategoryStorage.MakeFlatCategoryTree();
 
         public void CreateNewCategory()
         {
-            var manager = MainPage.GlobalSettings.CategoryStorage;
-            manager.CreateCategory(Name, Description, 0, ParentCategory);
+            try
+            {
+                var storage = MainPage.GlobalSettings.CategoryStorage;
+                storage.CreateCategory(Name, Description, 0, ParentCategory);
+            }
+            catch (StorageException e)
+            {
+                ErrorString = $"Error during creating category {e.Message}";
+                throw new ViewModelException(ErrorString);
+            }
         }
 
         public void UpdateCategory()
         {
-            var manager = MainPage.GlobalSettings.CategoryStorage;
-            _category.Name = Name;
-            _category.Description = Description;
-            _category.Parent = ParentCategory;
-            manager.UpdateCategory(_category);
+            try
+            {
+                var storage = MainPage.GlobalSettings.CategoryStorage;
+                _category.Name = Name;
+                _category.Description = Description;
+                _category.Parent = ParentCategory;
+                storage.UpdateCategory(_category);
+            }
+            catch (StorageException e)
+            {
+                ErrorString = $"Error during updating category {e.Message}";
+                throw new ViewModelException(ErrorString);
+            }
         }
         public event PropertyChangedEventHandler PropertyChanged;
 

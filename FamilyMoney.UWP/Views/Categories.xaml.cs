@@ -82,7 +82,7 @@ namespace FamilyMoney.UWP.Views
         private void UIElement_OnTapped(object sender, TappedRoutedEventArgs e)
         {
             var selected = (ICategory)((Windows.UI.Xaml.FrameworkElement) e.OriginalSource).DataContext;
-            if (!selected.HasChild) return;
+            //if (!selected.HasChild) return;
             ViewModel.Category = selected;
             ViewModel.RefreshCategoryList();
 

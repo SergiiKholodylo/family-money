@@ -23,22 +23,15 @@ namespace FamilyMoney.UWP.ViewModels.Dialogs
         private string _errorString;
         private decimal _weight;
 
-        public EditChildTransactionViewModel(IAccount activeAccount)
-        {
-            Categories = MainPage.GlobalSettings.CategoryStorage.MakeFlatCategoryTree();
-            Date = new DateTimeOffset(DateTime.Now);
-            Time = DateTime.Now.TimeOfDay;
-            if (activeAccount != null)
-                Account = Accounts.FirstOrDefault(x => x.Id == activeAccount.Id);
-        }
-
         public EditChildTransactionViewModel(ITransaction parent, IAccount activeAccount, ITransaction transaction)
         {
+            ErrorString = String.Empty;
             _transaction = transaction;
             Categories = MainPage.GlobalSettings.CategoryStorage.MakeFlatCategoryTree();
             if (transaction == null)
             {
                 Timestamp = DateTime.Now;
+                Account = Accounts.FirstOrDefault(x => x.Id == activeAccount.Id);
             }
             else
             {
@@ -56,10 +49,10 @@ namespace FamilyMoney.UWP.ViewModels.Dialogs
             ParentTransaction = parent;
         }
 
-        public ITransaction ParentTransaction { get; set; }
+        private ITransaction ParentTransaction { get; }
 
 
-        public IAccount Account
+        private IAccount Account
         {
             set {
                 if (_account == value) return;
@@ -88,7 +81,7 @@ namespace FamilyMoney.UWP.ViewModels.Dialogs
             get => _name;
         }
 
-        public DateTime Timestamp
+        private DateTime Timestamp
         {
             set
             {
@@ -99,7 +92,7 @@ namespace FamilyMoney.UWP.ViewModels.Dialogs
             get => _timestamp;
         }
 
-        public DateTimeOffset Date
+        private DateTimeOffset Date
         {
             set
             {
@@ -111,7 +104,7 @@ namespace FamilyMoney.UWP.ViewModels.Dialogs
 
         }
 
-        public TimeSpan Time
+        private TimeSpan Time
         {
             set
             {
@@ -141,15 +134,16 @@ namespace FamilyMoney.UWP.ViewModels.Dialogs
             get => _errorString;
         }
 
-        public IEnumerable<ICategory> Categories { get; } 
+        public IEnumerable<ICategory> Categories { get; }
 
 
-        public IEnumerable<IAccount> Accounts { get; }= MainPage.GlobalSettings.AccountStorage.GetAllAccounts();
+        private IEnumerable<IAccount> Accounts { get; }= MainPage.GlobalSettings.AccountStorage.GetAllAccounts();
 
-        public IEnumerable<ITransaction> Transactions { get; } = MainPage.GlobalSettings.TransactionStorage.GetAllTransactions();
+        private IEnumerable<ITransaction> Transactions { get; } = MainPage.GlobalSettings.TransactionStorage.GetAllTransactions();
 
         public void CreateChildTransaction()
         {
+            ErrorString = String.Empty;
             try
             {
                 ErrorString = string.Empty;
@@ -174,6 +168,7 @@ namespace FamilyMoney.UWP.ViewModels.Dialogs
 
         public void UpdateChildTransaction()
         {
+            ErrorString = String.Empty;
             try
             {
                 Timestamp = new DateTime(

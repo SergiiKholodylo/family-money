@@ -37,6 +37,11 @@
             <TextBox 
                 x:Uid="DescriptionTextBox"
                 Text="{x:Bind ViewModel.Description, Mode=TwoWay}"/>
+            <TextBlock 
+                Foreground="Red" 
+                Text="{x:Bind ViewModel.ErrorString, Mode=TwoWay}"
+                TextWrapping="WrapWholeWords"
+            />
         </StackPanel>
     </Grid>
 </ContentDialog>
