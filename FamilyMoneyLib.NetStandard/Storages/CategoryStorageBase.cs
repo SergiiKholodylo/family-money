@@ -46,6 +46,7 @@ namespace FamilyMoneyLib.NetStandard.Storages
             var children = getAllCategories.Where(x => x.Parent?.Id == category.Id);
             foreach (var child in children)
             {
+                category.AddChild(child);
                 flatTree.Add(child);
                 AddTreeLeaves(getAllCategories, flatTree, child);
             }
