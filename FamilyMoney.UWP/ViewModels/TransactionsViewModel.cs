@@ -72,7 +72,7 @@ namespace FamilyMoney.UWP.ViewModels
             RefreshTransactionByAccount();
         }
 
-        public void RefreshTransactionByAccount()
+        private void RefreshTransactionByAccount()
         {
             if(_activeAccount == null) return;
 
@@ -93,15 +93,6 @@ namespace FamilyMoney.UWP.ViewModels
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
-        public void Refresh()
-        {
-            Transactions.Clear();
-            var allTransactions = _storage.GetAllTransactions();
-            foreach (var transaction in allTransactions)
-            {
-                Transactions.Add(transaction);
-            }
-        }
 
         public void DeleteTransaction(ITransaction activeTransaction)
         {

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Input;
@@ -16,27 +17,30 @@ namespace FamilyMoney.UWP.Views
     /// </summary>
     public sealed partial class Transaction : Page
     {
-        public TransactionViewModel ViewModel;
-        private Action _editTransactionAction;
+        public ITransactionViewModel ViewModel;
 
         public Transaction()
         {
             this.InitializeComponent();
         }
-        public Transaction(ITransaction transaction = null)
-        {
-            this.InitializeComponent();
-            ViewModel = new TransactionViewModel(transaction);
-        }
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             var parameter = e.Parameter as TransactionPageParameter;
-            ViewModel = new TransactionViewModel(parameter?.ActiveTransaction);
-            if (parameter?.ActiveTransaction == null)
-                _editTransactionAction = delegate { ViewModel.CreateTransaction(); };
-            else
-                _editTransactionAction = delegate { ViewModel.UpdateTransaction(); };
+            switch (parameter?.Action)
+            {
+                case TransactionAction.CreateNewTransaction:
+                    
+                case TransactionAction.CreateTransactionForAccount:
+                    ViewModel = new TransactionCreateViewModel(parameter?.ActiveAccount);
+                    break;
+                case TransactionAction.EditTransaction:
+                    ViewModel = new TransactionEditViewModel(parameter?.ActiveTransaction);
+                    break;
+                default:
+                    ViewModel = new TransactionCreateViewModel(null);
+                    break;
+            }
         }
 
         private void AutoSuggestBox_QuerySubmitted(AutoSuggestBox sender, AutoSuggestBoxQuerySubmittedEventArgs args)
@@ -59,48 +63,45 @@ namespace FamilyMoney.UWP.Views
 
         private void CommandBar_SaveButton(object sender, RoutedEventArgs e)
         {
-            _editTransactionAction();
-            Frame.Navigate(typeof(Transactions));
+            SaveTransaction();
         }
 
         private void CommandBar_CancelButton(object sender, RoutedEventArgs e)
         {
-            Frame.Navigate(typeof(Transactions));
+            ExitWithoutSaving();
         }
 
         private async void CommandBar_AddChildTransaction(object sender, RoutedEventArgs e)
         {
-            var editTransaction = new EditChildTransaction(ViewModel.Transaction, ViewModel.Account);
-            var result = await editTransaction.ShowAsync();
+            await AddChildTransaction();
         }
 
         private async void ChildrenTransaction_OnDoubleTapped(object sender, DoubleTappedRoutedEventArgs e)
         {
-            var activeTransaction = (ITransaction)((Windows.UI.Xaml.Controls.Primitives.Selector)sender).SelectedValue;
-            var editTransaction = new EditChildTransaction(ViewModel.Transaction, ViewModel.Account,activeTransaction);
+            await EditChildTransaction(sender);
+        }
+
+        private async Task AddChildTransaction()
+        {
+            var editTransaction = new EditChildTransaction(ViewModel.Transaction, ViewModel.Account);
             var result = await editTransaction.ShowAsync();
         }
-    }
-
-    public class TransactionPageParameter
-    {
-        public IAccount ActiveAccount;
-
-        public TransactionPageParameter()
+        private async Task EditChildTransaction(object sender)
         {
-
+            var activeTransaction = (ITransaction)((Windows.UI.Xaml.Controls.Primitives.Selector)sender).SelectedValue;
+            var editTransaction = new EditChildTransaction(ViewModel.Transaction, ViewModel.Account, activeTransaction);
+            var result = await editTransaction.ShowAsync();
         }
 
-        public TransactionPageParameter(ITransaction activeTransaction)
+        private void SaveTransaction()
         {
-            ActiveTransaction = activeTransaction;
+            ViewModel.SaveTransaction();
+            Frame.Navigate(typeof(Transactions));
+        }
+        private void ExitWithoutSaving()
+        {
+            Frame.Navigate(typeof(Transactions));
         }
 
-        public TransactionPageParameter(IAccount activeAccount)
-        {
-            this.ActiveAccount = activeAccount;
-        }
-
-        public ITransaction ActiveTransaction { get; set; }
     }
 }

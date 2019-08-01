@@ -139,6 +139,10 @@
     <Compile Include="ViewModels\Dialogs\EditChildTransactionViewModel.cs" />
     <Compile Include="ViewModels\Dialogs\EditAccountViewModel.cs" />
     <Compile Include="ViewModels\Dialogs\EditCategoryViewModel.cs" />
+    <Compile Include="ViewModels\ITransactionViewModel.cs" />
+    <Compile Include="ViewModels\TransactionCreateViewModel.cs" />
+    <Compile Include="ViewModels\TransactionEditViewModel.cs" />
+    <Compile Include="ViewModels\TransactionViewModelBase.cs" />
     <Compile Include="ViewModels\TransactionViewModel.cs" />
     <Compile Include="ViewModels\ViewModelException.cs" />
     <Compile Include="ViewModels\TransactionsViewModel.cs" />
@@ -160,6 +164,8 @@
     <Compile Include="Views\Transaction.xaml.cs">
       <DependentUpon>Transaction.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\TransactionAction.cs" />
+    <Compile Include="Views\TransactionPageParameter.cs" />
     <Compile Include="Views\Transactions.xaml.cs">
       <DependentUpon>Transactions.xaml</DependentUpon>
     </Compile>

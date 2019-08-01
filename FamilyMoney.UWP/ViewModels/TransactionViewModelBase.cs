@@ -11,55 +11,29 @@ using FamilyMoneyLib.NetStandard.Storages;
 
 namespace FamilyMoney.UWP.ViewModels
 {
-    public sealed class TransactionViewModel : INotifyPropertyChanged
+    public class TransactionViewModelBase : INotifyPropertyChanged
     {
-        private IAccount _account;
-        private ICategory _category;
-        private string _name;
-        private DateTime _timestamp = DateTime.Now;
-        private decimal _total;
-        private DateTimeOffset _date;
-        private TimeSpan _time;
-        
-        private string _errorString;
-        private decimal _weight;
-        private bool _isComplexTransaction;
-        private ObservableCollection<ITransaction> _childrenTransactions;
-        private ITransaction _transaction;
+        protected IAccount _account;
+        protected ICategory _category;
+        protected string _name;
+        protected DateTime _timestamp = DateTime.Now;
+        protected decimal _total;
+        protected DateTimeOffset _date;
+        protected TimeSpan _time;
 
-        public TransactionViewModel(IAccount activeAccount)
+        protected string _errorString;
+        protected decimal _weight;
+        protected bool _isComplexTransaction;
+        protected ObservableCollection<ITransaction> _childrenTransactions;
+        protected ITransaction _transaction;
+
+        protected TransactionViewModelBase()
         {
             Categories = MainPage.GlobalSettings.CategoryStorage.MakeFlatCategoryTree();
-            Date = new DateTimeOffset(DateTime.Now);
-            Time = DateTime.Now.TimeOfDay;
-            if (activeAccount != null)
-                Account = Accounts.FirstOrDefault(x => x.Id == activeAccount.Id);
         }
 
-        public TransactionViewModel(ITransaction transaction)
-        {
-            _transaction = transaction;
-            Categories = MainPage.GlobalSettings.CategoryStorage.MakeFlatCategoryTree();
-            Date = transaction==null || transaction.Timestamp == DateTime.MinValue ? new DateTimeOffset(DateTime.Now) : new DateTimeOffset(transaction.Timestamp);
-            Time = transaction?.Timestamp.TimeOfDay ?? DateTime.Now.TimeOfDay;
-            Name = transaction?.Name;
-            Account = Accounts.FirstOrDefault(x => x.Id == transaction?.Account.Id);
-            Category = Categories.FirstOrDefault(x => x.Id == transaction?.Category.Id);
-            Timestamp = transaction?.Timestamp??DateTime.Now;
-            if (transaction != null)
-            {
-                Total = transaction.Total;
-                Weight = transaction.Weight;
-                IsComplexTransaction = transaction.IsComplexTransaction;
-                ParentTransaction = (ITransaction)transaction.Parent;
-            }
 
-            ChildrenTransactions = transaction == null ?
-                new ObservableCollection<ITransaction>() : 
-                new ObservableCollection<ITransaction>(transaction.Children.Select(x=>(ITransaction)x));
-        }
-
-        public ITransaction ParentTransaction { get; set; }
+        protected ITransaction ParentTransaction { private get; set; }
 
         public ObservableCollection<ITransaction> ChildrenTransactions
         {
@@ -98,7 +72,7 @@ namespace FamilyMoney.UWP.ViewModels
             get => _name;
         }
 
-        public DateTime Timestamp
+        protected DateTime Timestamp
         {
             set
             {
@@ -106,7 +80,7 @@ namespace FamilyMoney.UWP.ViewModels
                 _timestamp = value;
                 OnPropertyChanged();
             }
-            get => _timestamp;
+            private get => _timestamp;
         }
 
         public DateTimeOffset Date
@@ -171,11 +145,11 @@ namespace FamilyMoney.UWP.ViewModels
 
         public ITransaction Transaction
         {
-            get { return _transaction; }
-            set { _transaction = value; }
+            get => _transaction;
+            set => _transaction = value;
         }
 
-        public void CreateTransaction()
+        protected void CreateTransaction()
         {
             try
             {
@@ -192,7 +166,7 @@ namespace FamilyMoney.UWP.ViewModels
         }
 
 
-        public void UpdateTransaction()
+        protected void UpdateTransaction()
         {
             try
             {
@@ -213,6 +187,7 @@ namespace FamilyMoney.UWP.ViewModels
                 ErrorString = $"You have the exception {e.Message}";
             }
         }
+
         private void DateTimeFromDateAndTime()
         {
             Timestamp = new DateTime(
@@ -235,7 +210,6 @@ namespace FamilyMoney.UWP.ViewModels
             Total = selected.Total;
             Name = selected.Name;
             Weight = selected.Weight;
-            //Product = selected.Product;
         }
 
 
