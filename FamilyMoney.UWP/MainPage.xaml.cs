@@ -13,22 +13,22 @@ namespace FamilyMoney.UWP
         public static readonly GlobalSettings GlobalSettings = new GlobalSettings();
         public MainPage()
         {
-            this.InitializeComponent();
+            InitializeComponent();
         }
 
         private void AppBarButton_Click(object sender, Windows.UI.Xaml.RoutedEventArgs e)
         {
-            this.Frame.Navigate(typeof(Accounts));
+            Frame.Navigate(typeof(Accounts));
         }
 
         private void AppBarButton_Click_1(object sender, Windows.UI.Xaml.RoutedEventArgs e)
         {
-            this.Frame.Navigate(typeof(Categories));
+            Frame.Navigate(typeof(Categories));
         }
 
         private void AppBarButton_Click_2(object sender, Windows.UI.Xaml.RoutedEventArgs e)
         {
-            this.Frame.Navigate(typeof(Transactions));
+            Frame.Navigate(typeof(Transactions));
         }
     }
 }

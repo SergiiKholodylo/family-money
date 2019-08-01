@@ -38,10 +38,6 @@
                 x:Uid="ReportAppBar" 
                 Icon="ViewAll" 
                 />
-
-            <CommandBar.Content>
-                <TextBlock Text="{x:Bind ViewModel.CurrentInfo}" />
-            </CommandBar.Content>
         </CommandBar>
     </Page.BottomAppBar>
 
@@ -77,28 +73,10 @@
                       ItemsSource="{x:Bind ViewModel.Transactions}"
                       DoubleTapped="ListView_DoubleTapped"
                       >
-                <ListView.Resources>
-                    <FontIconSource x:Key="DeleteIcon" Glyph="&#xE107;"/>
 
-
-                    <SwipeItems x:Key="Right" Mode="Reveal">
-                        <SwipeItem x:Uid="DeleteSwipeItem" 
-                                   Background="Red" 
-                                   Foreground="White"
-                                   IconSource="{StaticResource DeleteIcon}"
-                                   Invoked="DeleteItem_ItemInvoked">
-                        </SwipeItem>
-                    </SwipeItems>
-                </ListView.Resources>
                 <ListView.ItemTemplate>
                     <DataTemplate x:DataType="bases:ITransaction">
-                        <SwipeControl BorderThickness="0,1,0,0" 
-                                      BorderBrush="{ThemeResource ButtonBackground}"
-                                      Height="40"
-
-                                      MinWidth="300" 
-                                      RightItems="{StaticResource Right}"
-                                      >
+                       
 
 <Grid HorizontalAlignment="Stretch">
                             <Grid.ColumnDefinitions>
@@ -128,7 +106,7 @@
                                        Text="{x:Bind Total, Converter={StaticResource DecimalConverter}}" />
 
                         </Grid>
-                            </SwipeControl>
+                            
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>

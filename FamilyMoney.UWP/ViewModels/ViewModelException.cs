@@ -3,7 +3,7 @@ using System.Runtime.Serialization;
 
 namespace FamilyMoney.UWP.ViewModels.Dialogs
 {
-    [Serializable]
+
     internal class ViewModelException : Exception
     {
         public ViewModelException()
@@ -15,10 +15,6 @@ namespace FamilyMoney.UWP.ViewModels.Dialogs
         }
 
         public ViewModelException(string message, Exception innerException) : base(message, innerException)
-        {
-        }
-
-        protected ViewModelException(SerializationInfo info, StreamingContext context) : base(info, context)
         {
         }
     }

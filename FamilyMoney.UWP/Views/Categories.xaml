@@ -34,9 +34,6 @@
                 x:Uid="ReportAppBar"
                 Icon="ViewAll" />
 
-            <CommandBar.Content>
-                <TextBlock Text="Main account - 205 UAH" />
-            </CommandBar.Content>
         </CommandBar>
     </Page.BottomAppBar>
 

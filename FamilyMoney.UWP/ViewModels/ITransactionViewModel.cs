@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using FamilyMoneyLib.NetStandard.Bases;
 
 namespace FamilyMoney.UWP.ViewModels
 {
-    public interface ITransactionViewModel
+    public interface ITransactionViewModel:INotifyPropertyChanged
     {
         IAccount Account { set; get; }
         ICategory Category { set; get; }

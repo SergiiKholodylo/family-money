@@ -32,10 +32,6 @@
             <AppBarButton 
                 x:Uid="ReportAppBar"
                 Icon="ViewAll" />
-
-            <CommandBar.Content>
-                <TextBlock Text="Main account - 205 UAH" />
-            </CommandBar.Content>
         </CommandBar>
     </Page.BottomAppBar>
 
@@ -45,24 +41,9 @@
                     ItemsSource="{x:Bind ViewModel.Accounts}" 
                           HorizontalAlignment="Stretch" 
                           DoubleTapped="ListView_DoubleTapped" >
-                    <ListView.Resources>
-                        <SwipeItems x:Key="Right" Mode="Execute">
-                            <SwipeItem x:Uid="DeleteSwipeItem"
-                                       Background="#FFF4B183" 
-                                       Invoked="DeleteItem_ItemInvoked">
-                                <SwipeItem.IconSource>
-                                <FontIconSource  Glyph="&#xE10A;"/>
-                            </SwipeItem.IconSource>
-                            </SwipeItem>
-                        </SwipeItems>
-                    </ListView.Resources>
 
                 <ListView.ItemTemplate>
                     <DataTemplate x:DataType="bases:Account">
-                        <SwipeControl BorderThickness="0,1,0,0" BorderBrush="{ThemeResource ButtonBackground}"
-                                      Height="68"
-                                      Width="800" MinWidth="200" 
-                                      RightItems="{StaticResource Right}">
 
                             <Grid HorizontalAlignment="Stretch">
                                 <Grid.ColumnDefinitions>
@@ -75,7 +56,6 @@
                                 <TextBlock Grid.Column="1" Text="{x:Bind Description}" VerticalAlignment="Center" />
                                 <TextBlock Grid.Column="2" Text="{x:Bind Currency}" VerticalAlignment="Center" />
                             </Grid>
-                        </SwipeControl>
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>
