@@ -93,5 +93,14 @@ namespace FamilyMoney.UWP.Views
         {
             ViewModel.OneLevelUp();
         }
+
+        private async void UIElement_OnDoubleTapped(object sender, DoubleTappedRoutedEventArgs e)
+        {
+            ICategory activeCategory = (ICategory)((FrameworkElement)e.OriginalSource).DataContext;
+            var editAccount = new EditCategory(activeCategory);
+            var result = await editAccount.ShowAsync();
+            if (result == ContentDialogResult.Primary)
+                ViewModel.RefreshCategoryList();
+        }
     }
 }

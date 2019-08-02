@@ -42,7 +42,8 @@
 
             <ListView
                 ItemsSource="{x:Bind ViewModel.Categories}"
-                x:Uid="CategoriesList">
+                x:Uid="CategoriesList"
+                >
                 <ListView.HeaderTemplate>
                     <DataTemplate>
                         <StackPanel>
@@ -76,6 +77,7 @@
                                 Grid.Column="1"
                                 Style="{StaticResource ListViewText}"
                                 Text="{x:Bind Name}" 
+                                DoubleTapped="UIElement_OnDoubleTapped"
                                 />
                         </Grid>
                     </DataTemplate>
