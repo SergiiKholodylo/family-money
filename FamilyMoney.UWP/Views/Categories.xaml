@@ -39,32 +39,52 @@
 
     <Grid Padding="20">
         <StackPanel>
-            <Button
-                Content=" Top Level "
-                Click="BtTopLevel_Click"
-            />
+
             <ListView
-                ItemsSource="{x:Bind ViewModel.Categories}">
+                ItemsSource="{x:Bind ViewModel.Categories}"
+                x:Uid="CategoriesList">
+                <ListView.HeaderTemplate>
+                    <DataTemplate>
+                        <StackPanel>
+                            <Border BorderBrush="Gray" BorderThickness="1" CornerRadius="3.2" VerticalAlignment="Top">
+                                <TextBlock
+                                    Style="{StaticResource ListViewHeaders}"
+                                    Text="{Binding}" />
+                            </Border>
+                            <Button
+                                Content=" Top Level "
+                                Click="BtTopLevel_Click" />
+                        </StackPanel>
+                    </DataTemplate>
+                </ListView.HeaderTemplate>
+
                 <ListView.ItemTemplate>
                     <DataTemplate x:DataType="bases:ICategory">
                         <Grid>
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition 
-                                    Width="20"
-                                    />
-                                <ColumnDefinition 
-                                    Width="*"/>
+                                <ColumnDefinition
+                                    Width="20" />
+                                <ColumnDefinition
+                                    Width="*" />
                             </Grid.ColumnDefinitions>
                             <TextBlock
                                 Text=" > "
-                                Tapped="UIElement_OnTapped"
+                                Style="{StaticResource ListViewText}"
+                                Tapped="UIElement_OnTapped" 
                                 />
                             <TextBlock
                                 Grid.Column="1"
-                                Text="{x:Bind Name}"/>
+                                Style="{StaticResource ListViewText}"
+                                Text="{x:Bind Name}" 
+                                />
                         </Grid>
                     </DataTemplate>
                 </ListView.ItemTemplate>
+                <ListView.ItemContainerStyle>
+                    <Style TargetType="ListViewItem">
+                        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                    </Style>
+                </ListView.ItemContainerStyle>
 
             </ListView>
 

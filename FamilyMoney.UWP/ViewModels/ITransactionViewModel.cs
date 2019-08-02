@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using Windows.UI.Xaml;
 using FamilyMoneyLib.NetStandard.Bases;
 
 namespace FamilyMoney.UWP.ViewModels
@@ -22,6 +23,7 @@ namespace FamilyMoney.UWP.ViewModels
         IEnumerable<IAccount> Accounts { get; }
         IEnumerable<ITransaction> Transactions { get; }
         ObservableCollection<ITransaction> ChildrenTransactions { set; get; }
+        Visibility IsChildTransactionVisible { get; }
 
 
         void SaveTransaction();

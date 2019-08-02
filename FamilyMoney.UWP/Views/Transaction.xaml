@@ -98,37 +98,59 @@
                 OnContent="Working"
                 HorizontalAlignment="Stretch" />
 
-            <ListView x:Uid="ChildTransactionListView"
-                      ItemsSource="{x:Bind ViewModel.ChildrenTransactions, Mode=TwoWay}"
-                      DoubleTapped="ChildrenTransaction_OnDoubleTapped"
-                      >
+            <ScrollViewer>
+                <StackPanel>
+                    <ListView x:Uid="ChildTransactionListView"
+                              ItemsSource="{x:Bind ViewModel.ChildrenTransactions, Mode=TwoWay}"
+                              DoubleTapped="ChildrenTransaction_OnDoubleTapped"
+                              Visibility="{x:Bind ViewModel.IsChildTransactionVisible, Mode=OneWay}"
+                              >
+                        <ListView.HeaderTemplate>
+                            <DataTemplate>
+                                <Border BorderBrush="Gray" BorderThickness="1" CornerRadius="3.2" VerticalAlignment="Top">
+                                <TextBlock 
+                                    Style="{StaticResource ListViewHeaders}"
+                                    Text="{Binding}"/>
+                                </Border>
+                            </DataTemplate>
+                        </ListView.HeaderTemplate>
+                        <ListView.ItemTemplate>
+                            <DataTemplate x:DataType="bases:ITransaction">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="80" />
+                                        <ColumnDefinition Width="80" />
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock
+                                        Style="{StaticResource ListViewText}"
+                                        Text="{x:Bind Name, Mode=TwoWay }" />
+                                    <TextBlock
+                                        Style="{StaticResource ListViewText}"
+                                        Grid.Column="1"
+                                        HorizontalAlignment="Right"
+                                        Text="{x:Bind Weight, Mode=TwoWay,Converter={StaticResource DecimalConverter}, ConverterParameter='{}{0:F3}'  }" />
+                                    <TextBlock
+                                        Style="{StaticResource ListViewBoldText}"
+                                        Grid.Column="2"
+                                        HorizontalAlignment="Right"
+                                        Text="{x:Bind Total, Mode=TwoWay, Converter={StaticResource DecimalConverter} }" />
+                                </Grid>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                        <ListView.ItemContainerStyle>
+                            <Style TargetType="ListViewItem">
+                                <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                            </Style>
+                        </ListView.ItemContainerStyle>
+                    </ListView>
 
-                <ListView.ItemTemplate>
-                    <DataTemplate x:DataType="bases:ITransaction">
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="250" />
-                                <ColumnDefinition Width="100" />
-                                <ColumnDefinition Width="100" />
-                            </Grid.ColumnDefinitions>
-                            <TextBlock 
-                                Text="{x:Bind Name, Mode=OneWay }" />
-                            <TextBlock 
-                                Grid.Column="1" 
-                                Text="{x:Bind Weight, Mode=OneWay,Converter={StaticResource DecimalConverter}, ConverterParameter='{}{0:F3}'  }" />
-                            <TextBlock 
-                                Grid.Column="2" 
-                                HorizontalAlignment="Right"
-                                Text="{x:Bind Total, Mode=OneWay, Converter={StaticResource DecimalConverter} }" />
-                        </Grid>
-                    </DataTemplate>
-                </ListView.ItemTemplate>
-            </ListView>
-
-            <TextBlock
-                Foreground="Red"
-                Text="{x:Bind ViewModel.ErrorString, Mode=TwoWay}"
-                TextWrapping="WrapWholeWords" />
+                    <TextBlock
+                        Foreground="Red"
+                        Text="{x:Bind ViewModel.ErrorString, Mode=TwoWay}"
+                        TextWrapping="WrapWholeWords" />
+                </StackPanel>
+            </ScrollViewer>
         </StackPanel>
     </Grid>
 </Page>

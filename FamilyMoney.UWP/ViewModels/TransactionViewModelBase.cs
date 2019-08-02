@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using Windows.UI.Xaml;
 using FamilyMoney.UWP.Annotations;
 using FamilyMoney.UWP.Helpers;
 using FamilyMoneyLib.NetStandard.Bases;
@@ -26,6 +27,7 @@ namespace FamilyMoney.UWP.ViewModels
         protected bool _isComplexTransaction;
         protected ObservableCollection<ITransaction> _childrenTransactions;
         protected ITransaction _transaction;
+        private Visibility _isChildTransactionVisible;
 
         protected TransactionViewModelBase()
         {
@@ -126,6 +128,7 @@ namespace FamilyMoney.UWP.ViewModels
                 if(_isComplexTransaction ==  value) return;
                 _isComplexTransaction = value; 
                 OnPropertyChanged();
+                OnPropertyChanged(nameof(IsChildTransactionVisible));
             }
             get => _isComplexTransaction;
         }
@@ -135,6 +138,8 @@ namespace FamilyMoney.UWP.ViewModels
             set { _errorString = value; OnPropertyChanged(); }
             get => _errorString;
         }
+
+        public Visibility IsChildTransactionVisible => IsComplexTransaction?Visibility.Visible:Visibility.Collapsed;
 
         public IEnumerable<ICategory> Categories { get; }
 
@@ -217,7 +222,7 @@ namespace FamilyMoney.UWP.ViewModels
         public event PropertyChangedEventHandler PropertyChanged;
 
         [NotifyPropertyChangedInvocator]
-        protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        private void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }

@@ -12,59 +12,64 @@
 
     <Page.BottomAppBar>
         <CommandBar>
-            <AppBarButton Label=
-                          "New Transaction" 
+            <AppBarButton Label="New Transaction"
                           x:Uid="NewTransactionButton"
-                          Icon="Add" 
+                          Icon="Add"
                           Click="AppBarButton_Click" />
 
             <AppBarSeparator />
-            <AppBarButton 
-                x:Uid="TransactionAppBar" 
-                Icon="Calculator" 
-                Click="AppBarButton_Click_1" 
-                />
-            <AppBarButton 
-                x:Uid="AccountAppBar"
-                Icon="Folder" 
-                Click="AppBarButton_Click_2" 
-                />
-            <AppBarButton 
-                x:Uid="CategoryAppBar" 
-                Icon="Bookmarks" 
-                Click="AppBarButton_Click_3" 
-                />
             <AppBarButton
-                x:Uid="ReportAppBar" 
-                Icon="ViewAll" 
-                />
+                x:Uid="TransactionAppBar"
+                Icon="Calculator"
+                Click="AppBarButton_Click_1" />
+            <AppBarButton
+                x:Uid="AccountAppBar"
+                Icon="Folder"
+                Click="AppBarButton_Click_2" />
+            <AppBarButton
+                x:Uid="CategoryAppBar"
+                Icon="Bookmarks"
+                Click="AppBarButton_Click_3" />
+            <AppBarButton
+                x:Uid="ReportAppBar"
+                Icon="ViewAll" />
         </CommandBar>
     </Page.BottomAppBar>
 
     <Page.Resources>
         <converters:StringFormatConverter x:Key="StringFormatConverter" />
-        <converters:DecimalConverter x:Key="DecimalConverter"/>
+        <converters:DecimalConverter x:Key="DecimalConverter" />
     </Page.Resources>
 
-    <Grid>
+    <Grid Padding="20">
         <StackPanel>
             <ComboBox x:Uid="AccountComboBox"
                       ItemsSource="{x:Bind ViewModel.Accounts}"
-                      HorizontalAlignment="Stretch" 
-                      SelectedValue="{x:Bind ViewModel.ActiveAccount, Mode=TwoWay}">
+                      HorizontalAlignment="Stretch"
+                      SelectedValue="{x:Bind ViewModel.ActiveAccount, Mode=TwoWay}"
+                      Margin="0,0,0,10"
+                      >
+                <ComboBox.HeaderTemplate>
+                    <DataTemplate>
+                        <Border BorderBrush="Gray" BorderThickness="1" CornerRadius="3.2" VerticalAlignment="Top">
+                            <TextBlock 
+                                Style="{StaticResource ListViewHeaders}"
+                                Text="{Binding}"/>
+                        </Border>
+                    </DataTemplate>
+                </ComboBox.HeaderTemplate>
                 <ComboBox.ItemTemplate>
                     <DataTemplate x:DataType="bases:IAccount">
                         <Grid>
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="200"/>
-                                <ColumnDefinition Width="60"/>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="60" />
                             </Grid.ColumnDefinitions>
-                            <TextBlock Grid.Column="0" 
-                                       Text="{Binding Name}"
-                                       />
+                            <TextBlock Grid.Column="0"
+                                       Text="{Binding Name}" />
                             <TextBlock Grid.Column="1"
-                                       Text="{Binding Currency}"
-                                       />
+                                       HorizontalAlignment="Right"
+                                       Text="{Binding Currency}" />
                         </Grid>
                     </DataTemplate>
                 </ComboBox.ItemTemplate>
@@ -74,41 +79,48 @@
                       DoubleTapped="ListView_DoubleTapped"
                       >
 
+                <ListView.HeaderTemplate>
+                    <DataTemplate>
+                        <Border BorderBrush="Gray" BorderThickness="1" CornerRadius="3.2" VerticalAlignment="Top">
+                            <TextBlock 
+                                Style="{StaticResource ListViewHeaders}"
+                                Text="{Binding}"/>
+                        </Border>
+                    </DataTemplate>
+                </ListView.HeaderTemplate>
+
                 <ListView.ItemTemplate>
                     <DataTemplate x:DataType="bases:ITransaction">
-                       
-
-<Grid HorizontalAlignment="Stretch">
+                        <Grid HorizontalAlignment="Stretch">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="80" />
-                                    <ColumnDefinition Width="*" />
-                                <ColumnDefinition Width="150" />
-                                <ColumnDefinition Width="60" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="80" />
                             </Grid.ColumnDefinitions>
-                            <TextBlock Grid.Column="0" 
-                                       FontSize="12"
+                            <TextBlock Grid.Column="0"
                                        VerticalAlignment="Center"
+                                       Style="{StaticResource ListViewText}"
                                        Text="{x:Bind Timestamp, Converter={StaticResource StringFormatConverter}, ConverterParameter='{}{0:dd/MM/yyy}'}" 
                                        />
-                            <TextBlock Grid.Column="1" 
+                            <TextBlock Grid.Column="1"
                                        VerticalAlignment="Center"
-                                       FontSize="12"
-                                       FontWeight="Bold"
-                                       Text="{x:Bind Name}" />
-                            <TextBlock Grid.Column="2" 
-                                       VerticalAlignment="Center"
-                                       FontSize="12"
-                                       Text="{x:Bind Category.Name}" />
-                            <TextBlock Grid.Column="3" 
+                                       Text="{x:Bind Name}" 
+                                       Style="{StaticResource ListViewText}"
+                                       />
+                            <TextBlock Grid.Column="2"
                                        VerticalAlignment="Center"
                                        HorizontalAlignment="Right"
-                                       FontWeight="Bold"
-                                       Text="{x:Bind Total, Converter={StaticResource DecimalConverter}}" />
-
+                                       Text="{x:Bind Total, Converter={StaticResource DecimalConverter}}" 
+                                       Style="{StaticResource ListViewBoldText}"
+                                       />
                         </Grid>
-                            
                     </DataTemplate>
                 </ListView.ItemTemplate>
+                <ListView.ItemContainerStyle>
+                    <Style TargetType="ListViewItem">
+                        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                    </Style>
+                </ListView.ItemContainerStyle>
             </ListView>
         </StackPanel>
     </Grid>

@@ -11,25 +11,25 @@
 
     <Page.BottomAppBar>
         <CommandBar>
-            <AppBarButton 
+            <AppBarButton
                 x:Uid="NewAccountButton"
-                Icon="Add"  
-                Click="AppBarButton_Click"/>
+                Icon="Add"
+                Click="AppBarButton_Click" />
 
             <AppBarSeparator />
-            <AppBarButton 
+            <AppBarButton
                 x:Uid="TransactionAppBar"
-                Icon="Calculator" 
+                Icon="Calculator"
                 Click="AppBarButton_Click_1" />
-            <AppBarButton 
+            <AppBarButton
                 x:Uid="AccountAppBar"
                 Icon="Folder"
                 Click="AppBarButton_Click_2" />
-            <AppBarButton 
-                x:Uid="CategoryAppBar" 
-                Icon="Bookmarks" 
+            <AppBarButton
+                x:Uid="CategoryAppBar"
+                Icon="Bookmarks"
                 Click="AppBarButton_Click_3" />
-            <AppBarButton 
+            <AppBarButton
                 x:Uid="ReportAppBar"
                 Icon="ViewAll" />
         </CommandBar>
@@ -37,27 +37,58 @@
 
     <Grid Padding="20">
         <StackPanel>
-                <ListView x:Uid="AccountsList"
-                    ItemsSource="{x:Bind ViewModel.Accounts}" 
-                          HorizontalAlignment="Stretch" 
-                          DoubleTapped="ListView_DoubleTapped" >
+            <ListView x:Uid="AccountsList"
+                      ItemsSource="{x:Bind ViewModel.Accounts}"
+                      HorizontalAlignment="Stretch"
+                      DoubleTapped="ListView_DoubleTapped"
+                      >
+                <ListView.HeaderTemplate>
+                    <DataTemplate>
+                        <Border BorderBrush="Gray" BorderThickness="1" CornerRadius="3.2" VerticalAlignment="Top">
+                            <TextBlock 
+                                Style="{StaticResource ListViewHeaders}"
+                                Text="{Binding}"/>
+                        </Border>
+                    </DataTemplate>
+                </ListView.HeaderTemplate>
 
                 <ListView.ItemTemplate>
                     <DataTemplate x:DataType="bases:Account">
 
-                            <Grid HorizontalAlignment="Stretch">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="100" />
-                                    <ColumnDefinition Width="300" />
-                                    <ColumnDefinition Width="60" />
-                                    <ColumnDefinition Width="30" />
-                                </Grid.ColumnDefinitions>
-                                <TextBlock Grid.Column="0" Text="{x:Bind Name}" VerticalAlignment="Center" />
-                                <TextBlock Grid.Column="1" Text="{x:Bind Description}" VerticalAlignment="Center" />
-                                <TextBlock Grid.Column="2" Text="{x:Bind Currency}" VerticalAlignment="Center" />
-                            </Grid>
+                        <Grid HorizontalAlignment="Stretch">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="150" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="60" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock 
+                                Grid.Column="0" 
+                                Text="{x:Bind Name}" 
+                                VerticalAlignment="Center" 
+                                HorizontalAlignment="Left"
+                                Style="{StaticResource ListViewText}"
+                                />
+                            <TextBlock 
+                                Grid.Column="1" 
+                                Text="{x:Bind Description}" 
+                                VerticalAlignment="Center" 
+                                Style="{StaticResource ListViewText}"
+                                />
+                            <TextBlock 
+                                Grid.Column="2" 
+                                Text="{x:Bind Currency}" 
+                                VerticalAlignment="Center" 
+                                HorizontalAlignment="Right"
+                                Style="{StaticResource ListViewText}"
+                                />
+                        </Grid>
                     </DataTemplate>
                 </ListView.ItemTemplate>
+                <ListView.ItemContainerStyle>
+                    <Style TargetType="ListViewItem">
+                        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                    </Style>
+                </ListView.ItemContainerStyle>
             </ListView>
         </StackPanel>
     </Grid>

@@ -8,6 +8,7 @@ namespace FamilyMoney.UWP.Converters
         public object Convert(object value, Type targetType, object parameter, string language)
         {
             var decimalValue = (decimal) value;
+            if (decimalValue == 0) return string.Empty;
             return parameter == null ? decimalValue.ToString("F2") : string.Format((string)parameter, value);
         }
 
