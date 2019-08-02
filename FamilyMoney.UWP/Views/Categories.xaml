@@ -34,6 +34,11 @@
                 x:Uid="ReportAppBar"
                 Icon="ViewAll" />
 
+            <AppBarButton
+                Content="Create Default Categories"
+                Click="CreateDefaultCategories_OnClick"
+                />
+
         </CommandBar>
     </Page.BottomAppBar>
 

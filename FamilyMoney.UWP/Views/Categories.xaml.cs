@@ -6,6 +6,7 @@ using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Input;
 using FamilyMoney.UWP.ViewModels;
 using FamilyMoney.UWP.Views.Dialogs;
+using FamilyMoneyLib.NetStandard.AddOn;
 using FamilyMoneyLib.NetStandard.Bases;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
@@ -101,6 +102,11 @@ namespace FamilyMoney.UWP.Views
             var result = await editAccount.ShowAsync();
             if (result == ContentDialogResult.Primary)
                 ViewModel.RefreshCategoryList();
+        }
+
+        private void CreateDefaultCategories_OnClick(object sender, RoutedEventArgs e)
+        {
+            CreateCategoryTree.CreateDefaultCategoryTree();
         }
     }
 }
