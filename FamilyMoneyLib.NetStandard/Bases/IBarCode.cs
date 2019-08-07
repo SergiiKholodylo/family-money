@@ -8,7 +8,9 @@
         bool IsWeight { get; }
         int NumberOfDigitsForWeight { get; }
 
+        void AnalyzeCodeByWeightKg(decimal weightInKg);
         string GetProductBarCode();
         decimal GetWeightKg();
+        void TryExtractWeight(int barCodeLength);
     }
 }

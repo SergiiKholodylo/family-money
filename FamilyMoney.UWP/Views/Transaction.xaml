@@ -17,7 +17,15 @@
                 x:Uid="NewTransactionButton"
                 Icon="Add"
                 Click="CommandBar_AddChildTransaction"
-                IsEnabled="{x:Bind ViewModel.IsComplexTransaction, Mode=TwoWay}" />
+                Visibility="{x:Bind ViewModel.IsChildTransactionVisible, Mode=OneWay}"
+                />
+                <AppBarButton
+                x:Uid="ScanBarCodeButton"
+                Icon="Camera"
+                Click="CommandBar_ScanBarCode"
+                Visibility="{x:Bind ViewModel.IsChildTransactionHidden, Mode=OneWay}" 
+                />
+
             <AppBarSeparator />
             <AppBarButton
                 x:Uid="SaveAppBar"

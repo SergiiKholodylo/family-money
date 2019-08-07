@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using FamilyMoneyLib.NetStandard.Bases;
 using FamilyMoneyLib.NetStandard.Factories;
@@ -6,7 +7,7 @@ using FamilyMoneyLib.NetStandard.Storages;
 
 namespace FamilyMoneyLib.NetStandard.SQLite
 {
-    public class SqLiteBarCodeStorage:IBarCodeStorage
+    public class SqLiteBarCodeStorage:BarCodeStorageBase
     {
         private const string BarCodeTableStructure = "id INTEGER PRIMARY KEY," +
                                                       "code TEXT NOT NULL, " +
@@ -17,16 +18,14 @@ namespace FamilyMoneyLib.NetStandard.SQLite
         private readonly SqLiteTable _table = new SqLiteTable("familyMoney.db", "Barcode",
             $"({BarCodeTableStructure})");
 
-        private readonly IBarCodeFactory _barCodeFactory;
         private readonly ITransactionStorage _transactionStorage;
 
-        public SqLiteBarCodeStorage(IBarCodeFactory factory, ITransactionStorage storage)
+        public SqLiteBarCodeStorage(IBarCodeFactory factory, ITransactionStorage storage):base(factory)
         {
-            _barCodeFactory = factory;
             _transactionStorage = storage;
         }
 
-        public IBarCode CreateBarCode(IBarCode barCode)
+        public override IBarCode CreateBarCode(IBarCode barCode)
         {
             _table.InitializeDatabase();
             var id = _table.AddData(ObjectToIBarCodeConvertor.ConvertToKeyValuePair(barCode));
@@ -34,26 +33,37 @@ namespace FamilyMoneyLib.NetStandard.SQLite
             return barCode;
         }
 
-        public void DeleteBarCode(IBarCode barCode)
+        public override void DeleteBarCode(IBarCode barCode)
         {
             _table.InitializeDatabase();
             _table.DeleteRecordById(barCode.Id);
         }
 
-        public IEnumerable<IBarCode> GetAllBarCodes()
+        public override IEnumerable<IBarCode> GetAllBarCodes()
         {
             _table.InitializeDatabase();
             var barCodes = _table.SelectAll().ToArray();
-            return barCodes.Select(objects => ObjectToIBarCodeConvertor.Convert(objects, _barCodeFactory, _transactionStorage)).ToList();
+            return barCodes.Select(objects => ObjectToIBarCodeConvertor.Convert(objects, BarCodeFactory, _transactionStorage)).ToList();
         }
 
-        public ITransaction GetBarCodeTransaction(string barCode)
+        public override ITransaction GetBarCodeTransaction(string barCode)
         {
             var foundBarCodes = GetAllBarCodes().FirstOrDefault(x => x.GetProductBarCode().Equals(barCode));
             return foundBarCodes?.Transaction;
         }
 
-        public void UpdateBarCode(IBarCode barCode)
+        public override ITransaction CreateBarCodeBasedTransaction(string barCode)
+        {
+            var transaction = GetBarCodeTransaction(barCode);
+            if (transaction == null) return transaction;
+
+            transaction.Timestamp = DateTime.Now;
+            var newTransaction = _transactionStorage.CreateTransaction(transaction);
+            return newTransaction;
+
+        }
+
+        public override void UpdateBarCode(IBarCode barCode)
         {
             _table.InitializeDatabase();
             _table.UpdateData(ObjectToIBarCodeConvertor.ConvertToKeyValuePair(barCode),barCode.Id);
@@ -84,7 +94,7 @@ namespace FamilyMoneyLib.NetStandard.SQLite
             ITransactionStorage transactionStorage)
         {
             var code = line["code"].ToString();
-            var isWeight = ((long)line["isWeight"] == 0);
+            var isWeight = ((long)line["isWeight"] == 1);
             var numberOfDigits = System.Convert.ToInt32( (long)line["numberOfDigits"]);
             var transactionId = (line["transactionId"] is System.DBNull) ? 0 : (long)line["transactionId"]; 
 

@@ -2,11 +2,15 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
 using Windows.UI.Xaml;
 using FamilyMoney.UWP.Annotations;
+using FamilyMoney.UWP.Bases;
 using FamilyMoney.UWP.Helpers;
+using FamilyMoney.UWP.ViewModels.Dialogs;
 using FamilyMoneyLib.NetStandard.Bases;
 using FamilyMoneyLib.NetStandard.Storages;
 
@@ -31,7 +35,11 @@ namespace FamilyMoney.UWP.ViewModels
 
         protected TransactionViewModelBase()
         {
+            
             Categories = MainPage.GlobalSettings.CategoryStorage.MakeFlatCategoryTree();
+            Timestamp = DateTime.Now;
+            Date = new DateTimeOffset(Timestamp);
+            Time = Timestamp.TimeOfDay;
         }
 
 
@@ -43,6 +51,7 @@ namespace FamilyMoney.UWP.ViewModels
             set => _childrenTransactions = value;
         }
 
+        public IBarCode BarCode { set; get; }
 
         public IAccount Account
         {
@@ -129,6 +138,7 @@ namespace FamilyMoney.UWP.ViewModels
                 _isComplexTransaction = value; 
                 OnPropertyChanged();
                 OnPropertyChanged(nameof(IsChildTransactionVisible));
+                OnPropertyChanged(nameof(IsChildTransactionHidden));
             }
             get => _isComplexTransaction;
         }
@@ -140,6 +150,7 @@ namespace FamilyMoney.UWP.ViewModels
         }
 
         public Visibility IsChildTransactionVisible => IsComplexTransaction?Visibility.Visible:Visibility.Collapsed;
+        public Visibility IsChildTransactionHidden => !IsComplexTransaction ? Visibility.Visible : Visibility.Collapsed;
 
         public IEnumerable<ICategory> Categories { get; }
 
@@ -160,23 +171,36 @@ namespace FamilyMoney.UWP.ViewModels
             {
                 ErrorString = string.Empty;
                 var storage = MainPage.GlobalSettings.TransactionStorage;
+
                 DateTimeFromDateAndTime();
 
                 _transaction = storage.CreateTransaction(Account, Category, Name, Total, Timestamp, 0, Weight, null, ParentTransaction);
+
+                CreateBarCodeWithTransaction();
             }
             catch (StorageException e)
             {
                 ErrorString = $"You have the exception {e.Message}";
+                throw new ViewModelException(ErrorString);
             }
         }
 
+        private void CreateBarCodeWithTransaction()
+        {
+            BarCode = MainPage.GlobalSettings.ScannedBarCode;
+            if ( BarCode == null) return;
+            var barCodeStorage = MainPage.GlobalSettings.BarCodeStorage;
+            BarCode.AnalyzeCodeByWeightKg(Weight);
+            BarCode.Transaction = _transaction;
+            barCodeStorage.CreateBarCode(BarCode);
+        }
 
         protected void UpdateTransaction()
         {
             try
             {
                 DateTimeFromDateAndTime();
-                var manager = MainPage.GlobalSettings.TransactionStorage;
+                var storage = MainPage.GlobalSettings.TransactionStorage;
                 _transaction.Name = Name;
                 _transaction.Account = Account;
                 _transaction.Category = Category;
@@ -184,12 +208,15 @@ namespace FamilyMoney.UWP.ViewModels
                 _transaction.Total = Total;
                 _transaction.Weight = Weight;
                 _transaction.Parent = ParentTransaction;
+                storage.UpdateTransaction(_transaction);
 
-                manager.UpdateTransaction(_transaction);
+                CreateBarCodeWithTransaction();
+
             }
             catch (StorageException e)
             {
                 ErrorString = $"You have the exception {e.Message}";
+                throw new ViewModelException(ErrorString);
             }
         }
 
@@ -217,7 +244,42 @@ namespace FamilyMoney.UWP.ViewModels
             Weight = selected.Weight;
         }
 
+        public async Task<string> ScanBarCode()
+        {
+            var scanner = new BarCodeScanner();
 
+            var result = await scanner.ScanBarCode();
+
+            return result;
+        }
+
+        public void ProcessScannedBarCode(string barCodeString)
+        {
+            if (string.IsNullOrWhiteSpace(barCodeString)) return;
+
+            BarCode = new BarCode(barCodeString);
+            var storage = MainPage.GlobalSettings.BarCodeStorage;
+            var transaction = storage.GetBarCodeTransaction(BarCode.GetProductBarCode());
+            if (transaction == null)
+            {
+                BarCode.TryExtractWeight(5);
+                transaction = storage.GetBarCodeTransaction(BarCode.GetProductBarCode());
+                if (transaction == null)
+                {
+                    BarCode.TryExtractWeight(6);
+                    transaction = storage.GetBarCodeTransaction(BarCode.GetProductBarCode());
+                }
+            }
+
+            MainPage.GlobalSettings.ScannedBarCode = BarCode;
+            Weight = BarCode.GetWeightKg();
+            Total = 0;
+            if (transaction == null) return;
+            Category = Categories.FirstOrDefault(x => x.Id == transaction.Category?.Id);
+            Name = transaction.Name;
+            if (!BarCode.IsWeight)
+                Total = transaction.Total;
+        }
 
         public event PropertyChangedEventHandler PropertyChanged;
 

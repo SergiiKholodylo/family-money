@@ -5,7 +5,9 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Navigation;
+using FamilyMoney.UWP.Bases;
 using FamilyMoney.UWP.ViewModels;
+using FamilyMoney.UWP.ViewModels.Dialogs;
 using FamilyMoney.UWP.Views.Dialogs;
 using FamilyMoneyLib.NetStandard.Bases;
 
@@ -19,36 +21,52 @@ namespace FamilyMoney.UWP.Views
     public sealed partial class Transaction : Page
     {
         public ITransactionViewModel ViewModel;
+        private ITransaction transaction;
 
         public Transaction()
         {
             this.InitializeComponent();
         }
 
+        public Transaction(ITransaction transaction)
+        {
+            this.transaction = transaction;
+        }
+
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             var parameter = e.Parameter as TransactionPageParameter;
-            switch (parameter?.Action)
+            if (e.NavigationMode == NavigationMode.New)
             {
-                case TransactionAction.CreateNewTransaction:
-                    
-                case TransactionAction.CreateTransactionForAccount:
-                    ViewModel = new TransactionCreateViewModel(parameter?.ActiveAccount);
-                    break;
-                case TransactionAction.EditTransaction:
-                    ViewModel = new TransactionEditViewModel(parameter?.ActiveTransaction);
-                    break;
-                default:
-                    ViewModel = new TransactionCreateViewModel(null);
-                    break;
+                switch (parameter?.Action)
+                {
+                    case TransactionAction.CreateNewTransaction:
+
+                    case TransactionAction.CreateTransactionForAccount:
+                        ViewModel = new TransactionCreateViewModel(parameter?.ActiveAccount);
+                        break;
+                    case TransactionAction.EditTransaction:
+                        ViewModel = new TransactionEditViewModel(parameter?.ActiveTransaction);
+                        break;
+                    default:
+                        ViewModel = new TransactionCreateViewModel(null);
+                        break;
+                }
+
+                MainPage.GlobalSettings.FormsView.Transaction = ViewModel;
             }
-            ViewModel.PropertyChanged += ViewModel_PropertyChanged;
+            else
+            {
+                if (MainPage.GlobalSettings.FormsView.Transaction != null)
+                    ViewModel = MainPage.GlobalSettings.FormsView.Transaction;
+                else
+                {
+                    ViewModel = new TransactionCreateViewModel(null);
+                }
+            }
         }
 
-        private void ViewModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
-        {
-            Debug.WriteLine($"{e.PropertyName}");
-        }
+
 
         private void AutoSuggestBox_QuerySubmitted(AutoSuggestBox sender, AutoSuggestBoxQuerySubmittedEventArgs args)
         {
@@ -70,6 +88,8 @@ namespace FamilyMoney.UWP.Views
 
         private void CommandBar_SaveButton(object sender, RoutedEventArgs e)
         {
+            var button = (AppBarButton) sender;
+            button.Focus(FocusState.Programmatic);
             SaveTransaction();
         }
 
@@ -100,15 +120,35 @@ namespace FamilyMoney.UWP.Views
             var result = await editTransaction.ShowAsync();
         }
 
-        private void SaveTransaction()
+        private async void SaveTransaction()
         {
-            ViewModel.SaveTransaction();
-            Frame.Navigate(typeof(Transactions));
+
+            try
+            {
+                ViewModel.SaveTransaction();
+                Frame.Navigate(typeof(Transactions));
+            }
+            catch (ViewModelException e)
+            {
+                var dialog = new ContentDialog
+                {
+                    Content = e.Message,
+                    IsPrimaryButtonEnabled = true,
+                    PrimaryButtonText = "Ok"
+                };
+                await dialog.ShowAsync();
+            }
         }
         private void ExitWithoutSaving()
         {
             Frame.Navigate(typeof(Transactions));
         }
 
+        private async void CommandBar_ScanBarCode(object sender, RoutedEventArgs e)
+        {
+            var scannedCode = await ViewModel.ScanBarCode();
+
+            ViewModel.ProcessScannedBarCode(scannedCode);
+        }
     }
 }

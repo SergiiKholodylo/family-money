@@ -39,6 +39,35 @@ namespace FamilyMoneyLib.NetStandard.Bases
             return productBarCode;
         }
 
+        public virtual void AnalyzeCodeByWeightKg(decimal weightInKg)
+        {
+            IsWeight = false;
+            if(weightInKg <= 0) return;
+            if (Code == null || Code.Length < 5) return;
+            if(weightInKg > 99.99m) return;
+
+
+            var weightString = weightInKg.ToString("N3").Replace(".", "").Replace(",", "");
+            var isCodeContainWeight = Code.Contains(weightString);
+            if(!isCodeContainWeight) return;
+            var index = Code.IndexOf(weightString, StringComparison.Ordinal);
+            var weightInCode = Code.Substring(index);
+
+            IsWeight = true;
+            if(Code.Substring(index-1,1).Equals("0"))
+                NumberOfDigitsForWeight = weightInCode.Length+1;
+            else
+                NumberOfDigitsForWeight = weightInCode.Length;
+        }
+
         public ITransaction Transaction { set; get; }
+
+        public void TryExtractWeight(int barCodeLength)
+        {
+            if(string.IsNullOrWhiteSpace(Code)) return;
+            if(Code.Length < barCodeLength) return;
+            IsWeight = true;
+            NumberOfDigitsForWeight = barCodeLength;
+        }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Input;
@@ -72,6 +73,51 @@ namespace FamilyMoney.UWP.Views
             //    ViewModel.RefreshTransactionByAccount();
             var parameter = new TransactionPageParameter(activeTransaction);
             Frame.Navigate(typeof(Transaction), parameter);
+        }
+
+        private async void ListView_RightTapped(object sender, RightTappedRoutedEventArgs e)
+        {
+            var activeTransaction = (ITransaction)((FrameworkElement)e.OriginalSource).DataContext;
+            if(activeTransaction==null) return;
+
+            var dialog = new ContentDialog
+            {
+                Title = "ListView_RightTapped",
+                Content = $"Delete {activeTransaction.Name}?",
+                IsPrimaryButtonEnabled = true,
+                IsSecondaryButtonEnabled = true,
+                PrimaryButtonText = "Delete",
+                SecondaryButtonText = "Cancel"
+            };
+            var res = await dialog.ShowAsync();
+            if(res == ContentDialogResult.Secondary) return;
+            ViewModel.DeleteTransaction(activeTransaction);
+        }
+
+
+        private async void ListView_Holding(object sender, HoldingRoutedEventArgs e)
+        {
+            var activeTransaction = (ITransaction)(((ListView)sender).SelectedValue);
+            if (activeTransaction == null) return;
+
+
+            var dialog = new ContentDialog
+            {
+                Title = "ListView_Holding",
+                Content = $"Delete {activeTransaction.Name}?",
+                IsPrimaryButtonEnabled = true,
+                IsSecondaryButtonEnabled = true,
+                PrimaryButtonText = "Delete",
+                SecondaryButtonText = "Cancel"
+            };
+            var res = await dialog.ShowAsync();
+            if(res == ContentDialogResult.Secondary) return;
+            ViewModel.DeleteTransaction(activeTransaction);
+        }
+
+        private void AppBarButton_Click_4(object sender, RoutedEventArgs e)
+        {
+            Frame.Navigate(typeof(MainPage));
         }
     }
 }

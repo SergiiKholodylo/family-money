@@ -6,25 +6,25 @@ using FamilyMoneyLib.NetStandard.Factories;
 
 namespace FamilyMoneyLib.NetStandard.Storages
 {
-    public class MemoryBarCodeStorage : IBarCodeStorage
+    public class MemoryBarCodeStorage : BarCodeStorageBase
     {
-        private readonly IBarCodeFactory _factory;
         private readonly Dictionary<string, IBarCode> _storage;
+        private readonly ITransactionStorage _transactionStorage;
 
-        public MemoryBarCodeStorage(IBarCodeFactory factory)
+        public MemoryBarCodeStorage(IBarCodeFactory factory, ITransactionStorage transactionStorage):base(factory)
         {
-            _factory = factory;
             _storage = new Dictionary<string, IBarCode>();
+            _transactionStorage = transactionStorage;
         }
 
 
 
-        public void UpdateBarCode(IBarCode barCode)
+        public override void UpdateBarCode(IBarCode barCode)
         {
 
         }
 
-        public IBarCode CreateBarCode(IBarCode barCode)
+        public override IBarCode CreateBarCode(IBarCode barCode)
         {
             try
             {
@@ -38,18 +38,28 @@ namespace FamilyMoneyLib.NetStandard.Storages
             }
         }
 
-        public void DeleteBarCode(IBarCode barCode)
+        public override ITransaction CreateBarCodeBasedTransaction(string barCode)
+        {
+            var transaction = GetBarCodeTransaction(barCode);
+            if (transaction == null) return transaction;
+
+            transaction.Timestamp = DateTime.Now;
+            var newTransaction = _transactionStorage.CreateTransaction(transaction);
+            return newTransaction;
+        }
+
+        public override void DeleteBarCode(IBarCode barCode)
         {
             var id = barCode.GetProductBarCode();
             _storage.Remove(id);
         }
 
-        public IEnumerable<IBarCode> GetAllBarCodes()
+        public override IEnumerable<IBarCode> GetAllBarCodes()
         {
             return _storage.Select(x => x.Value);
         }
 
-        public ITransaction GetBarCodeTransaction(string barCode)
+        public override ITransaction GetBarCodeTransaction(string barCode)
         {
             var foundBarCode = _storage.FirstOrDefault(x => x.Key.Equals(barCode)).Value;
             return foundBarCode?.Transaction;

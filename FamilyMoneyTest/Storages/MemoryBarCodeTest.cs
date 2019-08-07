@@ -16,7 +16,7 @@ namespace UnitTests.Storages
             const string code = "2734336010584";
             const bool isWeight = true;
             const int numberOfDigits = 6;
-            var barCodeStorage = new MemoryBarCodeStorage(new BarCodeFactory());
+            var barCodeStorage = new MemoryBarCodeStorage(new BarCodeFactory(),new MemoryTransactionStorage(new RegularTransactionFactory()));
 
 
             var barCode = barCodeStorage.CreateBarCode(CreateBarCode(code, isWeight, numberOfDigits));
@@ -37,7 +37,7 @@ namespace UnitTests.Storages
         public void CreateNonWeightBarCodeTest()
         {
             const string code = "5060207697224";
-            var barCodeStorage = new MemoryBarCodeStorage(new BarCodeFactory());
+            var barCodeStorage = new MemoryBarCodeStorage(new BarCodeFactory(), new MemoryTransactionStorage(new RegularTransactionFactory()));
 
 
             var barCode = barCodeStorage.CreateBarCode(CreateBarCode(code));
@@ -51,7 +51,7 @@ namespace UnitTests.Storages
         [TestMethod]
         public void DeleteBarCodeTest()
         {
-            var barCodeStorage = new MemoryBarCodeStorage(new BarCodeFactory());
+            var barCodeStorage = new MemoryBarCodeStorage(new BarCodeFactory(), new MemoryTransactionStorage(new RegularTransactionFactory()));
             var barCode = barCodeStorage.CreateBarCode(CreateBarCode("2734336010584", true, 6));
             barCodeStorage.CreateBarCode(CreateBarCode("5060207697224"));
 
@@ -68,7 +68,7 @@ namespace UnitTests.Storages
         public void GetBarCodeTransactionTest()
         {
             var transactionStorage = new MemoryTransactionStorage(new RegularTransactionFactory());
-            var barCodeStorage = new MemoryBarCodeStorage(new BarCodeFactory());
+            var barCodeStorage = new MemoryBarCodeStorage(new BarCodeFactory(), new MemoryTransactionStorage(new RegularTransactionFactory()));
 
             var accountFactory = new RegularAccountFactory();
             var categoryFactory = new RegularCategoryFactory();
@@ -87,6 +87,27 @@ namespace UnitTests.Storages
             ITransaction foundTransaction = barCodeStorage.GetBarCodeTransaction("2734336");
 
             Assert.AreEqual(26.38m, foundTransaction.Total);
+        }
+
+        [TestMethod]
+        public void CreateBarCodeBasedTransactionText()
+        {
+            var transactionStorage = new MemoryTransactionStorage(new RegularTransactionFactory());
+            var barCodeStorage = new MemoryBarCodeStorage(new BarCodeFactory(), transactionStorage);
+            var accountFactory = new RegularAccountFactory();
+            var categoryFactory = new RegularCategoryFactory();
+            var account = accountFactory.CreateAccount("Account", "Description", "UAH");
+            var category = categoryFactory.CreateCategory("Category", "category Description", 0, null);
+            var transaction = transactionStorage.CreateTransaction(account, category, "test", 26.38m, DateTime.Now, 0, 0, null, null);
+            var barCode = barCodeStorage.CreateBarCode(CreateBarCode("2734336010584", true, 6));
+            barCode.Transaction = transaction;
+            barCodeStorage.UpdateBarCode(barCode);
+            barCodeStorage.CreateBarCode(CreateBarCode("5060207697224"));
+
+            barCodeStorage.CreateBarCodeBasedTransaction("2734336");
+
+            var transactions = transactionStorage.GetAllTransactions();
+            Assert.AreEqual(2,transactions.Count());
         }
     }
 }

@@ -58,7 +58,7 @@
                                     Text="{Binding}" />
                             </Border>
                             <Button
-                                Content=" Top Level "
+                                Content=" Level Up "
                                 Click="BtTopLevel_Click" />
                         </StackPanel>
                     </DataTemplate>

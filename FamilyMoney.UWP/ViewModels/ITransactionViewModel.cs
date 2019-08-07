@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Threading.Tasks;
 using Windows.UI.Xaml;
 using FamilyMoneyLib.NetStandard.Bases;
 
@@ -9,6 +10,7 @@ namespace FamilyMoney.UWP.ViewModels
 {
     public interface ITransactionViewModel:INotifyPropertyChanged
     {
+        IBarCode BarCode { set; get; }
         IAccount Account { set; get; }
         ICategory Category { set; get; }
         ITransaction Transaction { set; get; }
@@ -24,10 +26,13 @@ namespace FamilyMoney.UWP.ViewModels
         IEnumerable<ITransaction> Transactions { get; }
         ObservableCollection<ITransaction> ChildrenTransactions { set; get; }
         Visibility IsChildTransactionVisible { get; }
-
+        Visibility IsChildTransactionHidden { get; }
 
         void SaveTransaction();
         void FillFromTemplate(ITransaction selected);
         IEnumerable<ITransaction> GetSuggestions(string searchString);
+        Task<string> ScanBarCode();
+
+        void ProcessScannedBarCode(string barCodeString);
     }
 }

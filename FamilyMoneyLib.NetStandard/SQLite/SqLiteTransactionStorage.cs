@@ -176,8 +176,8 @@ namespace FamilyMoneyLib.NetStandard.SQLite
             var categoryId = (long)(line["categoryId"]);
             var name = line["name"].ToString();
             var total = decimal.Parse(line["total"].ToString());
-            var account = accountStorage.GetAllAccounts().FirstOrDefault(x => x.Id == accountId);
-            var category = categoryStorage.GetAllCategories().FirstOrDefault(x => x.Id == categoryId);
+            var account = accountStorage.GetAllAccounts().FirstOrDefault(x => x?.Id == accountId);
+            var category = categoryStorage.GetAllCategories().FirstOrDefault(x => x?.Id == categoryId);
             var weight = decimal.Parse( line["weight"].ToString());
             var productId = (line["productId"] is System.DBNull)? 0: (long)line["productId"];//Add Product Storage
             var parentId = (line["parentId"] is System.DBNull) ? 0 : (long)line["parentId"];

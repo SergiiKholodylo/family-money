@@ -96,7 +96,15 @@ namespace FamilyMoney.UWP.ViewModels
 
         public void DeleteTransaction(ITransaction activeTransaction)
         {
-            _storage.DeleteTransaction(activeTransaction);
+            var barCodeStorage = MainPage.GlobalSettings.BarCodeStorage;
+            var transactionStorage = MainPage.GlobalSettings.TransactionStorage;
+
+            var barCodesToDelete = barCodeStorage.GetAllBarCodes().Where(x => x.Transaction?.Id == activeTransaction.Id).ToArray();
+            foreach (var barCode in barCodesToDelete)
+            {
+                barCodeStorage.DeleteBarCode(barCode);
+            }
+            transactionStorage.DeleteTransaction(activeTransaction);
             Transactions.Remove(activeTransaction);
         }
     }

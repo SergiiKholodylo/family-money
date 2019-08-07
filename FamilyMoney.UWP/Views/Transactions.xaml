@@ -32,7 +32,7 @@
                 Click="AppBarButton_Click_3" />
             <AppBarButton
                 x:Uid="ReportAppBar"
-                Icon="ViewAll" />
+                Icon="ViewAll" Click="AppBarButton_Click_4" />
         </CommandBar>
     </Page.BottomAppBar>
 
@@ -76,7 +76,7 @@
             </ComboBox>
             <ListView x:Uid="TransactionListView"
                       ItemsSource="{x:Bind ViewModel.Transactions}"
-                      DoubleTapped="ListView_DoubleTapped"
+                      DoubleTapped="ListView_DoubleTapped" RightTapped="ListView_RightTapped" Holding="ListView_Holding"
                       >
 
                 <ListView.HeaderTemplate>
@@ -99,7 +99,7 @@
                             </Grid.ColumnDefinitions>
                             <TextBlock Grid.Column="0"
                                        VerticalAlignment="Center"
-                                       Style="{StaticResource ListViewText}"
+                                       Style="{StaticResource ListViewData}"
                                        Text="{x:Bind Timestamp, Converter={StaticResource StringFormatConverter}, ConverterParameter='{}{0:dd/MM/yyy}'}" 
                                        />
                             <TextBlock Grid.Column="1"

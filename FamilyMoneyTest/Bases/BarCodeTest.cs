@@ -6,7 +6,7 @@ namespace UnitTests.Bases
     [TestClass]
     public class BarCodeTest
     {
-        private const string SilpoZefir = "2710041003240";
+        private const string SilpoZefir = "2710041003245";
 
         [TestMethod]
         public void GetWeightTest()
@@ -17,7 +17,7 @@ namespace UnitTests.Bases
             var weight = barcode.GetWeightKg();
 
 
-            Assert.AreEqual(0.324m,weight);
+            Assert.AreEqual(0.3245m,weight);
         }
 
 
@@ -31,6 +31,19 @@ namespace UnitTests.Bases
 
 
             Assert.AreEqual("2710041",productBarCode);
+        }
+
+        [TestMethod]
+        public void AnalyzeCodeByWeightKgTest()
+        {
+            var barcode = new BarCode(SilpoZefir);
+
+
+            barcode.AnalyzeCodeByWeightKg(0.324m);
+
+
+            Assert.AreEqual(true,barcode.IsWeight);
+            Assert.AreEqual(6,barcode.NumberOfDigitsForWeight);
         }
     }
 }
