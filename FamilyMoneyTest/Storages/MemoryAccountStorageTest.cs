@@ -4,7 +4,7 @@ using FamilyMoneyLib.NetStandard.Factories;
 using FamilyMoneyLib.NetStandard.Storages;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace FamilyMoneyTest.Storages
+namespace UnitTests.Storages
 {
     [TestClass]
     public class MemoryAccountStorageTest

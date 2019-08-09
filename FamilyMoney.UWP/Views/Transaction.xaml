@@ -25,6 +25,12 @@
                 Click="CommandBar_ScanBarCode"
                 Visibility="{x:Bind ViewModel.IsChildTransactionHidden, Mode=OneWay}" 
                 />
+            <AppBarButton
+                x:Uid="ScanBarCodeChildButton"
+                Icon="Camera"
+                Click="CommandBar_ScanBarChildTransactionCode"
+                Visibility="{x:Bind ViewModel.IsChildTransactionVisible, Mode=OneWay}" 
+            />
 
             <AppBarSeparator />
             <AppBarButton

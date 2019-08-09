@@ -28,21 +28,6 @@ namespace FamilyMoneyLib.NetStandard.Storages
 
         }
 
-        public override void AddChildrenTransaction(Transaction transaction)
-        {
-            throw new System.NotImplementedException();
-        }
-
-        public override void DeleteAllChildrenTransactions()
-        {
-            throw new System.NotImplementedException();
-        }
-
-        public override void DeleteChildrenTransaction(ITransaction transaction)
-        {
-            throw new System.NotImplementedException();
-        }
-
         public override IEnumerable<ITransaction> GetAllTransactions()
         {
             return _transactions.ToArray();

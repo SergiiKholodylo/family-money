@@ -11,6 +11,7 @@ using FamilyMoney.UWP.Annotations;
 using FamilyMoney.UWP.Bases;
 using FamilyMoney.UWP.Helpers;
 using FamilyMoney.UWP.ViewModels.Dialogs;
+using FamilyMoney.UWP.Views.Dialogs;
 using FamilyMoneyLib.NetStandard.Bases;
 using FamilyMoneyLib.NetStandard.Storages;
 
@@ -279,6 +280,39 @@ namespace FamilyMoney.UWP.ViewModels
             Name = transaction.Name;
             if (!BarCode.IsWeight)
                 Total = transaction.Total;
+        }
+
+        public async Task<EditChildTransaction> ScanChildTransaction()
+        {
+            var barCodeString = await ScanBarCode();
+
+            var editTransaction = new EditChildTransaction(Transaction, Account);
+
+
+            var barCode = new BarCode(barCodeString);
+
+            var storage = MainPage.GlobalSettings.BarCodeStorage;
+            var transaction = storage.GetBarCodeTransaction(barCode.GetProductBarCode());
+            if (transaction == null)
+            {
+                barCode.TryExtractWeight(5);
+                transaction = storage.GetBarCodeTransaction(barCode.GetProductBarCode());
+                if (transaction == null)
+                {
+                    barCode.TryExtractWeight(6);
+                    transaction = storage.GetBarCodeTransaction(barCode.GetProductBarCode());
+                }
+            }
+
+            editTransaction.ViewModel.BarCode = barCode;
+            editTransaction.ViewModel.Weight = barCode.GetWeightKg();
+            editTransaction.ViewModel.Total = 0;
+            if (transaction == null) return editTransaction;
+            editTransaction.ViewModel.Category = editTransaction.ViewModel.Categories.FirstOrDefault(x => x.Id == transaction.Category?.Id);
+            editTransaction.ViewModel.Name = transaction.Name;
+            if (!barCode.IsWeight)
+                editTransaction.ViewModel.Total = transaction.Total;
+            return editTransaction;
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

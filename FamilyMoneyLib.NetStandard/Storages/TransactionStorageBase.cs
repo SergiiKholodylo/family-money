@@ -42,8 +42,5 @@ namespace FamilyMoneyLib.NetStandard.Storages
             
         }
 
-        public abstract void AddChildrenTransaction(Transaction transaction);
-        public abstract void DeleteAllChildrenTransactions();
-        public abstract void DeleteChildrenTransaction(ITransaction transaction);
     }
 }

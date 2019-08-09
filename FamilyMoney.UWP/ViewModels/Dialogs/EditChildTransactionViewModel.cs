@@ -140,6 +140,7 @@ namespace FamilyMoney.UWP.ViewModels.Dialogs
         private IEnumerable<IAccount> Accounts { get; }= MainPage.GlobalSettings.AccountStorage.GetAllAccounts();
 
         private IEnumerable<ITransaction> Transactions { get; } = MainPage.GlobalSettings.TransactionStorage.GetAllTransactions();
+        public BarCode BarCode { get; set; }
 
         public void CreateChildTransaction()
         {

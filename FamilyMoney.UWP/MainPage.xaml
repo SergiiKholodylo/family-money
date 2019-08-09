@@ -10,7 +10,7 @@
 
     <Page.BottomAppBar>
         <CommandBar>
-            <AppBarButton Label="New Transaction" Icon="Add" />
+            <AppBarButton Label="Scan Transaction" Icon="Camera" Click="ButtonBase_OnClick" />
 
             <AppBarSeparator />
             <AppBarButton Label="Transactions" Icon="Calculator" Click="AppBarButton_Click_2"  />

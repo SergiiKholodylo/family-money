@@ -1,6 +1,6 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace FamilyMoneyTest
+namespace UnitTests
 {
     [TestClass]
     public class StartPage

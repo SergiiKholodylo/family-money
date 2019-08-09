@@ -23,7 +23,7 @@ namespace FamilyMoneyLib.NetStandard.SQLite
 
         // Exception Microsoft.Data.Sqlite.SqliteException
 
-        private const string AccountTableStructure = "id INTEGER PRIMARY KEY," +
+        private const string TransactionTableStructure = "id INTEGER PRIMARY KEY," +
                                                      "timestamp TEXT NOT NULL," +
                                                      "accountId INTEGER NOT NULL,"+
                                                      "categoryId INTEGER NOT NULL,"+
@@ -37,7 +37,7 @@ namespace FamilyMoneyLib.NetStandard.SQLite
                                                      "parentId INTEGER";
 
         private readonly SqLiteTable _table = new SqLiteTable("familyMoney.db", "Transactions",
-            $"({AccountTableStructure})");
+            $"({TransactionTableStructure})");
 
         private readonly IAccountStorage _accountStorage;
         private readonly ICategoryStorage _categoryStorage;
@@ -91,7 +91,7 @@ namespace FamilyMoneyLib.NetStandard.SQLite
         public override void UpdateTransaction(ITransaction transaction)
         {
             _table.InitializeDatabase();
-            var allData = GetAllTransactions();
+            //var allData = GetAllTransactions();
             //var children = allData.Where(x => x.ParentTransaction?.Id == transaction.Id);
             //foreach (var child in children)
             //{
@@ -105,20 +105,6 @@ namespace FamilyMoneyLib.NetStandard.SQLite
             //}
         }
 
-        public override void AddChildrenTransaction(Transaction transaction)
-        {
-            throw new NotImplementedException();
-        }
-
-        public override void DeleteAllChildrenTransactions()
-        {
-            throw new NotImplementedException();
-        }
-
-        public override void DeleteChildrenTransaction(ITransaction transaction)
-        {
-            throw new NotImplementedException();
-        }
 
         public void AddChildrenTransaction(ITransaction parent, ITransaction child)
         {
@@ -127,16 +113,6 @@ namespace FamilyMoneyLib.NetStandard.SQLite
             transaction.AddChildrenTransaction(child);
             UpdateTransaction(child);
             UpdateTransaction(transaction);
-        }
-
-        public void DeleteAllChildrenTransactions(Transaction parent)
-        {
-            parent.DeleteAllChildrenTransactions();
-        }
-
-        public void DeleteChildrenTransaction(Transaction parent, Transaction child)
-        {
-            parent.DeleteChildrenTransaction(child);
         }
 
         public void DeleteAllData()
@@ -179,9 +155,9 @@ namespace FamilyMoneyLib.NetStandard.SQLite
             var account = accountStorage.GetAllAccounts().FirstOrDefault(x => x?.Id == accountId);
             var category = categoryStorage.GetAllCategories().FirstOrDefault(x => x?.Id == categoryId);
             var weight = decimal.Parse( line["weight"].ToString());
-            var productId = (line["productId"] is System.DBNull)? 0: (long)line["productId"];//Add Product Storage
-            var parentId = (line["parentId"] is System.DBNull) ? 0 : (long)line["parentId"];
-            var isComplexTransaction = (long) line["isComplexTransaction"] > 0;
+            //var productId = (line["productId"] is System.DBNull)? 0: (long)line["productId"];//Add Product Storage
+            //var parentId = (line["parentId"] is System.DBNull) ? 0 : (long)line["parentId"];
+            //var isComplexTransaction = (long) line["isComplexTransaction"] > 0;
 
             var transaction = (Transaction)transactionFactory.CreateTransaction(account,category,name,total,timestamp, id,weight,null,null);
 
@@ -195,7 +171,7 @@ namespace FamilyMoneyLib.NetStandard.SQLite
         {
             var id = (long)line["id"];
             var parentId = line["parentId"];
-            if (parentId is System.DBNull) return;
+            if (parentId is DBNull) return;
             var transaction = withNoParents.FirstOrDefault(x => x.Id == id);
             var parentTransaction = (Transaction)withNoParents.FirstOrDefault(x => x.Id == (long)parentId);
             if (transaction != null)

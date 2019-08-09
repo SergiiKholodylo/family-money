@@ -150,5 +150,11 @@ namespace FamilyMoney.UWP.Views
 
             ViewModel.ProcessScannedBarCode(scannedCode);
         }
+
+        private async void CommandBar_ScanBarChildTransactionCode(object sender, RoutedEventArgs e)
+        {
+            var childTransaction = await ViewModel.ScanChildTransaction();
+            await childTransaction.ShowAsync();
+        }
     }
 }

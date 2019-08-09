@@ -1,7 +1,7 @@
 ﻿using FamilyMoneyLib.NetStandard.Factories;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace FamilyMoneyTest.Factories
+namespace UnitTests.Factories
 {
     [TestClass]
     public class RegularTransactionFactoryTest

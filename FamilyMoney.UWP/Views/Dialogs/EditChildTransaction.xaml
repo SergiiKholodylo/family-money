@@ -11,6 +11,7 @@
     Title="Edit Transaction"
     PrimaryButtonText="Save"
     SecondaryButtonText="Cancel"
+    
     PrimaryButtonClick="ContentDialog_PrimaryButtonClick"
     SecondaryButtonClick="ContentDialog_SecondaryButtonClick">
 
@@ -53,6 +54,7 @@
                 x:Uid="WeightTextBox" 
                 Text="{x:Bind ViewModel.Weight, Mode=TwoWay, Converter={StaticResource DecimalConverter}, ConverterParameter='{}{0:F3}'}"
             />
+
             <TextBlock 
                 Foreground="Red" 
                 Text="{x:Bind ViewModel.ErrorString, Mode=TwoWay}"

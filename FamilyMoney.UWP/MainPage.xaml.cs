@@ -1,4 +1,5 @@
 ﻿using System;
+using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using FamilyMoney.UWP.Bases;
 using FamilyMoney.UWP.ViewClasses;
@@ -49,6 +50,11 @@ namespace FamilyMoney.UWP
         {
             await _viewModel.ScanQuickTransaction();
 
+        }
+
+        private async void ButtonBase_OnClick(object sender, RoutedEventArgs e)
+        {
+            await _viewModel.ScanQuickTransaction();
         }
     }
 }
