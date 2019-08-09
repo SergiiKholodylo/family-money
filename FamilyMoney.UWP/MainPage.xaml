@@ -27,34 +27,55 @@
                   IsItemClickEnabled="True"
                   IsSwipeEnabled="False"
                   SelectionMode="Single"
-                  ItemClick="RunTransaction_Click">
+                  ItemClick="RunTransaction_Click" >
             <GridView.ItemTemplate>
                 <DataTemplate 
                     x:Name="IconTextTemplate" 
-                    x:DataType="local:QuickButton">
+                    x:DataType="local:QuickButton"
+                    >
                     <StackPanel 
-                        Width="264" 
-                        Height="48" 
+                        Width="200" 
+                        Height="90" 
                         Padding="12" 
-                        Orientation="Horizontal"
+                        Orientation="Vertical"
+                        VerticalAlignment="Center"
+                        HorizontalAlignment="Center"
                                 >
-                        <SymbolIcon 
-                            Symbol="{x:Bind Symbol}" 
-                            VerticalAlignment="Top" />
-                        <TextBlock 
-                            Margin="12,0,0,0" 
-                            Width="204" 
-                            Text="{x:Bind Label}" />
+                        <Grid VerticalAlignment="Stretch">
+                            <FlyoutBase.AttachedFlyout>
+                                <MenuFlyout>
+                                    <MenuFlyoutItem x:Name="EditButton" Text="Edit"/>
+                                    <MenuFlyoutItem x:Name="DeleteButton" Text="Delete"/>
+                                    <MenuFlyoutSubItem Text="OtherItems">
+                                        <MenuFlyoutItem Text="Inside1"/>
+                                        <MenuFlyoutItem Text="Inside2"/>
+                                        <MenuFlyoutItem Text="Inside3"/>
+                                    </MenuFlyoutSubItem>
+                                </MenuFlyout>
+                            </FlyoutBase.AttachedFlyout>
+                            <StackPanel>
+                                <TextBlock 
+                                    Margin="12,0,0,0" 
+                                    Style="{StaticResource ListViewText}"
+                                    Width="204" 
+                                    Text="{x:Bind Label}" />
+                                <TextBlock 
+                                    Margin="24,0,0,0" 
+                                    Style="{StaticResource ListViewData}"
+                                    Width="200" 
+                                    Text="{x:Bind SecondLine}" />
+                                <TextBlock 
+                                    Style="{StaticResource ListViewData}"
+                                    Margin="24,0,0,0" 
+                                    Width="200" 
+                                    Text="{x:Bind ThirdLine}" />
+                            </StackPanel>
+                        </Grid>
+
                     </StackPanel>
                 </DataTemplate>
             </GridView.ItemTemplate>
         </GridView>
-            <CaptureElement Name="CaptureElement"/>
-            <MediaElement 
-                Width="300"
-                Height="300"
-                Name="MediaElement"
-                />
         </StackPanel>
     </Grid>
 

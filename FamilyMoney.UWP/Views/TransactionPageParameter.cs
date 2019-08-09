@@ -8,10 +8,10 @@ namespace FamilyMoney.UWP.Views
         public readonly TransactionAction Action;
 
 
-        public TransactionPageParameter(ITransaction activeTransaction)
+        public TransactionPageParameter(ITransaction activeTransaction, TransactionAction action = TransactionAction.EditTransaction)
         {
             ActiveTransaction = activeTransaction;
-            Action = TransactionAction.EditTransaction;
+            Action = action;
         }
 
         public TransactionPageParameter(IAccount activeAccount)

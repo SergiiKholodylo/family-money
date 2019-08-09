@@ -4,6 +4,7 @@
     {
         CreateNewTransaction,
         CreateTransactionForAccount,
-        EditTransaction
+        EditTransaction,
+        CreateTransactionFromTemplate
     }
 }

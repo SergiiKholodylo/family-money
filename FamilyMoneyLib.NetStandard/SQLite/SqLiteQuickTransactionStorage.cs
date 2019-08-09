@@ -11,10 +11,10 @@ namespace FamilyMoneyLib.NetStandard.SQLite
     public class SqLiteQuickTransactionStorage:QuickTransactionStorageBase
     {
         private const string QuickTransactionTableStructure = "id INTEGER PRIMARY KEY," +
-                                                     "accountId INTEGER NOT NULL," +
-                                                     "categoryId INTEGER NOT NULL," +
-                                                     "name TEXT NOT NULL, " +
-                                                     "total NUMERIC NOT NULL, " +
+                                                     "accountId INTEGER ," +
+                                                     "categoryId INTEGER ," +
+                                                     "name TEXT , " +
+                                                     "total NUMERIC , " +
                                                      "ownerId TEXT NOT NULL, " +
                                                      "baseId TEXT NOT NULL, " +
                                                      "weight NUMERIC, " +
@@ -106,8 +106,8 @@ namespace FamilyMoneyLib.NetStandard.SQLite
             ICategoryStorage categoryStorage)
         {
             var id = (long)line["id"];
-            var accountId = (long)(line["accountId"]);
-            var categoryId = (long)(line["categoryId"]);
+            var accountId = (long)(line["accountId"] is DBNull?0L: line["accountId"]);
+            var categoryId = (long)(line["categoryId"] is DBNull ? 0L : line["categoryId"]);
             var name = line["name"].ToString();
             var total = decimal.Parse(line["total"].ToString());
             var account = accountStorage.GetAllAccounts().FirstOrDefault(x => x?.Id == accountId);

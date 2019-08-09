@@ -48,20 +48,23 @@ namespace FamilyMoney.UWP.Views
                     case TransactionAction.EditTransaction:
                         ViewModel = new TransactionEditViewModel(parameter?.ActiveTransaction);
                         break;
+                    case TransactionAction.CreateTransactionFromTemplate:
+                        ViewModel = new TransactionCreateViewModel(parameter?.ActiveTransaction);
+                        break;
                     default:
-                        ViewModel = new TransactionCreateViewModel(null);
+                        ViewModel = new TransactionCreateViewModel();
                         break;
                 }
 
                 MainPage.GlobalSettings.FormsView.Transaction = ViewModel;
             }
-            else
+            else //Back event
             {
                 if (MainPage.GlobalSettings.FormsView.Transaction != null)
                     ViewModel = MainPage.GlobalSettings.FormsView.Transaction;
                 else
                 {
-                    ViewModel = new TransactionCreateViewModel(null);
+                    ViewModel = new TransactionCreateViewModel();
                 }
             }
         }

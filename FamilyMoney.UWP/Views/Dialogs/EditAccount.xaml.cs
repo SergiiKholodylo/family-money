@@ -28,7 +28,7 @@ namespace FamilyMoney.UWP.Views.Dialogs
                 ViewModel = new EditAccountViewModel(account);
                 _saveAccountAction = delegate { ViewModel.UpdateAccount(); };
                 Title = "Edit Account".GetLocalized();
-                PrimaryButtonText = "Edit Account".GetLocalized();
+                PrimaryButtonText = "Save".GetLocalized();
                 SecondaryButtonText = "Cancel".GetLocalized();
 
             }

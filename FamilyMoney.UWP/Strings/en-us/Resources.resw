@@ -138,6 +138,18 @@
   <data name="AddAccountTitle" xml:space="preserve">
     <value>Add Account</value>
   </data>
+  <data name="AskForTotalSwitch.OffContent" xml:space="preserve">
+    <value>Don't Ask For Total</value>
+  </data>
+  <data name="AskForTotalSwitch.OnContent" xml:space="preserve">
+    <value>Ask For Total</value>
+  </data>
+  <data name="AskForWeightSwitch.OffContent" xml:space="preserve">
+    <value>Don't Ask For Weight</value>
+  </data>
+  <data name="AskForWeightSwitch.OnContent" xml:space="preserve">
+    <value>Ask For Weight</value>
+  </data>
   <data name="Cancel" xml:space="preserve">
     <value>Cancel</value>
   </data>
@@ -158,6 +170,9 @@
   </data>
   <data name="ChildTransactionListView.Header" xml:space="preserve">
     <value>Details</value>
+  </data>
+  <data name="Create" xml:space="preserve">
+    <value>Create</value>
   </data>
   <data name="Create Account" xml:space="preserve">
     <value>Create Account Resource</value>

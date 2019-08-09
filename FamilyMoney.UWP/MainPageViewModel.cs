@@ -13,7 +13,7 @@ namespace FamilyMoney.UWP
 {
     public sealed class MainPageViewModel:INotifyPropertyChanged
     {
-        public ObservableCollection<QuickButton> QuickButtons = new ObservableCollection<QuickButton>();
+        public readonly ObservableCollection<QuickButton> QuickButtons = new ObservableCollection<QuickButton>();
 
         public void AddButton(QuickButton button)
         {
@@ -87,6 +87,12 @@ namespace FamilyMoney.UWP
     {
         public string Label { set; get; }
         public string Symbol { set; get; }
-        public int TransactionId { set; get; }
+        public long TransactionId { set; get; }
+        public IQuickTransaction QuickTransaction { get; set; }
+
+
+        public string MainLine => QuickTransaction == null ? Label : QuickTransaction.Name;
+        public string SecondLine => QuickTransaction?.Account != null ? QuickTransaction.Account.Name : string.Empty;
+        public string ThirdLine => QuickTransaction?.Category != null ? QuickTransaction.Category.Name : string.Empty;
     }
 }
