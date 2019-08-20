@@ -13,10 +13,12 @@ namespace UnitTests.Bases
         public void IsChildTest()
         {
             var tree = new TreeNodeBase<int> {Id = 1};
+            var middle = new TreeNodeBase<int> { Id = 3 };
             var child = new TreeNodeBase<int> { Id = 2 };
 
 
-            tree.AddChild(child);
+            tree.AddChild(middle);
+            middle.AddChild(child);
 
 
             Assert.IsTrue(tree.IsChild(child));
@@ -28,10 +30,13 @@ namespace UnitTests.Bases
         public void IsParentTest()
         {
             var tree = new TreeNodeBase<int> { Id = 1 };
+            var middle = new TreeNodeBase<int> { Id = 3 };
             var child = new TreeNodeBase<int> { Id = 2 };
 
 
-            tree.AddChild(child);
+            tree.AddChild(middle);
+            middle.AddChild(child);
+
 
             Assert.IsTrue(child.IsParent(tree));
             Assert.IsFalse(child.IsParent(child));

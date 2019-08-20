@@ -28,5 +28,16 @@ namespace FamilyMoneyLib.NetStandard.Bases
 
         public Guid OwnerId { get;  set; }
         public Guid BaseId { get; set; }
+
+        public override bool Equals(object obj)
+        {
+            return obj is Account account &&
+                   Id == account.Id;
+        }
+
+        public override int GetHashCode()
+        {
+            return 2108858624 + Id.GetHashCode();
+        }
     }
 }

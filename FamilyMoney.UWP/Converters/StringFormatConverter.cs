@@ -10,10 +10,7 @@ namespace FamilyMoney.UWP.Converters
             if (value == null)
                 return null;
 
-            if (parameter == null)
-                return value;
-
-            return string.Format((string)parameter, value);
+            return parameter == null ? value : string.Format((string)parameter, value);
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, string language)

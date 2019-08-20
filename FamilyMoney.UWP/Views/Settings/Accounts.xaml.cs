@@ -34,21 +34,6 @@ namespace FamilyMoney.UWP.Views
 
         }
 
-        private void AppBarButton_Click_1(object sender, RoutedEventArgs e)
-        {
-            this.Frame.Navigate(typeof(Transactions));
-        }
-
-        private void AppBarButton_Click_2(object sender, RoutedEventArgs e)
-        {
-            this.Frame.Navigate(typeof(Accounts));
-        }
-
-        private void AppBarButton_Click_3(object sender, RoutedEventArgs e)
-        {
-            this.Frame.Navigate(typeof(Categories));
-        }
-
         private async void DeleteItem_ItemInvoked(SwipeItem sender, SwipeItemInvokedEventArgs args)
         {
             var activeAccount = (IAccount)args.SwipeControl.DataContext;
@@ -74,6 +59,26 @@ namespace FamilyMoney.UWP.Views
             var result = await editAccount.ShowAsync();
             if(result == ContentDialogResult.Primary)
                 ViewModel.Refresh();
+        }
+
+        private void BtTransactionsButton_OnClick(object sender, RoutedEventArgs e)
+        {
+            Frame.Navigate(typeof(Transactions));
+        }
+
+        private void BtQuickTransactionButton_OnClick(object sender, RoutedEventArgs e)
+        {
+            Frame.Navigate(typeof(MainPage));
+        }
+
+        private void BtSettingsButton_OnClick(object sender, RoutedEventArgs e)
+        {
+            Frame.Navigate(typeof(Settings.Settings));
+        }
+
+        private void BtReportsButton_OnClick(object sender, RoutedEventArgs e)
+        {
+            Frame.Navigate(typeof(Report));
         }
     }
 }

@@ -9,12 +9,9 @@ namespace FamilyMoney.UWP.Converters
             {
                 try
                 {
-                    if (value != null)
-                    {
-                        DateTime date = (DateTime)value;
-                        return new TimeSpan(date.Hour,date.Millisecond,date.Second);
-                    }
-                    return new TimeSpan(DateTime.Now.Hour, DateTime.Now.Minute, DateTime.Now.Second);
+                    if (value == null) return new TimeSpan(DateTime.Now.Hour, DateTime.Now.Minute, DateTime.Now.Second);
+                    var date = (DateTime)value;
+                    return new TimeSpan(date.Hour,date.Millisecond,date.Second);
                 }
                 catch (Exception)
                 {
@@ -26,7 +23,7 @@ namespace FamilyMoney.UWP.Converters
             {
                 try
                 {
-                    DateTimeOffset dto = (DateTimeOffset)value;
+                    var dto = (DateTimeOffset)value;
                     return dto.DateTime;
                 }
                 catch (Exception)

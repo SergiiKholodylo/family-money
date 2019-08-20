@@ -36,21 +36,6 @@ namespace FamilyMoney.UWP.Views
             }
         }
 
-        private void AppBarButton_Click_1(object sender, RoutedEventArgs e)
-        {
-            this.Frame.Navigate(typeof(Transactions));
-        }
-
-        private void AppBarButton_Click_2(object sender, RoutedEventArgs e)
-        {
-            this.Frame.Navigate(typeof(Accounts));
-        }
-
-        private void AppBarButton_Click_3(object sender, RoutedEventArgs e)
-        {
-            this.Frame.Navigate(typeof(Categories));
-        }
-
         private void ListView_DoubleTapped(object sender, Windows.UI.Xaml.Input.DoubleTappedRoutedEventArgs e)
         {
             var a = ((Microsoft.UI.Xaml.Controls.TreeView) sender).SelectedNodes.ToArray();
@@ -107,6 +92,26 @@ namespace FamilyMoney.UWP.Views
         private void CreateDefaultCategories_OnClick(object sender, RoutedEventArgs e)
         {
             CreateCategoryTree.CreateDefaultCategoryTree();
+        }
+
+        private void BtTransactionsButton_OnClick(object sender, RoutedEventArgs e)
+        {
+            Frame.Navigate(typeof(Transactions));
+        }
+
+        private void BtQuickTransactionButton_OnClick(object sender, RoutedEventArgs e)
+        {
+            Frame.Navigate(typeof(MainPage));
+        }
+
+        private void BtSettingsButton_OnClick(object sender, RoutedEventArgs e)
+        {
+            Frame.Navigate(typeof(Settings.Settings));
+        }
+
+        private void BtReportsButton_OnClick(object sender, RoutedEventArgs e)
+        {
+            Frame.Navigate(typeof(Report));
         }
     }
 }

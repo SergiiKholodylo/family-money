@@ -171,9 +171,15 @@ namespace FamilyMoney.UWP.ViewModels
 
         public ITransaction Transaction
         {
-            get { return _transaction; }
-            set { _transaction = value; }
+            get => _transaction;
+            set
+            {
+                if(value == _transaction) return;
+                _transaction = value;
+                OnPropertyChanged();
+            }
         }
+
 
         public void CreateTransaction()
         {

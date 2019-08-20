@@ -26,5 +26,16 @@ namespace FamilyMoneyLib.NetStandard.Bases
 
         public Guid OwnerId { get; set; }
         public Guid BaseId { get; set; }
+
+        public override bool Equals(object obj)
+        {
+            return obj is Category category &&
+                   Name == category.Name;
+        }
+
+        public override int GetHashCode()
+        {
+            return 539060726 + EqualityComparer<string>.Default.GetHashCode(Name);
+        }
     }
 }

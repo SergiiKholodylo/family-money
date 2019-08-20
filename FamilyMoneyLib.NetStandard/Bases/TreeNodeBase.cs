@@ -24,7 +24,7 @@ namespace FamilyMoneyLib.NetStandard.Bases
             while (current.Parent != null)
             {
                 if (current.Parent?.Id == node.Id) return true;
-                current = node.Parent;
+                current = current.Parent;
             }
 
             return false;

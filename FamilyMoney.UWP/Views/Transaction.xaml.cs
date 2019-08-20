@@ -60,12 +60,7 @@ namespace FamilyMoney.UWP.Views
             }
             else //Back event
             {
-                if (MainPage.GlobalSettings.FormsView.Transaction != null)
-                    ViewModel = MainPage.GlobalSettings.FormsView.Transaction;
-                else
-                {
-                    ViewModel = new TransactionCreateViewModel();
-                }
+                ViewModel = MainPage.GlobalSettings.FormsView.Transaction ?? new TransactionCreateViewModel();
             }
         }
 
@@ -91,8 +86,6 @@ namespace FamilyMoney.UWP.Views
 
         private void CommandBar_SaveButton(object sender, RoutedEventArgs e)
         {
-            var button = (AppBarButton) sender;
-            button.Focus(FocusState.Programmatic);
             SaveTransaction();
         }
 
@@ -115,6 +108,7 @@ namespace FamilyMoney.UWP.Views
         {
             var editTransaction = new EditChildTransaction(ViewModel.Transaction, ViewModel.Account);
             var result = await editTransaction.ShowAsync();
+            ViewModel.UpdateChildrenTransactionList();
         }
         private async Task EditChildTransaction(object sender)
         {

@@ -13,69 +13,69 @@
             <AppBarButton Label="Scan Transaction" Icon="Camera" Click="ButtonBase_OnClick" />
 
             <AppBarSeparator />
-            <AppBarButton Label="Transactions" Icon="Calculator" Click="AppBarButton_Click_2"  />
-            <AppBarButton Label="Accounts" Icon="Folder" Click="AppBarButton_Click" />
-            <AppBarButton Label="Categories" Icon="Bookmarks" Click="AppBarButton_Click_1" />
-            <AppBarButton Label="Report" Icon="ViewAll" />
+            <AppBarButton Label="Transactions" Icon="Calculator" Click="BtTransactionsButton_OnClick"  />
+            <AppBarButton Label="Quick Transactions" Icon="Favorite" Click="BtQuickTransactionButton_OnClick"/>
+            <AppBarButton Label="Reports" Click="BtReportsButton_OnClick" Icon="Library"/>
+            <AppBarButton Label="Settings" Icon="Setting" Click="BtSettingsButton_OnClick"/>
 
         </CommandBar>
     </Page.BottomAppBar>
 
     <Grid Padding="20">
         <StackPanel>
-        <GridView ItemsSource="{x:Bind _viewModel.QuickButtons}"
+            <GridView ItemsSource="{x:Bind _viewModel.QuickButtons}"
                   IsItemClickEnabled="True"
                   IsSwipeEnabled="False"
                   SelectionMode="Single"
                   ItemClick="RunTransaction_Click" >
-            <GridView.ItemTemplate>
-                <DataTemplate 
+                <GridView.ItemTemplate>
+                    <DataTemplate 
                     x:Name="IconTextTemplate" 
                     x:DataType="local:QuickButton"
                     >
-                    <StackPanel 
-                        Width="200" 
+                        <StackPanel 
+                        Width="180" 
                         Height="90" 
                         Padding="12" 
                         Orientation="Vertical"
                         VerticalAlignment="Center"
                         HorizontalAlignment="Center"
                                 >
-                        <Grid VerticalAlignment="Stretch">
-                            <FlyoutBase.AttachedFlyout>
-                                <MenuFlyout>
-                                    <MenuFlyoutItem x:Name="EditButton" Text="Edit"/>
-                                    <MenuFlyoutItem x:Name="DeleteButton" Text="Delete"/>
-                                    <MenuFlyoutSubItem Text="OtherItems">
-                                        <MenuFlyoutItem Text="Inside1"/>
-                                        <MenuFlyoutItem Text="Inside2"/>
-                                        <MenuFlyoutItem Text="Inside3"/>
-                                    </MenuFlyoutSubItem>
-                                </MenuFlyout>
-                            </FlyoutBase.AttachedFlyout>
-                            <StackPanel>
-                                <TextBlock 
+                            <Grid VerticalAlignment="Stretch">
+                                <FlyoutBase.AttachedFlyout>
+                                    <MenuFlyout>
+                                        <MenuFlyoutItem x:Name="EditButton" Text="Edit"/>
+                                        <MenuFlyoutItem x:Name="DeleteButton" Text="Delete"/>
+                                        <MenuFlyoutSubItem Text="OtherItems">
+                                            <MenuFlyoutItem Text="Inside1"/>
+                                            <MenuFlyoutItem Text="Inside2"/>
+                                            <MenuFlyoutItem Text="Inside3"/>
+                                        </MenuFlyoutSubItem>
+                                    </MenuFlyout>
+                                </FlyoutBase.AttachedFlyout>
+                                <StackPanel>
+                                    <TextBlock 
                                     Margin="12,0,0,0" 
                                     Style="{StaticResource ListViewText}"
-                                    Width="204" 
+                                    Width="175" 
                                     Text="{x:Bind Label}" />
-                                <TextBlock 
+                                    <TextBlock 
                                     Margin="24,0,0,0" 
                                     Style="{StaticResource ListViewData}"
-                                    Width="200" 
+                                    Width="175" 
                                     Text="{x:Bind SecondLine}" />
-                                <TextBlock 
+                                    <TextBlock 
                                     Style="{StaticResource ListViewData}"
                                     Margin="24,0,0,0" 
-                                    Width="200" 
+                                    Width="175" 
                                     Text="{x:Bind ThirdLine}" />
-                            </StackPanel>
-                        </Grid>
+                                </StackPanel>
+                            </Grid>
 
-                    </StackPanel>
-                </DataTemplate>
-            </GridView.ItemTemplate>
-        </GridView>
+                        </StackPanel>
+                    </DataTemplate>
+                </GridView.ItemTemplate>
+            </GridView>
         </StackPanel>
     </Grid>
 

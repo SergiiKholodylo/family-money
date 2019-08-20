@@ -1,11 +1,9 @@
 ﻿using System;
-using System.Linq;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Input;
 using FamilyMoney.UWP.Helpers;
 using FamilyMoney.UWP.ViewModels;
-using FamilyMoney.UWP.Views.Dialogs;
 using FamilyMoneyLib.NetStandard.Bases;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
@@ -25,25 +23,30 @@ namespace FamilyMoney.UWP.Views
 
         public TransactionsViewModel ViewModel { get; }
 
-        private async void AppBarButton_Click(object sender, RoutedEventArgs e)
+        private void AppBarButton_Click(object sender, RoutedEventArgs e)
         {
-            
             var parameter = new TransactionPageParameter(ViewModel.ActiveAccount);
-            Frame.Navigate(typeof(Transaction),parameter);
-        }
-        private void AppBarButton_Click_1(object sender, RoutedEventArgs e)
-        {
-            this.Frame.Navigate(typeof(Transactions));
+            Frame.Navigate(typeof(Transaction), parameter);
         }
 
-        private void AppBarButton_Click_2(object sender, RoutedEventArgs e)
+        private void BtTransactionsButton_OnClick(object sender, RoutedEventArgs e)
         {
-            this.Frame.Navigate(typeof(Accounts));
+            Frame.Navigate(typeof(Transactions));
         }
 
-        private void AppBarButton_Click_3(object sender, RoutedEventArgs e)
+        private void BtQuickTransactionButton_OnClick(object sender, RoutedEventArgs e)
         {
-            this.Frame.Navigate(typeof(Categories));
+            Frame.Navigate(typeof(MainPage));
+        }
+
+        private void BtSettingsButton_OnClick(object sender, RoutedEventArgs e)
+        {
+            Frame.Navigate(typeof(Settings.Settings));
+        }
+
+        private void BtReportsButton_OnClick(object sender, RoutedEventArgs e)
+        {
+            Frame.Navigate(typeof(Report));
         }
 
         private async void DeleteItem_ItemInvoked(SwipeItem sender, SwipeItemInvokedEventArgs args)
@@ -67,10 +70,6 @@ namespace FamilyMoney.UWP.Views
         private void ListView_DoubleTapped(object sender, DoubleTappedRoutedEventArgs e)
         {
             var activeTransaction = (ITransaction)(((ListView)sender).SelectedValue);
-            //var editTransaction = new EditTransaction(activeTransaction);
-            //var result = await editTransaction.ShowAsync();
-            //if (result == ContentDialogResult.Primary)
-            //    ViewModel.RefreshTransactionByAccount();
             var parameter = new TransactionPageParameter(activeTransaction);
             Frame.Navigate(typeof(Transaction), parameter);
         }
@@ -113,11 +112,6 @@ namespace FamilyMoney.UWP.Views
             var res = await dialog.ShowAsync();
             if(res == ContentDialogResult.Secondary) return;
             ViewModel.DeleteTransaction(activeTransaction);
-        }
-
-        private void AppBarButton_Click_4(object sender, RoutedEventArgs e)
-        {
-            Frame.Navigate(typeof(MainPage));
         }
     }
 }

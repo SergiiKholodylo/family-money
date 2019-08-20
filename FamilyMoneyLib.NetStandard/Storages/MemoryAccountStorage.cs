@@ -7,9 +7,10 @@ namespace FamilyMoneyLib.NetStandard.Storages
     public class MemoryAccountStorage: AccountStorageBase, IAccountStorage
     {
         private readonly List<IAccount> _accounts = new List<IAccount>();
-
+        private static long counter = 0;
         public override IAccount CreateAccount(IAccount account)
         {
+            account.Id = ++counter;
             _accounts.Add(account);
             return account;
         }

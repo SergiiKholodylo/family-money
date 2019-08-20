@@ -1,0 +1,52 @@
+﻿<Page
+    x:Class="FamilyMoney.UWP.Views.Settings.Settings"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:FamilyMoney.UWP.Views.Settings"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:Windows10version1809="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract, 7)"
+    mc:Ignorable="d"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+
+    <Page.BottomAppBar>
+        <CommandBar>
+            <AppBarSeparator />
+            <AppBarButton Label="Transactions" Icon="Calculator" Click="BtTransactionsButton_OnClick"  />
+            <AppBarButton Label="Quick Transactions" Icon="Favorite" Click="BtQuickTransactionButton_OnClick"/>
+            <AppBarButton Label="Reports" Click="BtReportsButton_OnClick" Icon="Library"/>
+            <AppBarButton Label="Settings" Icon="Setting" Click="BtSettingsButton_OnClick"/>
+
+
+        </CommandBar>
+    </Page.BottomAppBar>
+
+    <Grid Padding="20">
+        <StackPanel 
+            VerticalAlignment="Top"
+            Margin="80" 
+            >
+            <Border BorderBrush="Gray" Background="Transparent" BorderThickness="1" CornerRadius="3.2" VerticalAlignment="Top">
+                <TextBlock 
+                    Style="{StaticResource ListViewHeaders}"
+                    Text="Settings"/>
+            </Border>
+
+            <Button Content="Categories"
+                    Click="BtCategories_OnClick"
+                    HorizontalAlignment="Stretch" 
+                    BorderThickness="1,1,1,1"
+                    Margin="0,20"
+                    Height="50">
+
+            </Button>
+            <Button Content="Accounts"
+                    Click="BtAccounts_OnClick" 
+                    HorizontalAlignment="Stretch" 
+                    BorderThickness="1,1,1,1"
+                    Margin="0,20"
+                    Height="50">
+            </Button>
+        </StackPanel>
+    </Grid>
+</Page>

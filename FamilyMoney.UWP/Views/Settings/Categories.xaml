@@ -18,26 +18,11 @@
                 Icon="Add"
                 Click="AppBarButton_Click" />
             <AppBarSeparator />
-            <AppBarButton
-                x:Uid="TransactionAppBar"
-                Icon="Calculator"
-                Click="AppBarButton_Click_1" />
-            <AppBarButton
-                x:Uid="AccountAppBar"
-                Icon="Folder"
-                Click="AppBarButton_Click_2" />
-            <AppBarButton
-                x:Uid="CategoryAppBar"
-                Icon="Bookmarks"
-                Click="AppBarButton_Click_3" />
-            <AppBarButton
-                x:Uid="ReportAppBar"
-                Icon="ViewAll" />
-
-            <AppBarButton
-                Content="Create Default Categories"
-                Click="CreateDefaultCategories_OnClick"
-                />
+            <AppBarButton Label="Transactions" Icon="Calculator" Click="BtTransactionsButton_OnClick" />
+            <AppBarButton Label="Quick Transactions" Icon="Favorite" Click="BtQuickTransactionButton_OnClick" />
+            <AppBarButton Label="Reports" Click="BtReportsButton_OnClick" Icon="Library" />
+            <AppBarButton Label="Settings" Icon="Setting" Click="BtSettingsButton_OnClick" />
+   
 
         </CommandBar>
     </Page.BottomAppBar>

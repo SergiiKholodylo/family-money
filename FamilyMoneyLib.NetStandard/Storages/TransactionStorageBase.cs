@@ -42,5 +42,8 @@ namespace FamilyMoneyLib.NetStandard.Storages
             
         }
 
+        public virtual void DeleteAllData()
+        {
+        }
     }
 }

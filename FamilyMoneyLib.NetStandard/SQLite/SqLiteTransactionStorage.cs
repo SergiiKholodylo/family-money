@@ -52,9 +52,9 @@ namespace FamilyMoneyLib.NetStandard.SQLite
             _categoryStorage = categoryStorage;
         }
 
-        public SqLiteTransactionStorage(ITransactionFactory transactionFactory) : base(transactionFactory)
-        {
-        }
+        //public SqLiteTransactionStorage(ITransactionFactory transactionFactory) : base(transactionFactory)
+        //{
+        //}
 
         public override ITransaction CreateTransaction(ITransaction transaction)
         {
@@ -115,7 +115,7 @@ namespace FamilyMoneyLib.NetStandard.SQLite
             UpdateTransaction(transaction);
         }
 
-        public void DeleteAllData()
+        public override void DeleteAllData()
         {
             _table.InitializeDatabase();
             _table.DeleteDatabase();

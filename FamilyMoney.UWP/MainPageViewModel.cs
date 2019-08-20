@@ -81,6 +81,25 @@ namespace FamilyMoney.UWP
             var barCodeString = await scanner.ScanBarCode();
             return barCodeString;
         }
+
+        public void LoadQuickTransactions()
+        {
+            AddButton(new QuickButton
+            {
+                Label = "➕ Add Quick Transaction",
+                TransactionId = 0
+            });
+            var quickTransactions = MainPage.GlobalSettings.QuickTransactionStorage.GetAllQuickTransactions();
+            foreach (var quickTransaction in quickTransactions)
+            {
+                AddButton(new QuickButton
+                {
+                    Label = quickTransaction.Name,
+                    TransactionId = quickTransaction.Id,
+                    QuickTransaction = quickTransaction
+                });
+            }
+        }
     }
 
     public class QuickButton

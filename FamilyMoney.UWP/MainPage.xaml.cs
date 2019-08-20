@@ -2,17 +2,13 @@
 using System.Threading.Tasks;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Input;
-using FamilyMoney.UWP.Bases;
 using FamilyMoney.UWP.Helpers;
-using FamilyMoney.UWP.ViewClasses;
 using FamilyMoney.UWP.Views;
 using FamilyMoney.UWP.Views.Dialogs;
+using FamilyMoney.UWP.Views.Settings;
 using FamilyMoneyLib.NetStandard.Bases;
 using FamilyMoneyLib.NetStandard.Factories;
 using FamilyMoneyLib.NetStandard.Storages;
-using ZXing;
 using Transaction = FamilyMoney.UWP.Views.Transaction;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
@@ -30,21 +26,8 @@ namespace FamilyMoney.UWP
         public MainPage()
         {
             InitializeComponent();
-            _viewModel.AddButton(new QuickButton
-            {
-                Label = "➕ Add Quick Transaction",
-                TransactionId = 0
-            });
-            var quickTransactions = GlobalSettings.QuickTransactionStorage.GetAllQuickTransactions();
-            foreach (var quickTransaction in quickTransactions)
-            {
-                _viewModel.AddButton(new QuickButton
-                {
-                    Label = quickTransaction.Name,
-                    TransactionId = quickTransaction.Id,
-                    QuickTransaction = quickTransaction
-                });
-            }
+            _viewModel.LoadQuickTransactions();
+            
         }
 
         private void AppBarButton_Click(object sender, Windows.UI.Xaml.RoutedEventArgs e)
@@ -77,42 +60,62 @@ namespace FamilyMoney.UWP
 
                     if (isRequireInteraction)
                     {
-                        var parameters = new TransactionPageParameter( transaction, TransactionAction.CreateTransactionFromTemplate);
-                        Frame.Navigate(typeof(Transaction), parameters);
+                        OpenTransactionInEditMode(transaction);
                     }
                     else
                     {
                         try
                         {
-                            GlobalSettings.TransactionStorage.CreateTransaction(transaction);
-                            var dialog = new ContentDialog
-                            {
-                                Content = $"Transaction {transaction.Name} was successfully created",
-                                IsPrimaryButtonEnabled = true,
-                                PrimaryButtonText = "Ok".GetLocalized()
-                            };
-                            await dialog.ShowAsync();
+                            await CreateTransactionFromTemplate(transaction);
                         }
                         catch (StorageException exception)
                         {
-                            var dialog = new ContentDialog
-                            {
-                                Content = $"Error during creating Transaction {exception.Message}",
-                                IsPrimaryButtonEnabled = true,
-                                PrimaryButtonText = "Ok".GetLocalized()
-                            };
-                            await dialog.ShowAsync();
+                            await ShowErrorDialog(exception);
                         }
                     }
                 }
                 else
                 {
-                    var dialog = new EditQuickTransaction(null);
-                    var res = await dialog.ShowAsync();
+                    await CreateNewQuickTransaction();
                 }
 
             }
 
+        }
+
+        private static async Task CreateNewQuickTransaction()
+        {
+            var dialog = new EditQuickTransaction(null);
+            var res = await dialog.ShowAsync();
+        }
+
+        private void OpenTransactionInEditMode(ITransaction transaction)
+        {
+            var parameters = new TransactionPageParameter(transaction, TransactionAction.CreateTransactionFromTemplate);
+            Frame.Navigate(typeof(Transaction), parameters);
+        }
+
+        private static async Task ShowErrorDialog(StorageException exception)
+        {
+            var dialog = new ContentDialog
+            {
+                Content = $"Error during creating Transaction {exception.Message}",
+                IsPrimaryButtonEnabled = true,
+                PrimaryButtonText = "Ok".GetLocalized()
+            };
+            await dialog.ShowAsync();
+        }
+
+        private static async Task CreateTransactionFromTemplate(ITransaction transaction)
+        {
+            GlobalSettings.TransactionStorage.CreateTransaction(transaction);
+            var dialog = new ContentDialog
+            {
+                Content = $"Transaction {transaction.Name} was successfully created",
+                IsPrimaryButtonEnabled = true,
+                PrimaryButtonText = "Ok".GetLocalized()
+            };
+            await dialog.ShowAsync();
         }
 
         private async void ButtonBase_OnClick(object sender, RoutedEventArgs e)
@@ -120,17 +123,24 @@ namespace FamilyMoney.UWP
             await _viewModel.ScanQuickTransaction();
         }
 
-        //private async void GridView_Tapped(object sender, TappedRoutedEventArgs e)
-        //{
-        //    var active = (QuickButton)((FrameworkElement) e.OriginalSource).DataContext;
-        //    await ShowDialog(active);
+        private void BtTransactionsButton_OnClick(object sender, RoutedEventArgs e)
+        {
+            Frame.Navigate(typeof(Transactions));
+        }
 
-        //}
+        private void BtQuickTransactionButton_OnClick(object sender, RoutedEventArgs e)
+        {
+            Frame.Navigate(typeof(MainPage));
+        }
 
-        //private async Task ShowDialog(QuickButton active)
-        //{
-        //    var dialog = new EditQuickTransaction(active.QuickTransaction);
-        //    var res = await dialog.ShowAsync();
-        //}
+        private void BtSettingsButton_OnClick(object sender, RoutedEventArgs e)
+        {
+            Frame.Navigate(typeof(Settings));
+        }
+
+        private void BtReportsButton_OnClick(object sender, RoutedEventArgs e)
+        {
+            Frame.Navigate(typeof(Report));
+        }
     }
 }

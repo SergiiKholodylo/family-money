@@ -163,7 +163,14 @@ namespace FamilyMoney.UWP.ViewModels
         public ITransaction Transaction
         {
             get => _transaction;
-            set => _transaction = value;
+            set
+            {
+                if (value == _transaction) return;
+                _transaction = value;
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(IsExistingTransaction));
+
+            }
         }
 
         protected void CreateTransaction()
@@ -175,7 +182,7 @@ namespace FamilyMoney.UWP.ViewModels
 
                 DateTimeFromDateAndTime();
 
-                _transaction = storage.CreateTransaction(Account, Category, Name, Total, Timestamp, 0, Weight, null, ParentTransaction);
+                Transaction = storage.CreateTransaction(Account, Category, Name, Total, Timestamp, 0, Weight, null, ParentTransaction);
 
                 CreateBarCodeWithTransaction();
             }
@@ -281,6 +288,19 @@ namespace FamilyMoney.UWP.ViewModels
             if (!BarCode.IsWeight)
                 Total = transaction.Total;
         }
+
+        public void UpdateChildrenTransactionList()
+        {
+            if(_transaction == null)return;
+            ChildrenTransactions.Clear();
+            var newChildren = _transaction.Children.Select(x => (ITransaction) x);
+            foreach (var transaction in newChildren)
+            {
+                ChildrenTransactions.Add(transaction);
+            }
+        }
+
+        public bool IsExistingTransaction => _transaction != null;
 
         public async Task<EditChildTransaction> ScanChildTransaction()
         {

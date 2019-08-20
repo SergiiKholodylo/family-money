@@ -25,6 +25,8 @@ namespace FamilyMoney.UWP.ViewModels
         IEnumerable<ICategory> Categories { get; }
         IEnumerable<IAccount> Accounts { get; }
         IEnumerable<ITransaction> Transactions { get; }
+
+        bool IsExistingTransaction { get; }
         ObservableCollection<ITransaction> ChildrenTransactions { set; get; }
         Visibility IsChildTransactionVisible { get; }
         Visibility IsChildTransactionHidden { get; }
@@ -33,7 +35,7 @@ namespace FamilyMoney.UWP.ViewModels
         void FillFromTemplate(ITransaction selected);
         IEnumerable<ITransaction> GetSuggestions(string searchString);
         Task<string> ScanBarCode();
-
+        void UpdateChildrenTransactionList();
         void ProcessScannedBarCode(string barCodeString);
         Task<EditChildTransaction> ScanChildTransaction();
     }
