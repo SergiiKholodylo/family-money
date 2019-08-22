@@ -6,9 +6,8 @@ using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Navigation;
 using FamilyMoney.UWP.Bases;
-using FamilyMoney.UWP.ViewModels;
-using FamilyMoney.UWP.ViewModels.Dialogs;
 using FamilyMoney.UWP.Views.Dialogs;
+using FamilyMoney.ViewModels.NetStandard.ViewModels;
 using FamilyMoneyLib.NetStandard.Bases;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
@@ -35,6 +34,7 @@ namespace FamilyMoney.UWP.Views
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
+            var storages = MainPage.GlobalSettings.Storages;
             var parameter = e.Parameter as TransactionPageParameter;
             if (e.NavigationMode == NavigationMode.New)
             {
@@ -43,16 +43,16 @@ namespace FamilyMoney.UWP.Views
                     case TransactionAction.CreateNewTransaction:
 
                     case TransactionAction.CreateTransactionForAccount:
-                        ViewModel = new TransactionCreateViewModel(parameter?.ActiveAccount);
+                        ViewModel = new TransactionCreateViewModel(storages, parameter?.ActiveAccount);
                         break;
                     case TransactionAction.EditTransaction:
-                        ViewModel = new TransactionEditViewModel(parameter?.ActiveTransaction);
+                        ViewModel = new TransactionEditViewModel(storages, parameter?.ActiveTransaction);
                         break;
                     case TransactionAction.CreateTransactionFromTemplate:
-                        ViewModel = new TransactionCreateViewModel(parameter?.ActiveTransaction);
+                        ViewModel = new TransactionCreateViewModel(storages, parameter?.ActiveTransaction);
                         break;
                     default:
-                        ViewModel = new TransactionCreateViewModel();
+                        ViewModel = new TransactionCreateViewModel(storages);
                         break;
                 }
 
@@ -60,7 +60,7 @@ namespace FamilyMoney.UWP.Views
             }
             else //Back event
             {
-                ViewModel = MainPage.GlobalSettings.FormsView.Transaction ?? new TransactionCreateViewModel();
+                ViewModel = MainPage.GlobalSettings.FormsView.Transaction ?? new TransactionCreateViewModel(storages);
             }
         }
 
@@ -150,8 +150,8 @@ namespace FamilyMoney.UWP.Views
 
         private async void CommandBar_ScanBarChildTransactionCode(object sender, RoutedEventArgs e)
         {
-            var childTransaction = await ViewModel.ScanChildTransaction();
-            await childTransaction.ShowAsync();
+            //var childTransaction = await ViewModel.ScanChildTransaction();
+            //await childTransaction.ShowAsync();
         }
     }
 }

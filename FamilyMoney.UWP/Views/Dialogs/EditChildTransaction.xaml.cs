@@ -1,7 +1,7 @@
 ﻿using System;
 using Windows.UI.Xaml.Controls;
-using FamilyMoney.UWP.Helpers;
-using FamilyMoney.UWP.ViewModels.Dialogs;
+using FamilyMoney.ViewModels.NetStandard.ViewModels;
+using FamilyMoney.ViewModels.NetStandard.ViewModels.Dialogs;
 using FamilyMoneyLib.NetStandard.Bases;
 
 // The Content Dialog item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
@@ -25,15 +25,15 @@ namespace FamilyMoney.UWP.Views.Dialogs
             {
                 InitUpdateMode();
             }
-            ViewModel = new EditChildTransactionViewModel(parent, activeAccount,transaction);
+            ViewModel = new EditChildTransactionViewModel(MainPage.GlobalSettings.Storages,parent, activeAccount,transaction);
         }
 
 
         private void InitUpdateMode()
         {
-            Title = "Update Transaction".GetLocalized();
-            PrimaryButtonText = "Update Transaction".GetLocalized();
-            SecondaryButtonText = "Cancel".GetLocalized();
+            Title = "Update Transaction";
+            PrimaryButtonText = "Update Transaction";
+            SecondaryButtonText = "Cancel";
 
             _editTransactionAction = delegate { ViewModel.UpdateChildTransaction(); };
         }
@@ -41,9 +41,9 @@ namespace FamilyMoney.UWP.Views.Dialogs
         private void InitCreateMode()
         {
             
-            Title = "Create Transaction".GetLocalized();
-            PrimaryButtonText = "Create Transaction".GetLocalized();
-            SecondaryButtonText = "Cancel".GetLocalized();
+            Title = "Create Transaction";
+            PrimaryButtonText = "Create Transaction";
+            SecondaryButtonText = "Cancel";
 
             _editTransactionAction = delegate { ViewModel.CreateChildTransaction(); };
         }

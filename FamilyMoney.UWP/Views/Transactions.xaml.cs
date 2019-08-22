@@ -2,8 +2,7 @@
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Input;
-using FamilyMoney.UWP.Helpers;
-using FamilyMoney.UWP.ViewModels;
+using FamilyMoney.ViewModels.NetStandard.ViewModels;
 using FamilyMoneyLib.NetStandard.Bases;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
@@ -18,7 +17,7 @@ namespace FamilyMoney.UWP.Views
         public Transactions()
         {
             this.InitializeComponent();
-            ViewModel = new TransactionsViewModel();
+            ViewModel = new TransactionsViewModel(MainPage.GlobalSettings.Storages);
         }
 
         public TransactionsViewModel ViewModel { get; }
@@ -54,9 +53,9 @@ namespace FamilyMoney.UWP.Views
             var activeTransaction = (ITransaction)args.SwipeControl.DataContext;
             var deleteConfirmation = new ContentDialog
             {
-                Title = "DeleteTransaction".GetLocalized(),
-                PrimaryButtonText = "DeleteTransaction".GetLocalized(),
-                SecondaryButtonText = "Cancel".GetLocalized(),
+                Title = "DeleteTransaction",
+                PrimaryButtonText = "DeleteTransaction",
+                SecondaryButtonText = "Cancel",
                 DefaultButton = ContentDialogButton.Primary,
                 Content = $"Do you want delete transaction \n '{activeTransaction.Name}({activeTransaction.Total})'?"
             };

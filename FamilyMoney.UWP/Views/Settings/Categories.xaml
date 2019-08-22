@@ -7,7 +7,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:bases="using:FamilyMoneyLib.NetStandard.Bases"
     xmlns:controls="using:Microsoft.UI.Xaml.Controls"
-    xmlns:viewModels="using:FamilyMoney.UWP.ViewModels"
+    xmlns:viewModels="using:FamilyMoney.ViewModels.NetStandard.ViewModels"
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
@@ -22,7 +22,9 @@
             <AppBarButton Label="Quick Transactions" Icon="Favorite" Click="BtQuickTransactionButton_OnClick" />
             <AppBarButton Label="Reports" Click="BtReportsButton_OnClick" Icon="Library" />
             <AppBarButton Label="Settings" Icon="Setting" Click="BtSettingsButton_OnClick" />
-   
+   <CommandBar.SecondaryCommands>
+       <AppBarButton Label="Default Categories" Click="CreateDefaultCategoriesTree_OnClick"/>
+   </CommandBar.SecondaryCommands>
 
         </CommandBar>
     </Page.BottomAppBar>

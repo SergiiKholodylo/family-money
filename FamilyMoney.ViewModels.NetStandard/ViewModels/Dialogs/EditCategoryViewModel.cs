@@ -1,13 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
-using FamilyMoney.UWP.Annotations;
 using FamilyMoneyLib.NetStandard.Bases;
 using FamilyMoneyLib.NetStandard.Storages;
 
-namespace FamilyMoney.UWP.ViewModels.Dialogs
+namespace FamilyMoney.ViewModels.NetStandard.ViewModels.Dialogs
 {
     public sealed class EditCategoryViewModel: INotifyPropertyChanged
     {
@@ -16,9 +14,12 @@ namespace FamilyMoney.UWP.ViewModels.Dialogs
         private readonly ICategory _category;
         private ICategory _parentCategory;
         private string _errorString;
+        private readonly ICategoryStorage _categoryStorage;
 
-        public EditCategoryViewModel(ICategory category, ICategory parent)
+        public EditCategoryViewModel(ICategoryStorage categoryStorage, ICategory category, ICategory parent)
         {
+            _categoryStorage = categoryStorage;
+            Categories = _categoryStorage.MakeFlatCategoryTree();
             if (category != null)
             {
                 _category = category;
@@ -64,14 +65,13 @@ namespace FamilyMoney.UWP.ViewModels.Dialogs
             get => _errorString;
         }
 
-        public IEnumerable<ICategory> Categories { get; } = MainPage.GlobalSettings.CategoryStorage.MakeFlatCategoryTree();
+        public readonly IEnumerable<ICategory> Categories;
 
         public void CreateNewCategory()
         {
             try
             {
-                var storage = MainPage.GlobalSettings.CategoryStorage;
-                storage.CreateCategory(Name, Description, 0, ParentCategory);
+                _categoryStorage.CreateCategory(Name, Description, 0, ParentCategory);
             }
             catch (StorageException e)
             {
@@ -82,13 +82,14 @@ namespace FamilyMoney.UWP.ViewModels.Dialogs
 
         public void UpdateCategory()
         {
+            if(_category == null)
+                throw new ViewModelException("There is no Category to update");
             try
             {
-                var storage = MainPage.GlobalSettings.CategoryStorage;
                 _category.Name = Name;
                 _category.Description = Description;
                 _category.Parent = ParentCategory;
-                storage.UpdateCategory(_category);
+                _categoryStorage.UpdateCategory(_category);
             }
             catch (StorageException e)
             {
@@ -98,7 +99,7 @@ namespace FamilyMoney.UWP.ViewModels.Dialogs
         }
         public event PropertyChangedEventHandler PropertyChanged;
 
-        [NotifyPropertyChangedInvocator]
+        //[NotifyPropertyChangedInvocator]
         private void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));

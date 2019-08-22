@@ -3,12 +3,11 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
-using FamilyMoney.UWP.Annotations;
-using FamilyMoney.UWP.Helpers;
+using FamilyMoney.ViewModels.NetStandard.Helpers;
 using FamilyMoneyLib.NetStandard.Bases;
 using FamilyMoneyLib.NetStandard.Storages;
 
-namespace FamilyMoney.UWP.ViewModels.Dialogs
+namespace FamilyMoney.ViewModels.NetStandard.ViewModels.Dialogs
 {
     public sealed class EditChildTransactionViewModel:INotifyPropertyChanged
     {
@@ -22,16 +21,18 @@ namespace FamilyMoney.UWP.ViewModels.Dialogs
         private readonly ITransaction _transaction;
         private string _errorString;
         private decimal _weight;
+        private readonly Storages _storages;
 
-        public EditChildTransactionViewModel(ITransaction parent, IAccount activeAccount, ITransaction transaction)
+        public EditChildTransactionViewModel(Storages storages, ITransaction parent, IAccount activeAccount, ITransaction transaction)
         {
+            _storages = storages;
             ErrorString = String.Empty;
             _transaction = transaction;
-            Categories = MainPage.GlobalSettings.CategoryStorage.MakeFlatCategoryTree();
+            Categories = _storages.CategoryStorage.MakeFlatCategoryTree();
             if (transaction == null)
             {
                 Timestamp = DateTime.Now;
-                Account = Accounts.FirstOrDefault(x => x.Id == activeAccount.Id);
+                Account = Accounts.FirstOrDefault(x => x.Id == activeAccount?.Id);
             }
             else
             {
@@ -40,19 +41,19 @@ namespace FamilyMoney.UWP.ViewModels.Dialogs
                 Total = transaction.Total;
                 Weight = transaction.Weight;
                 
-                Category = Categories.FirstOrDefault(x => x.Id == transaction.Category.Id);
+                Category = Categories.FirstOrDefault(x => x.Id == transaction?.Category?.Id);
             }
-            Account = Accounts.FirstOrDefault(x => x.Id == parent.Account.Id);
+            Account = Accounts.FirstOrDefault(x => x.Id == parent?.Account?.Id);
             Date = Timestamp == DateTime.MinValue ? new DateTimeOffset(DateTime.Now) : new DateTimeOffset(Timestamp);
             Time = Timestamp.TimeOfDay;
             
             ParentTransaction = parent;
         }
 
-        private ITransaction ParentTransaction { get; }
+        public ITransaction ParentTransaction { get; }
 
 
-        private IAccount Account
+        public IAccount Account
         {
             set {
                 if (_account == value) return;
@@ -81,7 +82,7 @@ namespace FamilyMoney.UWP.ViewModels.Dialogs
             get => _name;
         }
 
-        private DateTime Timestamp
+        public DateTime Timestamp
         {
             set
             {
@@ -92,7 +93,7 @@ namespace FamilyMoney.UWP.ViewModels.Dialogs
             get => _timestamp;
         }
 
-        private DateTimeOffset Date
+        public DateTimeOffset Date
         {
             set
             {
@@ -104,7 +105,7 @@ namespace FamilyMoney.UWP.ViewModels.Dialogs
 
         }
 
-        private TimeSpan Time
+        public TimeSpan Time
         {
             set
             {
@@ -137,9 +138,9 @@ namespace FamilyMoney.UWP.ViewModels.Dialogs
         public IEnumerable<ICategory> Categories { get; }
 
 
-        private IEnumerable<IAccount> Accounts { get; }= MainPage.GlobalSettings.AccountStorage.GetAllAccounts();
+        public IEnumerable<IAccount> Accounts => _storages.AccountStorage.GetAllAccounts();
 
-        private IEnumerable<ITransaction> Transactions { get; } = MainPage.GlobalSettings.TransactionStorage.GetAllTransactions();
+        public IEnumerable<ITransaction> Transactions => _storages.TransactionStorage.GetAllTransactions();
         public BarCode BarCode { get; set; }
 
         public void CreateChildTransaction()
@@ -148,7 +149,6 @@ namespace FamilyMoney.UWP.ViewModels.Dialogs
             try
             {
                 ErrorString = string.Empty;
-                var storage= MainPage.GlobalSettings.TransactionStorage;
                 Timestamp = new DateTime(
                     Date.Year,
                     Date.Month,
@@ -158,7 +158,7 @@ namespace FamilyMoney.UWP.ViewModels.Dialogs
                     Time.Seconds
                 );
 
-                storage.CreateTransaction(Account, Category, Name, Total, Timestamp,0,Weight,null,ParentTransaction);
+                _storages.TransactionStorage.CreateTransaction(Account, Category, Name, Total, Timestamp,0,Weight,null,ParentTransaction);
             }
             catch ( StorageException e )
             {
@@ -170,6 +170,8 @@ namespace FamilyMoney.UWP.ViewModels.Dialogs
         public void UpdateChildTransaction()
         {
             ErrorString = String.Empty;
+            if(_transaction == null)
+                throw new ViewModelException("There is no Child Transaction to Update");
             try
             {
                 Timestamp = new DateTime(
@@ -180,7 +182,6 @@ namespace FamilyMoney.UWP.ViewModels.Dialogs
                     Time.Minutes,
                     Time.Seconds
                 );
-                var storage = MainPage.GlobalSettings.TransactionStorage;
                 _transaction.Name = Name;
                 _transaction.Account = Account;
                 _transaction.Category = Category;
@@ -189,7 +190,7 @@ namespace FamilyMoney.UWP.ViewModels.Dialogs
                 _transaction.Weight = Weight;
                 _transaction.Parent = ParentTransaction;
 
-                storage.UpdateTransaction(_transaction);
+                _storages.TransactionStorage.UpdateTransaction(_transaction);
             }
             catch (StorageException e)
             {
@@ -212,7 +213,7 @@ namespace FamilyMoney.UWP.ViewModels.Dialogs
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        [NotifyPropertyChangedInvocator]
+        //[NotifyPropertyChangedInvocator]
         private void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));

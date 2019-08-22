@@ -12,8 +12,8 @@ using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
-using FamilyMoney.UWP.Helpers;
-using FamilyMoney.UWP.ViewModels.Dialogs;
+using FamilyMoney.ViewModels.NetStandard.ViewModels;
+using FamilyMoney.ViewModels.NetStandard.ViewModels.Dialogs;
 using FamilyMoneyLib.NetStandard.Bases;
 
 // The Content Dialog item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
@@ -29,19 +29,19 @@ namespace FamilyMoney.UWP.Views.Dialogs
             this.InitializeComponent();
             if (quickTransaction == null)
             {
-                ViewModel = new EditQuickTransactionViewModel();
+                ViewModel = new EditQuickTransactionViewModel(MainPage.GlobalSettings.Storages);
                 _saveQuickTransactionAction = delegate { ViewModel.CreateQuickTransaction(); };
-                Title = "Create Quick Transaction".GetLocalized();
-                PrimaryButtonText = "Create".GetLocalized();
-                SecondaryButtonText = "Cancel".GetLocalized();
+                Title = "Create Quick Transaction";
+                PrimaryButtonText = "Create";
+                SecondaryButtonText = "Cancel";
             }
             else
             {
-                ViewModel = new EditQuickTransactionViewModel(quickTransaction);
+                ViewModel = new EditQuickTransactionViewModel(MainPage.GlobalSettings.Storages, quickTransaction);
                 _saveQuickTransactionAction = delegate { ViewModel.UpdateQuickTransaction(); };
-                Title = "Edit Quick Transaction".GetLocalized();
-                PrimaryButtonText = "Save".GetLocalized();
-                SecondaryButtonText = "Cancel".GetLocalized();
+                Title = "Edit Quick Transaction";
+                PrimaryButtonText = "Save";
+                SecondaryButtonText = "Cancel";
             }
         }
 

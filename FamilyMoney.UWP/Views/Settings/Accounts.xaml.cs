@@ -1,8 +1,8 @@
 ﻿using System;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using FamilyMoney.UWP.ViewModels;
 using FamilyMoney.UWP.Views.Dialogs;
+using FamilyMoney.ViewModels.NetStandard.ViewModels;
 using FamilyMoneyLib.NetStandard.Bases;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
@@ -14,7 +14,7 @@ namespace FamilyMoney.UWP.Views
     /// </summary>
     public sealed partial class Accounts : Page
     {
-        public AccountViewModel ViewModel { set; get; } = new AccountViewModel();
+        public AccountViewModel ViewModel { set; get; } = new AccountViewModel(MainPage.GlobalSettings.Storages.AccountStorage);
 
         public Accounts()
         {

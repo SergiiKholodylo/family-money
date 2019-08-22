@@ -119,14 +119,13 @@
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
     <Compile Include="Bases\BarCodeScanner.cs" />
+    <Compile Include="Converters\BooleanToVisibleConverter.cs" />
     <Compile Include="Converters\DateTimeToDateTimeOffsetConvertor.cs" />
     <Compile Include="Converters\DateTimeToTimeSpanConverter.cs" />
     <Compile Include="Converters\DecimalConvertor.cs" />
     <Compile Include="Converters\StringFormatConverter.cs" />
     <Compile Include="Converters\TestConverter.cs" />
     <Compile Include="GlobalSettings.cs" />
-    <Compile Include="Helpers\ResourceExtensions.cs" />
-    <Compile Include="Helpers\TransactionHelpers.cs" />
     <Compile Include="MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
@@ -140,20 +139,6 @@
       <DependentUpon>Report.xaml</DependentUpon>
     </Compile>
     <Compile Include="ViewClasses\ViewCategory.cs" />
-    <Compile Include="ViewModels\AccountViewModel.cs" />
-    <Compile Include="ViewModels\CategoryViewModel.cs" />
-    <Compile Include="ViewModels\Dialogs\EditChildTransactionViewModel.cs" />
-    <Compile Include="ViewModels\Dialogs\EditAccountViewModel.cs" />
-    <Compile Include="ViewModels\Dialogs\EditCategoryViewModel.cs" />
-    <Compile Include="ViewModels\Dialogs\EditQuickTransactionViewModel.cs" />
-    <Compile Include="ViewModels\ITransactionViewModel.cs" />
-    <Compile Include="ViewModels\TransactionCreateViewModel.cs" />
-    <Compile Include="ViewModels\TransactionEditViewModel.cs" />
-    <Compile Include="ViewModels\TransactionViewModelBase.cs" />
-    <Compile Include="ViewModels\TransactionViewModel.cs" />
-    <Compile Include="ViewModels\ViewModelBase.cs" />
-    <Compile Include="ViewModels\ViewModelException.cs" />
-    <Compile Include="ViewModels\TransactionsViewModel.cs" />
     <Compile Include="Views\Settings\Accounts.xaml.cs">
       <DependentUpon>Accounts.xaml</DependentUpon>
     </Compile>
@@ -313,6 +298,10 @@
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\FamilyMoney.ViewModels.NetStandard\FamilyMoney.ViewModels.NetStandard.csproj">
+      <Project>{1961637f-feb4-46b4-86f6-a543783cc92f}</Project>
+      <Name>FamilyMoney.ViewModels.NetStandard</Name>
+    </ProjectReference>
     <ProjectReference Include="..\FamilyMoneyLib.NetStandard\FamilyMoneyLib.NetStandard.csproj">
       <Project>{c85dc9b8-7baa-4ef9-a261-30e59f6e48b1}</Project>
       <Name>FamilyMoneyLib.NetStandard</Name>

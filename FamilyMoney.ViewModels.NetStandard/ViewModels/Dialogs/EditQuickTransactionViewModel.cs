@@ -1,15 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
-using FamilyMoney.UWP.Annotations;
 using FamilyMoneyLib.NetStandard.Bases;
 using FamilyMoneyLib.NetStandard.Storages;
 
-namespace FamilyMoney.UWP.ViewModels.Dialogs
+namespace FamilyMoney.ViewModels.NetStandard.ViewModels.Dialogs
 {
     public sealed class EditQuickTransactionViewModel:INotifyPropertyChanged
     {
@@ -24,13 +20,16 @@ namespace FamilyMoney.UWP.ViewModels.Dialogs
         private bool _askForTotal;
         private bool _askForWeight;
         private readonly IQuickTransaction _quickTransaction;
+        private readonly Storages _storages;
 
-        public EditQuickTransactionViewModel()
+        public EditQuickTransactionViewModel(Storages storages)
         {
+            _storages = storages;
         }
 
-        public EditQuickTransactionViewModel(IQuickTransaction quickTransaction)
+        public EditQuickTransactionViewModel(Storages storages, IQuickTransaction quickTransaction)
         {
+            _storages = storages;
             _quickTransaction = quickTransaction;
             Account = Accounts.FirstOrDefault(x => x.Id == quickTransaction?.Account?.Id);
             Category = Categories.FirstOrDefault(x => x.Id == quickTransaction?.Category?.Id);
@@ -111,15 +110,15 @@ namespace FamilyMoney.UWP.ViewModels.Dialogs
             get => _errorString;
         }
 
-        public IEnumerable<ICategory> Categories { get; } = MainPage.GlobalSettings.CategoryStorage.GetAllCategories();
+        public IEnumerable<ICategory> Categories  => _storages.CategoryStorage.GetAllCategories();
 
 
-        public IEnumerable<IAccount> Accounts { get; } = MainPage.GlobalSettings.AccountStorage.GetAllAccounts();
+        public IEnumerable<IAccount> Accounts  => _storages.AccountStorage.GetAllAccounts();
 
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        [NotifyPropertyChangedInvocator]
+        //[NotifyPropertyChangedInvocator]
         private void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
@@ -130,7 +129,7 @@ namespace FamilyMoney.UWP.ViewModels.Dialogs
         {
             try
             {
-                var storage = MainPage.GlobalSettings.QuickTransactionStorage;
+                var storage = _storages.QuickTransactionStorage;
                 storage.CreateQuickTransaction(Account, Category, Name, Total, 0, Weight, AskForTotal, AskForWeight);
             }
             catch (StorageException e)
@@ -145,7 +144,7 @@ namespace FamilyMoney.UWP.ViewModels.Dialogs
             
             try
             {
-                var storage = MainPage.GlobalSettings.QuickTransactionStorage;
+                var storage = _storages.QuickTransactionStorage;
                 _quickTransaction.Name = Name;
                 _quickTransaction.Account = Account;
                 _quickTransaction.Category = Category;

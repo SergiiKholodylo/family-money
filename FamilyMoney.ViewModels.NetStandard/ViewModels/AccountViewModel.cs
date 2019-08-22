@@ -4,7 +4,7 @@ using System.Runtime.CompilerServices;
 using FamilyMoneyLib.NetStandard.Bases;
 using FamilyMoneyLib.NetStandard.Storages;
 
-namespace FamilyMoney.UWP.ViewModels
+namespace FamilyMoney.ViewModels.NetStandard.ViewModels
 {
     public sealed class AccountViewModel:INotifyPropertyChanged
     {
@@ -22,9 +22,9 @@ namespace FamilyMoney.UWP.ViewModels
         }
 
 
-        public AccountViewModel()
+        public AccountViewModel(IAccountStorage accountStorage)
         {
-            _storage = MainPage.GlobalSettings.AccountStorage;
+            _storage = accountStorage;
             Accounts = new ObservableCollection<IAccount>(_storage.GetAllAccounts());
         }
 

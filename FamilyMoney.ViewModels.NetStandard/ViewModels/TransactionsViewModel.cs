@@ -2,16 +2,15 @@
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
-using FamilyMoney.UWP.Helpers;
+using FamilyMoney.ViewModels.NetStandard.Helpers;
 using FamilyMoneyLib.NetStandard.Bases;
 using FamilyMoneyLib.NetStandard.Storages;
 
-namespace FamilyMoney.UWP.ViewModels
+namespace FamilyMoney.ViewModels.NetStandard.ViewModels
 {
     public sealed class TransactionsViewModel:INotifyPropertyChanged
     {
         private ObservableCollection<ITransaction> _transactions = new ObservableCollection<ITransaction>();
-        private readonly ITransactionStorage _storage;
         private IAccount _activeAccount;
 
         public ObservableCollection<ITransaction> Transactions
@@ -37,6 +36,7 @@ namespace FamilyMoney.UWP.ViewModels
 
 
         private ObservableCollection<IAccount> _accounts;
+        private readonly Storages _storages;
 
         public string CurrentInfo
         {
@@ -44,7 +44,7 @@ namespace FamilyMoney.UWP.ViewModels
 
         get
         {
-            var totalTransactions = "TotalTransactions".GetLocalized();
+            var totalTransactions = "TotalTransactions";
             return $"{totalTransactions} - {Transactions.Sum(x => x.Total)}";
         }
         }
@@ -63,11 +63,10 @@ namespace FamilyMoney.UWP.ViewModels
         }
 
 
-        public TransactionsViewModel()
+        public TransactionsViewModel(Storages storages)
         {
-            _storage = MainPage.GlobalSettings.TransactionStorage;
-            var accountManager = MainPage.GlobalSettings.AccountStorage;
-            Accounts = new ObservableCollection<IAccount>(accountManager.GetAllAccounts());
+            _storages = storages;
+            Accounts = new ObservableCollection<IAccount>(_storages.AccountStorage.GetAllAccounts());
             _activeAccount = Accounts.FirstOrDefault();
             RefreshTransactionByAccount();
         }
@@ -75,11 +74,8 @@ namespace FamilyMoney.UWP.ViewModels
         private void RefreshTransactionByAccount()
         {
             if(_activeAccount == null) return;
-
-            var transactionManager = MainPage.GlobalSettings.TransactionStorage;
-
             Transactions.Clear();
-            var accountTransactions = transactionManager.GetAllTransactions().Where(x => x.Account.Id == _activeAccount.Id && x.Parent == null);
+            var accountTransactions = _storages.TransactionStorage.GetAllTransactions().Where(x => x.Account.Id == _activeAccount.Id && x.Parent == null);
             foreach (var transaction in accountTransactions)
             {
                 Transactions.Add(transaction);
@@ -96,15 +92,14 @@ namespace FamilyMoney.UWP.ViewModels
 
         public void DeleteTransaction(ITransaction activeTransaction)
         {
-            var barCodeStorage = MainPage.GlobalSettings.BarCodeStorage;
-            var transactionStorage = MainPage.GlobalSettings.TransactionStorage;
+            var barCodeStorage = _storages.BarCodeStorage;
 
             var barCodesToDelete = barCodeStorage.GetAllBarCodes().Where(x => x.Transaction?.Id == activeTransaction.Id).ToArray();
             foreach (var barCode in barCodesToDelete)
             {
                 barCodeStorage.DeleteBarCode(barCode);
             }
-            transactionStorage.DeleteTransaction(activeTransaction);
+            _storages.TransactionStorage.DeleteTransaction(activeTransaction);
             Transactions.Remove(activeTransaction);
         }
     }

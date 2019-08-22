@@ -14,8 +14,14 @@ namespace FamilyMoney.UWP
     public sealed class MainPageViewModel:INotifyPropertyChanged
     {
         public readonly ObservableCollection<QuickButton> QuickButtons = new ObservableCollection<QuickButton>();
+        private readonly Storages _storages;
 
-        public void AddButton(QuickButton button)
+        public MainPageViewModel(Storages storages)
+        {
+            _storages = storages;
+        }
+
+        private void AddButton(QuickButton button)
         {
             QuickButtons.Add(button);
         }
@@ -36,7 +42,7 @@ namespace FamilyMoney.UWP
             if (string.IsNullOrWhiteSpace(barCodeString)) return;
 
             var barCode = new BarCode(barCodeString);
-            var storage = MainPage.GlobalSettings.BarCodeStorage;
+            var storage = _storages.BarCodeStorage;
             var transaction = storage.GetBarCodeTransaction(barCode.GetProductBarCode());
 
             if (transaction == null) return;
@@ -66,10 +72,10 @@ namespace FamilyMoney.UWP
             }
         }
 
-        private static void CreateTransactionANdUpdateBarCode(BarCode barCode, IBarCodeStorage storage, ITransaction transaction)
+        private void CreateTransactionANdUpdateBarCode(BarCode barCode, IBarCodeStorage storage, ITransaction transaction)
         {
             transaction.Timestamp = DateTime.Now;
-            var transactionStorage = MainPage.GlobalSettings.TransactionStorage;
+            var transactionStorage = _storages.TransactionStorage;
             var newTransaction = transactionStorage.CreateTransaction(transaction);
             barCode.Transaction = newTransaction;
             storage.CreateBarCode(barCode);
@@ -89,7 +95,7 @@ namespace FamilyMoney.UWP
                 Label = "➕ Add Quick Transaction",
                 TransactionId = 0
             });
-            var quickTransactions = MainPage.GlobalSettings.QuickTransactionStorage.GetAllQuickTransactions();
+            var quickTransactions = _storages.QuickTransactionStorage.GetAllQuickTransactions();
             foreach (var quickTransaction in quickTransactions)
             {
                 AddButton(new QuickButton
@@ -100,12 +106,16 @@ namespace FamilyMoney.UWP
                 });
             }
         }
+
+        public void CreateTransaction(ITransaction transaction)
+        {
+            _storages.TransactionStorage.CreateTransaction(transaction);
+        }
     }
 
     public class QuickButton
     {
         public string Label { set; get; }
-        public string Symbol { set; get; }
         public long TransactionId { set; get; }
         public IQuickTransaction QuickTransaction { get; set; }
 

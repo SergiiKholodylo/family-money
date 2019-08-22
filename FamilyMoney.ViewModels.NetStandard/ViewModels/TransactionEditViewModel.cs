@@ -2,12 +2,13 @@
 using System.Collections.ObjectModel;
 using System.Linq;
 using FamilyMoneyLib.NetStandard.Bases;
+using FamilyMoneyLib.NetStandard.Storages;
 
-namespace FamilyMoney.UWP.ViewModels
+namespace FamilyMoney.ViewModels.NetStandard.ViewModels
 {
     public class TransactionEditViewModel : TransactionViewModelBase, ITransactionViewModel
     {
-        public TransactionEditViewModel(ITransaction transaction)
+        public TransactionEditViewModel(Storages storages, ITransaction transaction):base(storages)
         {
             Transaction = transaction;
             Date = transaction == null || transaction.Timestamp == DateTime.MinValue ? new DateTimeOffset(DateTime.Now) : new DateTimeOffset(transaction.Timestamp);

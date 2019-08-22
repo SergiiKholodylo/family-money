@@ -4,8 +4,8 @@ using System.Linq;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Input;
-using FamilyMoney.UWP.ViewModels;
 using FamilyMoney.UWP.Views.Dialogs;
+using FamilyMoney.ViewModels.NetStandard.ViewModels;
 using FamilyMoneyLib.NetStandard.AddOn;
 using FamilyMoneyLib.NetStandard.Bases;
 
@@ -18,7 +18,7 @@ namespace FamilyMoney.UWP.Views
     /// </summary>
     public sealed partial class Categories : Page
     {
-        public readonly CategoryViewModel ViewModel = new CategoryViewModel();
+        public readonly CategoryViewModel ViewModel = new CategoryViewModel(MainPage.GlobalSettings.Storages.CategoryStorage);
 
         public Categories()
         {
@@ -112,6 +112,11 @@ namespace FamilyMoney.UWP.Views
         private void BtReportsButton_OnClick(object sender, RoutedEventArgs e)
         {
             Frame.Navigate(typeof(Report));
+        }
+
+        private void CreateDefaultCategoriesTree_OnClick(object sender, RoutedEventArgs e)
+        {
+            CreateCategoryTree.CreateDefaultCategoryTree();
         }
     }
 }

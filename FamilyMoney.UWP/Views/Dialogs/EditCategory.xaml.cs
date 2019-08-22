@@ -1,7 +1,7 @@
 ﻿using System;
 using Windows.UI.Xaml.Controls;
-using FamilyMoney.UWP.Helpers;
-using FamilyMoney.UWP.ViewModels.Dialogs;
+using FamilyMoney.ViewModels.NetStandard.ViewModels;
+using FamilyMoney.ViewModels.NetStandard.ViewModels.Dialogs;
 using FamilyMoneyLib.NetStandard.Bases;
 
 // The Content Dialog item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
@@ -18,19 +18,19 @@ namespace FamilyMoney.UWP.Views.Dialogs
             this.InitializeComponent();
             if (category == null)
             {
-                ViewModel = new EditCategoryViewModel(category,parent);
+                ViewModel = new EditCategoryViewModel(MainPage.GlobalSettings.Storages.CategoryStorage,category,parent);
                 _saveCategoryAction = delegate { ViewModel.CreateNewCategory(); };
-                Title = "Create Category".GetLocalized();
-                PrimaryButtonText = "Create Category".GetLocalized();
-                SecondaryButtonText = "Cancel".GetLocalized();
+                Title = "Create Category";
+                PrimaryButtonText = "Create Category";
+                SecondaryButtonText = "Cancel";
             }
             else
             {
-                ViewModel = new EditCategoryViewModel(category, category);
+                ViewModel = new EditCategoryViewModel(MainPage.GlobalSettings.Storages.CategoryStorage, category, category);
                 _saveCategoryAction = delegate { ViewModel.UpdateCategory(); };
-                Title = "Edit Category".GetLocalized();
-                PrimaryButtonText = "Edit Category".GetLocalized();
-                SecondaryButtonText = "Cancel".GetLocalized();
+                Title = "Edit Category";
+                PrimaryButtonText = "Edit Category";
+                SecondaryButtonText = "Cancel";
             }
 
             

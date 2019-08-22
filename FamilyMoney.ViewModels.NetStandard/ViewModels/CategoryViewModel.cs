@@ -3,12 +3,10 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
-using FamilyMoney.UWP.Annotations;
 using FamilyMoneyLib.NetStandard.Bases;
 using FamilyMoneyLib.NetStandard.Storages;
 
-
-namespace FamilyMoney.UWP.ViewModels
+namespace FamilyMoney.ViewModels.NetStandard.ViewModels
 {
     public sealed class CategoryViewModel:INotifyPropertyChanged
     {
@@ -24,9 +22,9 @@ namespace FamilyMoney.UWP.ViewModels
             get => _categories;
         }
 
-        public CategoryViewModel()
+        public CategoryViewModel(ICategoryStorage categoryStorage)
         {
-            _storage = MainPage.GlobalSettings.CategoryStorage;
+            _storage = categoryStorage;
             RefreshCategoryList();
         }
 
@@ -44,7 +42,7 @@ namespace FamilyMoney.UWP.ViewModels
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        [NotifyPropertyChangedInvocator]
+        //[NotifyPropertyChangedInvocator]
         private void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));

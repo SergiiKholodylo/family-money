@@ -2,45 +2,45 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using Windows.UI.Xaml;
-using FamilyMoney.UWP.Annotations;
-using FamilyMoney.UWP.Bases;
-using FamilyMoney.UWP.Helpers;
-using FamilyMoney.UWP.ViewModels.Dialogs;
-using FamilyMoney.UWP.Views.Dialogs;
+using FamilyMoney.ViewModels.NetStandard.Helpers;
 using FamilyMoneyLib.NetStandard.Bases;
 using FamilyMoneyLib.NetStandard.Storages;
 
-namespace FamilyMoney.UWP.ViewModels
+namespace FamilyMoney.ViewModels.NetStandard.ViewModels
 {
     public class TransactionViewModelBase : INotifyPropertyChanged
     {
-        protected IAccount _account;
-        protected ICategory _category;
-        protected string _name;
-        protected DateTime _timestamp = DateTime.Now;
-        protected decimal _total;
-        protected DateTimeOffset _date;
-        protected TimeSpan _time;
+        private IAccount _account;
+        private ICategory _category;
+        private string _name;
+        private DateTime _timestamp = DateTime.Now;
+        private decimal _total;
+        private DateTimeOffset _date;
+        private TimeSpan _time;
 
-        protected string _errorString;
-        protected decimal _weight;
-        protected bool _isComplexTransaction;
-        protected ObservableCollection<ITransaction> _childrenTransactions;
-        protected ITransaction _transaction;
-        private Visibility _isChildTransactionVisible;
+        private string _errorString;
+        private decimal _weight;
+        private bool _isComplexTransaction;
+        private ObservableCollection<ITransaction> _childrenTransactions;
+        private ITransaction _transaction;
 
-        protected TransactionViewModelBase()
+        protected readonly Storages _storages;
+        //private Visibility _isChildTransactionVisible;
+
+        protected TransactionViewModelBase(Storages storages)
         {
-            
-            Categories = MainPage.GlobalSettings.CategoryStorage.MakeFlatCategoryTree();
+            _storages = storages;
+            Accounts = _storages.AccountStorage.GetAllAccounts();
+            Categories = _storages.CategoryStorage.MakeFlatCategoryTree();
+            Transactions = _storages.TransactionStorage.GetAllTransactions();
             Timestamp = DateTime.Now;
             Date = new DateTimeOffset(Timestamp);
             Time = Timestamp.TimeOfDay;
+            
         }
 
 
@@ -49,7 +49,12 @@ namespace FamilyMoney.UWP.ViewModels
         public ObservableCollection<ITransaction> ChildrenTransactions
         {
             get => _childrenTransactions;
-            set => _childrenTransactions = value;
+            set
+            {
+                if(_childrenTransactions == value) return;
+                _childrenTransactions = value;
+                OnPropertyChanged();
+            }
         }
 
         public IBarCode BarCode { set; get; }
@@ -58,7 +63,7 @@ namespace FamilyMoney.UWP.ViewModels
         {
             set
             {
-                if (_account == value) return;
+                if (_account != null && _account.Equals(value)) return;
                 _account = value;
                 OnPropertyChanged(nameof(Accounts));
                 OnPropertyChanged();
@@ -70,7 +75,7 @@ namespace FamilyMoney.UWP.ViewModels
         {
             set
             {
-                if (_category == value) return;
+                if (_category!= null && _category.Equals(value)) return;
                 _category = value;
                 OnPropertyChanged(nameof(Categories));
                 OnPropertyChanged();
@@ -138,8 +143,8 @@ namespace FamilyMoney.UWP.ViewModels
                 if(_isComplexTransaction ==  value) return;
                 _isComplexTransaction = value; 
                 OnPropertyChanged();
-                OnPropertyChanged(nameof(IsChildTransactionVisible));
-                OnPropertyChanged(nameof(IsChildTransactionHidden));
+                //OnPropertyChanged(nameof(IsChildTransactionVisible));
+                //OnPropertyChanged(nameof(IsChildTransactionHidden));
             }
             get => _isComplexTransaction;
         }
@@ -150,15 +155,11 @@ namespace FamilyMoney.UWP.ViewModels
             get => _errorString;
         }
 
-        public Visibility IsChildTransactionVisible => IsComplexTransaction?Visibility.Visible:Visibility.Collapsed;
-        public Visibility IsChildTransactionHidden => !IsComplexTransaction ? Visibility.Visible : Visibility.Collapsed;
-
         public IEnumerable<ICategory> Categories { get; }
 
+        public  IEnumerable<IAccount> Accounts { get; }
 
-        public IEnumerable<IAccount> Accounts { get; } = MainPage.GlobalSettings.AccountStorage.GetAllAccounts();
-
-        public IEnumerable<ITransaction> Transactions { get; } = MainPage.GlobalSettings.TransactionStorage.GetAllTransactions();
+        public  IEnumerable<ITransaction> Transactions { get; }
 
         public ITransaction Transaction
         {
@@ -178,7 +179,7 @@ namespace FamilyMoney.UWP.ViewModels
             try
             {
                 ErrorString = string.Empty;
-                var storage = MainPage.GlobalSettings.TransactionStorage;
+                var storage = _storages.TransactionStorage;
 
                 DateTimeFromDateAndTime();
 
@@ -195,9 +196,9 @@ namespace FamilyMoney.UWP.ViewModels
 
         private void CreateBarCodeWithTransaction()
         {
-            BarCode = MainPage.GlobalSettings.ScannedBarCode;
+            //BarCode = MainPage.GlobalSettings.ScannedBarCode;
             if ( BarCode == null) return;
-            var barCodeStorage = MainPage.GlobalSettings.BarCodeStorage;
+            var barCodeStorage = _storages.BarCodeStorage;
             BarCode.AnalyzeCodeByWeightKg(Weight);
             BarCode.Transaction = _transaction;
             barCodeStorage.CreateBarCode(BarCode);
@@ -208,7 +209,7 @@ namespace FamilyMoney.UWP.ViewModels
             try
             {
                 DateTimeFromDateAndTime();
-                var storage = MainPage.GlobalSettings.TransactionStorage;
+                var storage = _storages.TransactionStorage;
                 _transaction.Name = Name;
                 _transaction.Account = Account;
                 _transaction.Category = Category;
@@ -239,6 +240,7 @@ namespace FamilyMoney.UWP.ViewModels
                                 Time.Seconds
                             );
         }
+
         public IEnumerable<ITransaction> GetSuggestions(string name)
         {
             return TransactionHelpers.GetSuggestions(Transactions,name);
@@ -254,11 +256,12 @@ namespace FamilyMoney.UWP.ViewModels
 
         public async Task<string> ScanBarCode()
         {
-            var scanner = new BarCodeScanner();
+            //var scanner = new BarCodeScanner();
 
-            var result = await scanner.ScanBarCode();
+            //var result = await scanner.ScanBarCode();
 
-            return result;
+            //return result;
+            return String.Empty;
         }
 
         public void ProcessScannedBarCode(string barCodeString)
@@ -266,7 +269,7 @@ namespace FamilyMoney.UWP.ViewModels
             if (string.IsNullOrWhiteSpace(barCodeString)) return;
 
             BarCode = new BarCode(barCodeString);
-            var storage = MainPage.GlobalSettings.BarCodeStorage;
+            var storage = _storages.BarCodeStorage;
             var transaction = storage.GetBarCodeTransaction(BarCode.GetProductBarCode());
             if (transaction == null)
             {
@@ -279,7 +282,7 @@ namespace FamilyMoney.UWP.ViewModels
                 }
             }
 
-            MainPage.GlobalSettings.ScannedBarCode = BarCode;
+            //MainPage.GlobalSettings.ScannedBarCode = BarCode;
             Weight = BarCode.GetWeightKg();
             Total = 0;
             if (transaction == null) return;
@@ -302,42 +305,45 @@ namespace FamilyMoney.UWP.ViewModels
 
         public bool IsExistingTransaction => _transaction != null;
 
-        public async Task<EditChildTransaction> ScanChildTransaction()
+        //public async Task<EditChildTransaction> ScanChildTransaction()
+        //{
+        //    var barCodeString = await ScanBarCode();
+
+        //    var editTransaction = new EditChildTransaction(Transaction, Account);
+
+
+        //    var barCode = new BarCode(barCodeString);
+
+        //    var transaction = FindBarCodeAmongExistingTransactions(barCode);
+
+        //    editTransaction.ViewModel.BarCode = barCode;
+        //    editTransaction.ViewModel.Weight = barCode.GetWeightKg();
+        //    editTransaction.ViewModel.Total = 0;
+        //    if (transaction == null) return editTransaction;
+        //    editTransaction.ViewModel.Category = editTransaction.ViewModel.Categories.FirstOrDefault(x => x.Id == transaction.Category?.Id);
+        //    editTransaction.ViewModel.Name = transaction.Name;
+        //    if (!barCode.IsWeight)
+        //        editTransaction.ViewModel.Total = transaction.Total;
+        //    return editTransaction;
+        //}
+
+        private ITransaction FindBarCodeAmongExistingTransactions(BarCode barCode)
         {
-            var barCodeString = await ScanBarCode();
-
-            var editTransaction = new EditChildTransaction(Transaction, Account);
-
-
-            var barCode = new BarCode(barCodeString);
-
-            var storage = MainPage.GlobalSettings.BarCodeStorage;
+            var storage = _storages.BarCodeStorage;
             var transaction = storage.GetBarCodeTransaction(barCode.GetProductBarCode());
-            if (transaction == null)
-            {
-                barCode.TryExtractWeight(5);
-                transaction = storage.GetBarCodeTransaction(barCode.GetProductBarCode());
-                if (transaction == null)
-                {
-                    barCode.TryExtractWeight(6);
-                    transaction = storage.GetBarCodeTransaction(barCode.GetProductBarCode());
-                }
-            }
+            if (transaction != null) return transaction;
+            barCode.TryExtractWeight(5);
+            transaction = storage.GetBarCodeTransaction(barCode.GetProductBarCode());
+            if (transaction != null) return transaction;
+            barCode.TryExtractWeight(6);
+            transaction = storage.GetBarCodeTransaction(barCode.GetProductBarCode());
 
-            editTransaction.ViewModel.BarCode = barCode;
-            editTransaction.ViewModel.Weight = barCode.GetWeightKg();
-            editTransaction.ViewModel.Total = 0;
-            if (transaction == null) return editTransaction;
-            editTransaction.ViewModel.Category = editTransaction.ViewModel.Categories.FirstOrDefault(x => x.Id == transaction.Category?.Id);
-            editTransaction.ViewModel.Name = transaction.Name;
-            if (!barCode.IsWeight)
-                editTransaction.ViewModel.Total = transaction.Total;
-            return editTransaction;
+            return transaction;
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        [NotifyPropertyChangedInvocator]
+        //[NotifyPropertyChangedInvocator]
         private void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));

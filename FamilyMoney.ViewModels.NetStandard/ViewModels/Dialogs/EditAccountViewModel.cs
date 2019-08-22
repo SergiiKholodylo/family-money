@@ -1,9 +1,10 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.ComponentModel;
 using System.Runtime.CompilerServices;
-using FamilyMoney.UWP.Annotations;
 using FamilyMoneyLib.NetStandard.Bases;
+using FamilyMoneyLib.NetStandard.Storages;
 
-namespace FamilyMoney.UWP.ViewModels.Dialogs
+namespace FamilyMoney.ViewModels.NetStandard.ViewModels.Dialogs
 {
     public sealed class EditAccountViewModel : INotifyPropertyChanged
     {
@@ -11,18 +12,21 @@ namespace FamilyMoney.UWP.ViewModels.Dialogs
         private string _description;
         private string _currency;
         private readonly IAccount _account;
+        private readonly IAccountStorage _accountStorage;
+        private string _errorString;
 
-        public EditAccountViewModel()
+        public EditAccountViewModel(IAccountStorage accountStorage)
         {
-
+            _accountStorage = accountStorage;
         }
 
-        public EditAccountViewModel(IAccount account)
+        public EditAccountViewModel(IAccountStorage accountStorage, IAccount account)
         {
             Name = account.Name;
             Description = account.Description;
             Currency = account.Currency;
             _account = account;
+            _accountStorage = accountStorage;
         }
 
         public string Name
@@ -43,25 +47,47 @@ namespace FamilyMoney.UWP.ViewModels.Dialogs
             get => _currency;
         }
 
+        public string ErrorString
+        {
+            set { _errorString = value; OnPropertyChanged(); }
+            get => _errorString;
+        }
+
         public void CreateNewAccount()
         {
-            var manager = MainPage.GlobalSettings.AccountStorage;
-            manager.CreateAccount(Name, Description, Currency);
+            try
+            {
+                _accountStorage.CreateAccount(Name, Description, Currency);
+            }
+            catch (StorageException e)
+            {
+                ErrorString = $"Error during creating Account {e.Message}";
+                throw new ViewModelException(ErrorString);
+            }
         }
 
         public void UpdateAccount()
         {
-            var manager = MainPage.GlobalSettings.AccountStorage;
+            if (_account == null)
+                throw new ViewModelException("There is no Account to update");
             _account.Currency = Currency;
             _account.Description = Description;
             _account.Name = Name;
-            manager.UpdateAccount(_account);
+            try
+            {
+                _accountStorage.UpdateAccount(_account);
+            }
+            catch (StorageException e)
+            {
+                ErrorString = $"Error during creating category {e.Message}";
+                throw new ViewModelException(ErrorString);
+            }
         }
 
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        [NotifyPropertyChangedInvocator]
+        //[NotifyPropertyChangedInvocator]
         private void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));

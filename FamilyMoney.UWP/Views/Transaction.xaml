@@ -11,6 +11,12 @@
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
+    <Page.Resources>
+        <converters:DecimalConverter x:Key="DecimalConverter" />
+        <converters:DateTimeToDateTimeOffsetConverter x:Key="DateTimeToDateTimeOffset" />
+        <converters:BooleanToVisibleConverter x:Key="BooleanToVisibleConverter"/>
+    </Page.Resources>
+
     <Page.BottomAppBar>
         <CommandBar>
             <AppBarButton
@@ -18,21 +24,21 @@
                 Icon="Add"
                 Click="CommandBar_AddChildTransaction"
                 AllowFocusOnInteraction="True"
-                Visibility="{x:Bind ViewModel.IsChildTransactionVisible, Mode=OneWay}"
+                Visibility="{x:Bind ViewModel.IsComplexTransaction, Mode=OneWay, Converter={StaticResource BooleanToVisibleConverter}, ConverterParameter=true}"
                 />
                 <AppBarButton
                 x:Uid="ScanBarCodeButton"
                 Icon="Camera"
                 Click="CommandBar_ScanBarCode"
                 AllowFocusOnInteraction="True"
-                Visibility="{x:Bind ViewModel.IsChildTransactionHidden, Mode=OneWay}" 
+                Visibility="{x:Bind ViewModel.IsComplexTransaction, Mode=OneWay, Converter={StaticResource BooleanToVisibleConverter}, ConverterParameter=false}"
                 />
             <AppBarButton
                 x:Uid="ScanBarCodeChildButton"
                 Icon="Camera"
                 Click="CommandBar_ScanBarChildTransactionCode"
                 AllowFocusOnInteraction="True"
-                Visibility="{x:Bind ViewModel.IsChildTransactionVisible, Mode=OneWay}" 
+                Visibility="{x:Bind ViewModel.IsComplexTransaction, Mode=OneWay, Converter={StaticResource BooleanToVisibleConverter}, ConverterParameter=true}"
             />
 
             <AppBarSeparator />
@@ -48,12 +54,6 @@
                 Click="CommandBar_CancelButton" />
         </CommandBar>
     </Page.BottomAppBar>
-
-
-    <Page.Resources>
-        <converters:DecimalConverter x:Key="DecimalConverter" />
-        <converters:DateTimeToDateTimeOffsetConverter x:Key="DateTimeToDateTimeOffset" />
-    </Page.Resources>
 
     <Grid Padding="20">
         <Pivot>
@@ -103,7 +103,8 @@
                             <ListView x:Uid="ChildTransactionListView"
                                       ItemsSource="{x:Bind ViewModel.ChildrenTransactions, Mode=TwoWay}"
                                       DoubleTapped="ChildrenTransaction_OnDoubleTapped"
-                                      Visibility="{x:Bind ViewModel.IsChildTransactionVisible, Mode=OneWay}">
+                                      Visibility="{x:Bind ViewModel.IsComplexTransaction, Mode=OneWay, Converter={StaticResource BooleanToVisibleConverter}, ConverterParameter=true}"
+                                      >
                                 <ListView.HeaderTemplate>
                                     <DataTemplate>
                                         <Border BorderBrush="Gray" BorderThickness="1" CornerRadius="3.2"

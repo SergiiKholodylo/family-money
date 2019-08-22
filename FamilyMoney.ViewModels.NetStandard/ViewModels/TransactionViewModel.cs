@@ -4,12 +4,11 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
-using FamilyMoney.UWP.Annotations;
-using FamilyMoney.UWP.Helpers;
+using FamilyMoney.ViewModels.NetStandard.Helpers;
 using FamilyMoneyLib.NetStandard.Bases;
 using FamilyMoneyLib.NetStandard.Storages;
 
-namespace FamilyMoney.UWP.ViewModels
+namespace FamilyMoney.ViewModels.NetStandard.ViewModels
 {
     public sealed class TransactionViewModel : INotifyPropertyChanged
     {
@@ -26,20 +25,31 @@ namespace FamilyMoney.UWP.ViewModels
         private bool _isComplexTransaction;
         private ObservableCollection<ITransaction> _childrenTransactions;
         private ITransaction _transaction;
+        private readonly Storages _storages;
 
-        public TransactionViewModel(IAccount activeAccount)
+        public TransactionViewModel(Storages storages,IAccount activeAccount)
         {
-            Categories = MainPage.GlobalSettings.CategoryStorage.MakeFlatCategoryTree();
+            _storages = storages;
+
+            Accounts = _storages.AccountStorage.GetAllAccounts();
+            Categories = storages.CategoryStorage.MakeFlatCategoryTree();
+            Transactions = _storages.TransactionStorage.GetAllTransactions();
+
             Date = new DateTimeOffset(DateTime.Now);
             Time = DateTime.Now.TimeOfDay;
             if (activeAccount != null)
                 Account = Accounts.FirstOrDefault(x => x.Id == activeAccount.Id);
         }
 
-        public TransactionViewModel(ITransaction transaction)
+        public TransactionViewModel(Storages storages, ITransaction transaction)
         {
+            _storages = storages;
             _transaction = transaction;
-            Categories = MainPage.GlobalSettings.CategoryStorage.MakeFlatCategoryTree();
+
+            Categories = storages.CategoryStorage.MakeFlatCategoryTree();
+            Accounts = _storages.AccountStorage.GetAllAccounts();
+            Transactions = _storages.TransactionStorage.GetAllTransactions();
+
             Date = transaction==null || transaction.Timestamp == DateTime.MinValue ? new DateTimeOffset(DateTime.Now) : new DateTimeOffset(transaction.Timestamp);
             Time = transaction?.Timestamp.TimeOfDay ?? DateTime.Now.TimeOfDay;
             Name = transaction?.Name;
@@ -165,9 +175,9 @@ namespace FamilyMoney.UWP.ViewModels
         public IEnumerable<ICategory> Categories { get; }
 
 
-        public IEnumerable<IAccount> Accounts { get; } = MainPage.GlobalSettings.AccountStorage.GetAllAccounts();
+        public readonly IEnumerable<IAccount> Accounts;
 
-        public IEnumerable<ITransaction> Transactions { get; } = MainPage.GlobalSettings.TransactionStorage.GetAllTransactions();
+        public readonly IEnumerable<ITransaction> Transactions;
 
         public ITransaction Transaction
         {
@@ -186,10 +196,8 @@ namespace FamilyMoney.UWP.ViewModels
             try
             {
                 ErrorString = string.Empty;
-                var storage = MainPage.GlobalSettings.TransactionStorage;
                 DateTimeFromDateAndTime();
-
-                _transaction = storage.CreateTransaction(Account, Category, Name, Total, Timestamp, 0, Weight, null, ParentTransaction);
+                _transaction = _storages.TransactionStorage.CreateTransaction(Account, Category, Name, Total, Timestamp, 0, Weight, null, ParentTransaction);
             }
             catch (StorageException e)
             {
@@ -203,7 +211,6 @@ namespace FamilyMoney.UWP.ViewModels
             try
             {
                 DateTimeFromDateAndTime();
-                var manager = MainPage.GlobalSettings.TransactionStorage;
                 _transaction.Name = Name;
                 _transaction.Account = Account;
                 _transaction.Category = Category;
@@ -212,7 +219,7 @@ namespace FamilyMoney.UWP.ViewModels
                 _transaction.Weight = Weight;
                 _transaction.Parent = ParentTransaction;
 
-                manager.UpdateTransaction(_transaction);
+                _storages.TransactionStorage.UpdateTransaction(_transaction);
             }
             catch (StorageException e)
             {
@@ -241,14 +248,13 @@ namespace FamilyMoney.UWP.ViewModels
             Total = selected.Total;
             Name = selected.Name;
             Weight = selected.Weight;
-            //Product = selected.Product;
         }
 
 
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        [NotifyPropertyChangedInvocator]
+        //[NotifyPropertyChangedInvocator]
         private void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));

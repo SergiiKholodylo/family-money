@@ -1,18 +1,18 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using FamilyMoneyLib.NetStandard.Bases;
+using FamilyMoneyLib.NetStandard.Storages;
 
-namespace FamilyMoney.UWP.ViewModels
+namespace FamilyMoney.ViewModels.NetStandard.ViewModels
 {
     public class TransactionCreateViewModel : TransactionViewModelBase, ITransactionViewModel
     {
-        public TransactionCreateViewModel(IAccount activeAccount) : base()
+        public TransactionCreateViewModel(Storages storages, IAccount activeAccount) : base(storages)
         {
             if (activeAccount != null)
                 Account = Accounts.FirstOrDefault(x => x.Id == activeAccount.Id);
         }
 
-        public TransactionCreateViewModel(ITransaction templateTransaction) : base()
+        public TransactionCreateViewModel(Storages storages,ITransaction templateTransaction) : base(storages)
         {
             if(templateTransaction == null) return;
 
@@ -26,7 +26,7 @@ namespace FamilyMoney.UWP.ViewModels
 
         }
 
-        public TransactionCreateViewModel():base()
+        public TransactionCreateViewModel(Storages storages):base(storages)
         {
         }
 

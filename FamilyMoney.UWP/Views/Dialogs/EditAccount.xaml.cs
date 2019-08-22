@@ -1,7 +1,6 @@
 ﻿using System;
 using Windows.UI.Xaml.Controls;
-using FamilyMoney.UWP.Helpers;
-using FamilyMoney.UWP.ViewModels.Dialogs;
+using FamilyMoney.ViewModels.NetStandard.ViewModels.Dialogs;
 using FamilyMoneyLib.NetStandard.Bases;
 
 // The Content Dialog item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
@@ -17,19 +16,19 @@ namespace FamilyMoney.UWP.Views.Dialogs
             this.InitializeComponent();
             if (account == null)
             {
-                ViewModel = new EditAccountViewModel();
+                ViewModel = new EditAccountViewModel(MainPage.GlobalSettings.Storages.AccountStorage);
                 _saveAccountAction = delegate { ViewModel.CreateNewAccount(); };
-                Title = "Create Account".GetLocalized();
-                PrimaryButtonText = "Create Account".GetLocalized();
-                SecondaryButtonText = "Cancel".GetLocalized();
+                Title = "Create Account";
+                PrimaryButtonText = "Create Account";
+                SecondaryButtonText = "Cancel";
             }
             else
             {
-                ViewModel = new EditAccountViewModel(account);
+                ViewModel = new EditAccountViewModel(MainPage.GlobalSettings.Storages.AccountStorage, account);
                 _saveAccountAction = delegate { ViewModel.UpdateAccount(); };
-                Title = "Edit Account".GetLocalized();
-                PrimaryButtonText = "Save".GetLocalized();
-                SecondaryButtonText = "Cancel".GetLocalized();
+                Title = "Edit Account";
+                PrimaryButtonText = "Save";
+                SecondaryButtonText = "Cancel";
 
             }
 

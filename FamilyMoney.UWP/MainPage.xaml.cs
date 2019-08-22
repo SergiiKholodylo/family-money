@@ -2,7 +2,6 @@
 using System.Threading.Tasks;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using FamilyMoney.UWP.Helpers;
 using FamilyMoney.UWP.Views;
 using FamilyMoney.UWP.Views.Dialogs;
 using FamilyMoney.UWP.Views.Settings;
@@ -21,28 +20,13 @@ namespace FamilyMoney.UWP
     public sealed partial class MainPage : Page
     {
         public static readonly GlobalSettings GlobalSettings = new GlobalSettings();
-        readonly MainPageViewModel _viewModel = new MainPageViewModel();
+        readonly MainPageViewModel _viewModel = new MainPageViewModel(GlobalSettings.Storages);
 
         public MainPage()
         {
             InitializeComponent();
             _viewModel.LoadQuickTransactions();
             
-        }
-
-        private void AppBarButton_Click(object sender, Windows.UI.Xaml.RoutedEventArgs e)
-        {
-            Frame.Navigate(typeof(Accounts));
-        }
-
-        private void AppBarButton_Click_1(object sender, Windows.UI.Xaml.RoutedEventArgs e)
-        {
-            Frame.Navigate(typeof(Categories));
-        }
-
-        private void AppBarButton_Click_2(object sender, Windows.UI.Xaml.RoutedEventArgs e)
-        {
-            Frame.Navigate(typeof(Transactions));
         }
 
         private async void RunTransaction_Click(object sender, ItemClickEventArgs e)
@@ -101,19 +85,19 @@ namespace FamilyMoney.UWP
             {
                 Content = $"Error during creating Transaction {exception.Message}",
                 IsPrimaryButtonEnabled = true,
-                PrimaryButtonText = "Ok".GetLocalized()
+                PrimaryButtonText = "Ok"
             };
             await dialog.ShowAsync();
         }
 
-        private static async Task CreateTransactionFromTemplate(ITransaction transaction)
+        private async Task CreateTransactionFromTemplate(ITransaction transaction)
         {
-            GlobalSettings.TransactionStorage.CreateTransaction(transaction);
+            _viewModel.CreateTransaction(transaction);
             var dialog = new ContentDialog
             {
                 Content = $"Transaction {transaction.Name} was successfully created",
                 IsPrimaryButtonEnabled = true,
-                PrimaryButtonText = "Ok".GetLocalized()
+                PrimaryButtonText = "Ok"
             };
             await dialog.ShowAsync();
         }

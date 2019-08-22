@@ -1,5 +1,4 @@
-﻿using Windows.Web.AtomPub;
-using FamilyMoney.UWP.ViewModels;
+﻿using FamilyMoney.ViewModels.NetStandard.ViewModels;
 using FamilyMoneyLib.NetStandard.Bases;
 using FamilyMoneyLib.NetStandard.Factories;
 using FamilyMoneyLib.NetStandard.SQLite;
@@ -9,11 +8,8 @@ namespace FamilyMoney.UWP
 {
     public class GlobalSettings
     {
-        public readonly IAccountStorage AccountStorage;
-        public readonly ICategoryStorage CategoryStorage;
-        public readonly ITransactionStorage TransactionStorage;
-        public readonly IBarCodeStorage BarCodeStorage;
-        public readonly IQuickTransactionStorageBase QuickTransactionStorage;
+
+        public readonly Storages Storages;
 
         public GlobalSettings()
         {
@@ -22,12 +18,19 @@ namespace FamilyMoney.UWP
             var transactionFactory = new RegularTransactionFactory();
             var quickTransactionFactory = new RegularQuickTransactionFactory();
 
-            AccountStorage = new SqLiteAccountStorage(accountFactory);
-            CategoryStorage = new SqLiteCategoryStorage(categoryFactory);
+            var accountStorage = new SqLiteAccountStorage(accountFactory);
+            var categoryStorage = new SqLiteCategoryStorage(categoryFactory);
+            var transactionStorage = new SqLiteTransactionStorage(transactionFactory, accountStorage, categoryStorage);
 
-            TransactionStorage = new SqLiteTransactionStorage(transactionFactory, AccountStorage, CategoryStorage);
-            BarCodeStorage = new SqLiteBarCodeStorage(new BarCodeFactory(), TransactionStorage);
-            QuickTransactionStorage = new SqLiteQuickTransactionStorage(quickTransactionFactory,AccountStorage,CategoryStorage);
+            Storages = new Storages
+            {
+                AccountStorage = accountStorage,
+                CategoryStorage = categoryStorage,
+
+                TransactionStorage = transactionStorage,
+                BarCodeStorage = new SqLiteBarCodeStorage(new BarCodeFactory(), transactionStorage),
+                QuickTransactionStorage = new SqLiteQuickTransactionStorage(quickTransactionFactory, accountStorage, categoryStorage)
+        };
         }
 
 

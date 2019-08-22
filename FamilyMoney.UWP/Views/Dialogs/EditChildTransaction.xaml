@@ -48,11 +48,13 @@
             <TextBox 
                 x:Uid="TotalTextBox" 
                 Text="{x:Bind ViewModel.Total, Mode=TwoWay, Converter={StaticResource DecimalConverter}}"
+                InputScope="Number"
                 />
 
             <TextBox 
                 x:Uid="WeightTextBox" 
                 Text="{x:Bind ViewModel.Weight, Mode=TwoWay, Converter={StaticResource DecimalConverter}, ConverterParameter='{}{0:F3}'}"
+                InputScope="Number"
             />
 
             <TextBlock 

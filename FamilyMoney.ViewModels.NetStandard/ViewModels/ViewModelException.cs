@@ -1,10 +1,9 @@
 ﻿using System;
-using System.Runtime.Serialization;
 
-namespace FamilyMoney.UWP.ViewModels.Dialogs
+namespace FamilyMoney.ViewModels.NetStandard.ViewModels
 {
 
-    internal class ViewModelException : Exception
+    public class ViewModelException : Exception
     {
         public ViewModelException()
         {

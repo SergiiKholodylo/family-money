@@ -2,7 +2,7 @@
 using System.Linq;
 using FamilyMoneyLib.NetStandard.Bases;
 
-namespace FamilyMoney.UWP.Helpers
+namespace FamilyMoney.ViewModels.NetStandard.Helpers
 {
     public static class TransactionHelpers
     {

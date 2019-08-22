@@ -4,10 +4,9 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Threading.Tasks;
 using Windows.UI.Xaml;
-using FamilyMoney.UWP.Views.Dialogs;
 using FamilyMoneyLib.NetStandard.Bases;
 
-namespace FamilyMoney.UWP.ViewModels
+namespace FamilyMoney.ViewModels.NetStandard.ViewModels
 {
     public interface ITransactionViewModel:INotifyPropertyChanged
     {
@@ -28,8 +27,6 @@ namespace FamilyMoney.UWP.ViewModels
 
         bool IsExistingTransaction { get; }
         ObservableCollection<ITransaction> ChildrenTransactions { set; get; }
-        Visibility IsChildTransactionVisible { get; }
-        Visibility IsChildTransactionHidden { get; }
 
         void SaveTransaction();
         void FillFromTemplate(ITransaction selected);
@@ -37,6 +34,6 @@ namespace FamilyMoney.UWP.ViewModels
         Task<string> ScanBarCode();
         void UpdateChildrenTransactionList();
         void ProcessScannedBarCode(string barCodeString);
-        Task<EditChildTransaction> ScanChildTransaction();
+        //Task<EditChildTransaction> ScanChildTransaction();
     }
 }

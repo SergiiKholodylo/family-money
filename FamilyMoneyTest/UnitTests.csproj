@@ -13,6 +13,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\FamilyMoney.ViewModels.NetStandard\FamilyMoney.ViewModels.NetStandard.csproj" />
     <ProjectReference Include="..\FamilyMoneyLib.NetStandard\FamilyMoneyLib.NetStandard.csproj" />
   </ItemGroup>
 
