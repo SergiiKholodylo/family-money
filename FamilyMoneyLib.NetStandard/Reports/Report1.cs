@@ -18,7 +18,7 @@ namespace FamilyMoneyLib.NetStandard.Reports
             _categoryStorage = categoryStorage;
         }
 
-        public Dictionary<CategoryAccountPair, decimal> Execute(ITransactionFilteredSource transactionFilteredSource)
+        public Dictionary<CategoryAccountPair, ReportOutputValues> Execute(ITransactionFilteredSource transactionFilteredSource)
         {
             var sum = RetrieveDataFromStorage(transactionFilteredSource).ToArray();
 
@@ -38,7 +38,9 @@ namespace FamilyMoneyLib.NetStandard.Reports
         private IEnumerable<SumByCategories> RetrieveDataFromStorage(
             ITransactionFilteredSource transactionFilteredSource)
         {
-            var allTransactions = transactionFilteredSource.GetTransactions(_transactionStorage);//_transactionStorage.GetAllTransactions();
+            var allTransactions = transactionFilteredSource.GetTransactions(_transactionStorage).ToArray();//_transactionStorage.GetAllTransactions();
+
+            var totalSum = allTransactions.Sum(x => x.Total);
 
             var sumByCategories = allTransactions.GroupBy(x => new Tuple<IAccount,ICategory>(x.Account, x.Category ));
 
@@ -46,20 +48,28 @@ namespace FamilyMoneyLib.NetStandard.Reports
             {
                 Account = g.Key.Item1,
                 Category = g.Key.Item2,
-                Total = g.Sum(x => x.Total)
+                Total = g.Sum(x => x.Total),
+                Percentage = GetPercentage(g.Sum(x => x.Total), totalSum),
             });
             return sum;
         }
 
-        private static Dictionary<CategoryAccountPair, decimal> FillTotalCategoryList(ICategory[] flatCategory,
+        private static decimal GetPercentage(decimal sum, decimal totalSum)
+        {
+            if(totalSum == 0)
+                return 0;
+            return sum / totalSum ;
+        }
+
+        private static Dictionary<CategoryAccountPair, ReportOutputValues> FillTotalCategoryList(ICategory[] flatCategory,
             IEnumerable<IAccount> activeAccounts)
         {
-            var totalCategoryList = new Dictionary<CategoryAccountPair, decimal>();
+            var totalCategoryList = new Dictionary<CategoryAccountPair, ReportOutputValues>();
             foreach (var activeAccount in activeAccounts)
             {
                 foreach (var category in flatCategory)
                 {
-                    totalCategoryList.Add(new CategoryAccountPair(activeAccount, category), 0m);
+                    totalCategoryList.Add(new CategoryAccountPair(activeAccount, category), new ReportOutputValues());
                 }
             }
 
@@ -67,18 +77,18 @@ namespace FamilyMoneyLib.NetStandard.Reports
         }
 
         private static void CalculateSumForCategories(IEnumerable<SumByCategories> sum, ICategory[] flatCategory, 
-            Dictionary<CategoryAccountPair, decimal> totalCategoryList)
+            Dictionary<CategoryAccountPair, ReportOutputValues> totalCategoryList)
         {
             foreach (var sumByCategory in sum)
             {
-                totalCategoryList[new CategoryAccountPair(sumByCategory.Account,sumByCategory.Category)] += sumByCategory.Total;
-
+                totalCategoryList[new CategoryAccountPair(sumByCategory.Account,sumByCategory.Category)].Total += sumByCategory.Total;
+                totalCategoryList[new CategoryAccountPair(sumByCategory.Account, sumByCategory.Category)].Percentage += sumByCategory.Percentage;
                 CalculateSumForParentCategories(flatCategory, totalCategoryList, sumByCategory);
             }
         }
 
         private static void CalculateSumForParentCategories(ICategory[] flatCategory, 
-            Dictionary<CategoryAccountPair, decimal> totalCategoryList, 
+            Dictionary<CategoryAccountPair, ReportOutputValues> totalCategoryList, 
             SumByCategories sumByCategory)
         {
 
@@ -86,14 +96,15 @@ namespace FamilyMoneyLib.NetStandard.Reports
             {
                 if (sumByCategory.Category.IsParent(category))
                 {
-                    totalCategoryList[new CategoryAccountPair(sumByCategory.Account, category)] += sumByCategory.Total;
+                    totalCategoryList[new CategoryAccountPair(sumByCategory.Account, category)].Total += sumByCategory.Total;
+                    totalCategoryList[new CategoryAccountPair(sumByCategory.Account, category)].Percentage += sumByCategory.Percentage;
                 }
             }
         }
 
-        private static void RemoveLinesWithZeroSum(Dictionary<CategoryAccountPair, decimal> totalCategoryList)
+        private static void RemoveLinesWithZeroSum(Dictionary<CategoryAccountPair, ReportOutputValues> totalCategoryList)
         {
-            var toDeleteFromList = (from total in totalCategoryList where total.Value == 0 select total.Key).ToList();
+            var toDeleteFromList = (from total in totalCategoryList where total.Value.Total == 0 select total.Key).ToList();
 
             foreach (var category in toDeleteFromList)
             {
@@ -138,6 +149,8 @@ namespace FamilyMoneyLib.NetStandard.Reports
         private class SumByCategories:CategoryAccountPair
         {
             public decimal Total { get; set; }
+            public decimal Percentage
+            { get; set; }
 
             public SumByCategories(IAccount account, ICategory category) : base(account, category)
             {
@@ -148,6 +161,12 @@ namespace FamilyMoneyLib.NetStandard.Reports
             }
         }
 
+    }
+
+    public class ReportOutputValues
+    {
+        public decimal Total { get; set; }
+        public decimal Percentage { get; set; }
     }
 
     public interface ITransactionFilteredSource

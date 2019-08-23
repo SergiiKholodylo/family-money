@@ -70,8 +70,9 @@
                         <Grid>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*" />
-                                <ColumnDefinition Width="80" />
-                            </Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="70" />
+                                <ColumnDefinition Width="70" />
+                                </Grid.ColumnDefinitions>
                             <TextBlock
                                 Grid.Column="0"
                                 Margin="0"
@@ -82,9 +83,15 @@
                                 Margin="0"
                                 Padding="0"
                                 HorizontalAlignment="Right"
-                                Text="{Binding Path=Value, Converter={StaticResource DecimalConverter}}" />
+                                Text="{Binding Path=Value.Total, Converter={StaticResource DecimalConverter}}" />
+                            <TextBlock
+                                Grid.Column="2"
+                                Margin="0"
+                                Padding="0"
+                                HorizontalAlignment="Right"
+                                Text="{Binding Path=Value.Percentage, Converter={StaticResource DecimalConverter}, ConverterParameter='{}{0:P1}'}" />
 
-                        </Grid>
+</Grid>
                     </DataTemplate>
                 </ListView.ItemTemplate>
                 <ListView.ItemContainerStyle>

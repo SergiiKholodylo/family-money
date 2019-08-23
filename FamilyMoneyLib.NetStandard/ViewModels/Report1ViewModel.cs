@@ -14,7 +14,7 @@ namespace FamilyMoneyLib.NetStandard.ViewModels
 {
     public class Report1ViewModel:INotifyPropertyChanged
     {
-        private ObservableCollection<IGrouping<IAccount, KeyValuePair<Report1.CategoryAccountPair, decimal>>> _lines = new ObservableCollection<IGrouping<IAccount, KeyValuePair<Report1.CategoryAccountPair, decimal>>>();
+        private ObservableCollection<IGrouping<IAccount, KeyValuePair<Report1.CategoryAccountPair, ReportOutputValues>>> _lines = new ObservableCollection<IGrouping<IAccount, KeyValuePair<Report1.CategoryAccountPair, ReportOutputValues>>>();
         private ObservableCollection<IAccount> _accounts = new ObservableCollection<IAccount>();
         private readonly IAccountStorage _accountStorage;
         private readonly ICategoryStorage _categoryStorage;
@@ -45,7 +45,7 @@ namespace FamilyMoneyLib.NetStandard.ViewModels
             get => _header;
         }
 
-        public ObservableCollection<IGrouping<IAccount, KeyValuePair<Report1.CategoryAccountPair, decimal>>> Lines
+        public ObservableCollection<IGrouping<IAccount, KeyValuePair<Report1.CategoryAccountPair, ReportOutputValues>>> Lines
         {
             get => _lines;
             set
@@ -81,7 +81,7 @@ namespace FamilyMoneyLib.NetStandard.ViewModels
 
             var report = new Report1(_transactionStorage,_categoryStorage);
             var result = report.Execute(new AccountTransactionFilteredSource(Account)).GroupBy(x => x.Key.Account);
-            var display = new ObservableCollection<IGrouping<IAccount, KeyValuePair<Report1.CategoryAccountPair, decimal>>>(result);
+            var display = new ObservableCollection<IGrouping<IAccount, KeyValuePair<Report1.CategoryAccountPair, ReportOutputValues>>>(result);
             
             Lines.Clear();
             foreach (var disp in display)
