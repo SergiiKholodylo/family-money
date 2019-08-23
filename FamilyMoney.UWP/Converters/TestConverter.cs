@@ -19,7 +19,7 @@ namespace FamilyMoney.UWP.Converters
             {
                 var category = ((Report1.CategoryAccountPair) value).Category;
                 var level = category.Level();
-                return new String(' ', level*8)+category?.Name;
+                return new String(' ', level*4)+category?.Name;
             }
             return null;
         }
