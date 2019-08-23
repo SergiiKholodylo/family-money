@@ -116,6 +116,7 @@ namespace FamilyMoney.UWP.Views
             var activeTransaction = (ITransaction)((Windows.UI.Xaml.Controls.Primitives.Selector)sender).SelectedValue;
             var editTransaction = new EditChildTransaction(ViewModel.Transaction, ViewModel.Account, activeTransaction);
             var result = await editTransaction.ShowAsync();
+            ViewModel.UpdateChildrenTransactionList();
         }
 
         private async void SaveTransaction()
@@ -167,6 +168,7 @@ namespace FamilyMoney.UWP.Views
                     editTransaction.ViewModel.Total = barCodeTransaction.Total;
             }
             await editTransaction.ShowAsync();
+            ViewModel.UpdateChildrenTransactionList();
         }
     }
 }

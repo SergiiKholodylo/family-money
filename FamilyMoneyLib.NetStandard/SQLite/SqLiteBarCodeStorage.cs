@@ -18,6 +18,9 @@ namespace FamilyMoneyLib.NetStandard.SQLite
         private readonly SqLiteTable _table = new SqLiteTable("familyMoney.db", "Barcode",
             $"({BarCodeTableStructure})");
 
+        private bool _isDirty = true;
+        private IEnumerable<IBarCode> _cache;
+
         private readonly ITransactionStorage _transactionStorage;
 
         public SqLiteBarCodeStorage(IBarCodeFactory factory, ITransactionStorage storage):base(factory)
@@ -30,6 +33,7 @@ namespace FamilyMoneyLib.NetStandard.SQLite
             _table.InitializeDatabase();
             var id = _table.AddData(ObjectToIBarCodeConvertor.ConvertToKeyValuePair(barCode));
             barCode.Id = id;
+            _isDirty = true;
             return barCode;
         }
 
@@ -37,18 +41,22 @@ namespace FamilyMoneyLib.NetStandard.SQLite
         {
             _table.InitializeDatabase();
             _table.DeleteRecordById(barCode.Id);
+            _isDirty = true;
         }
 
         public override IEnumerable<IBarCode> GetAllBarCodes()
         {
+            if (!_isDirty) return _cache;
             _table.InitializeDatabase();
             var barCodes = _table.SelectAll().ToArray();
-            return barCodes.Select(objects => ObjectToIBarCodeConvertor.Convert(objects, BarCodeFactory, _transactionStorage)).ToList();
+            _cache = barCodes.Select(objects => ObjectToIBarCodeConvertor.Convert(objects, BarCodeFactory, _transactionStorage)).ToList();
+            _isDirty = false;
+            return _cache;
         }
 
         public override ITransaction GetBarCodeTransaction(string barCode)
         {
-            var foundBarCodes = GetAllBarCodes().FirstOrDefault(x => x.GetProductBarCode().Equals(barCode));
+            var foundBarCodes = GetAllBarCodes().OrderByDescending(x=>x.Id).FirstOrDefault(x => x.GetProductBarCode().Equals(barCode));
             return foundBarCodes?.Transaction;
         }
 
@@ -67,12 +75,14 @@ namespace FamilyMoneyLib.NetStandard.SQLite
         {
             _table.InitializeDatabase();
             _table.UpdateData(ObjectToIBarCodeConvertor.ConvertToKeyValuePair(barCode),barCode.Id);
+            _isDirty = true;
         }
 
         public void DeleteAllData()
         {
             _table.InitializeDatabase();
             _table.DeleteDatabase();
+            _isDirty = true;
         }
     }
 

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Diagnostics;
 using System.Linq;
 using FamilyMoneyLib.NetStandard.Storages;
 using Microsoft.Data.Sqlite;
@@ -169,6 +170,8 @@ namespace FamilyMoneyLib.NetStandard.SQLite
 
         public IEnumerable<IDictionary<string, object>> SelectAll()
         {
+            
+            Debug.WriteLine($"{_tableName}");
             try
             {
                 using (var db =

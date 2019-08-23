@@ -18,7 +18,7 @@ namespace FamilyMoney.ViewModels.NetStandard.ViewModels.Dialogs
         private  decimal _total;
         private DateTimeOffset _date;
         private TimeSpan _time;
-        private readonly ITransaction _transaction;
+        private ITransaction _transaction;
         private string _errorString;
         private decimal _weight;
         private readonly Storages _storages;
@@ -158,7 +158,8 @@ namespace FamilyMoney.ViewModels.NetStandard.ViewModels.Dialogs
                     Time.Seconds
                 );
 
-                _storages.TransactionStorage.CreateTransaction(Account, Category, Name, Total, Timestamp,0,Weight,null,ParentTransaction);
+                _transaction = _storages.TransactionStorage.CreateTransaction(Account, Category, Name, Total, Timestamp,0,Weight,null,ParentTransaction);
+                CreateBarCodeWithTransaction();
             }
             catch ( StorageException e )
             {
@@ -191,12 +192,22 @@ namespace FamilyMoney.ViewModels.NetStandard.ViewModels.Dialogs
                 _transaction.Parent = ParentTransaction;
 
                 _storages.TransactionStorage.UpdateTransaction(_transaction);
+                CreateBarCodeWithTransaction();
             }
             catch (StorageException e)
             {
                 ErrorString = $"You have the exception {e.Message}";
                 throw new ViewModelException(ErrorString);
             }
+        }
+        private void CreateBarCodeWithTransaction()
+        {
+            //BarCode = MainPage.GlobalSettings.ScannedBarCode;
+            if (BarCode == null) return;
+            var barCodeStorage = _storages.BarCodeStorage;
+            BarCode.AnalyzeCodeByWeightKg(Weight);
+            BarCode.Transaction = _transaction;
+            barCodeStorage.CreateBarCode(BarCode);
         }
 
         public void FillFromTemplate(ITransaction selected)

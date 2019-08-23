@@ -32,6 +32,9 @@ namespace FamilyMoneyLib.NetStandard.SQLite
         private readonly SqLiteTable _table = new SqLiteTable("familyMoney.db", "Category",
             $"({CategoryTableStructure})");
 
+        private bool _isDirty = true;
+        private IEnumerable<ICategory> _cache;
+
         public SqLiteCategoryStorage(ICategoryFactory categoryFactory) : base(categoryFactory)
         {
 
@@ -41,6 +44,7 @@ namespace FamilyMoneyLib.NetStandard.SQLite
         {
             _table.InitializeDatabase();
             category.Id = _table.AddData(ObjectToICategoryConverter.ConvertToKeyPairList(category));
+            _isDirty = true;
             return category;
         }
 
@@ -48,10 +52,12 @@ namespace FamilyMoneyLib.NetStandard.SQLite
         {
             _table.InitializeDatabase();
             _table.DeleteRecordById(category.Id);
+            _isDirty = true;
         }
 
         public override IEnumerable<ICategory> GetAllCategories()
         {
+            if (!_isDirty) return _cache;
             _table.InitializeDatabase();
             var lines = _table.SelectAll().ToArray();
             var withNoParents = lines.Select(objects => ObjectToICategoryConverter.Convert(objects, CategoryFactory)).ToArray();
@@ -59,14 +65,16 @@ namespace FamilyMoneyLib.NetStandard.SQLite
             {
                 ObjectToICategoryConverter.UpdateParents(line,withNoParents);
             }
-            return withNoParents.ToList();
+            _cache = withNoParents.ToList();
+            _isDirty = false;
+            return _cache;
         }
 
         public override void UpdateCategory(ICategory category)
         {
             _table.InitializeDatabase();
-
             _table.UpdateData(ObjectToICategoryConverter.ConvertToKeyPairList(category), category.Id);
+            _isDirty = true;
 
         }
 
@@ -74,6 +82,7 @@ namespace FamilyMoneyLib.NetStandard.SQLite
         {
             _table.InitializeDatabase();
             _table.DeleteDatabase();
+            _isDirty = true;
         }
 
     }

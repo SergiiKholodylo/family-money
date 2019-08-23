@@ -75,6 +75,7 @@ namespace FamilyMoney.UWP
         private void CreateTransactionANdUpdateBarCode(BarCode barCode, IBarCodeStorage storage, ITransaction transaction)
         {
             transaction.Timestamp = DateTime.Now;
+            transaction.Parent = null;
             var transactionStorage = _storages.TransactionStorage;
             var newTransaction = transactionStorage.CreateTransaction(transaction);
             barCode.Transaction = newTransaction;

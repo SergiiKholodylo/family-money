@@ -26,6 +26,10 @@ namespace FamilyMoneyLib.NetStandard.SQLite
 
         private readonly IAccountStorage _accountStorage;
         private readonly ICategoryStorage _categoryStorage;
+
+        private bool _isDirty = true;
+        private IEnumerable<IQuickTransaction> _cache;
+
         public SqLiteQuickTransactionStorage(IQuickTransactionFactory quickTransactionFactory, 
             IAccountStorage accountStorage, ICategoryStorage categoryStorage) : 
             base(quickTransactionFactory)
@@ -38,6 +42,7 @@ namespace FamilyMoneyLib.NetStandard.SQLite
         {
             _table.InitializeDatabase();
             quickTransaction.Id = _table.AddData(ObjectToIQuickTransactionConverter.ConvertToKeyPairList(quickTransaction));
+            _isDirty = true;
             return quickTransaction;
         }
 
@@ -45,26 +50,31 @@ namespace FamilyMoneyLib.NetStandard.SQLite
         {
             _table.InitializeDatabase();
             _table.DeleteRecordById(quickTransaction.Id);
+            _isDirty = true;
         }
 
         public override IEnumerable<IQuickTransaction> GetAllQuickTransactions()
         {
+            if (!_isDirty) return _cache;
             _table.InitializeDatabase();
             var lines = _table.SelectAll().ToArray();
-
-            return lines.Select(x => ObjectToIQuickTransactionConverter.Convert(x, _quickTransactionFactory, _accountStorage, _categoryStorage)).ToArray();
+            _cache = lines.Select(x => ObjectToIQuickTransactionConverter.Convert(x, _quickTransactionFactory, _accountStorage, _categoryStorage)).ToArray();
+            _isDirty = false;
+            return _cache;
         }
 
         public override void UpdateQuickTransaction(IQuickTransaction quickTransaction)
         {
             _table.InitializeDatabase();
             _table.UpdateData(ObjectToIQuickTransactionConverter.ConvertToKeyPairList(quickTransaction), quickTransaction.Id);
+            _isDirty = true;
         }
 
         public void DeleteAllData()
         {
             _table.InitializeDatabase();
             _table.DeleteDatabase();
+            _isDirty = true;
         }
     }
 
