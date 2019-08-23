@@ -25,7 +25,7 @@ namespace FamilyMoney.UWP.Views.Dialogs
             {
                 InitUpdateMode();
             }
-            ViewModel = new EditChildTransactionViewModel(MainPage.GlobalSettings.Storages,parent, activeAccount,transaction);
+            ViewModel = new EditChildTransactionViewModel(MainPage.GlobalSettings.Storages,parent, transaction);
         }
 
 

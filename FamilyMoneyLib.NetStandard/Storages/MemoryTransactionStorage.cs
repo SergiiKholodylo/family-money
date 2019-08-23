@@ -7,6 +7,7 @@ namespace FamilyMoneyLib.NetStandard.Storages
     public class MemoryTransactionStorage : TransactionStorageBase
     {
         private readonly List<ITransaction> _transactions = new List<ITransaction>();
+        private static long _counter = 0;
 
         public MemoryTransactionStorage(ITransactionFactory transactionFactory) : base(transactionFactory)
         {
@@ -14,6 +15,7 @@ namespace FamilyMoneyLib.NetStandard.Storages
 
         public override ITransaction CreateTransaction(ITransaction transaction)
         {
+            transaction.Id = ++_counter;
             _transactions.Add(transaction);
             return transaction;
         }

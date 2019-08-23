@@ -8,11 +8,11 @@ namespace FamilyMoneyLib.NetStandard.Storages
     {
         private readonly List<ICategory> _categories = new List<ICategory>();
 
-        private static long counter = 0;
+        private static long _counter = 0;
 
         public override ICategory CreateCategory(ICategory category)
         {
-            category.Id = ++counter;
+            category.Id = ++_counter;
             _categories.Add(category);
             return category;
         }

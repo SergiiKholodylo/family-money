@@ -141,7 +141,8 @@ namespace FamilyMoney.ViewModels.NetStandard.ViewModels.Dialogs
 
         public void UpdateQuickTransaction()
         {
-            
+            if(_quickTransaction == null)
+                throw new ViewModelException("There is no Quick Transaction to Update");
             try
             {
                 var storage = _storages.QuickTransactionStorage;

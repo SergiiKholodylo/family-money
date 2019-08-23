@@ -23,31 +23,31 @@ namespace FamilyMoney.ViewModels.NetStandard.ViewModels.Dialogs
         private decimal _weight;
         private readonly Storages _storages;
 
-        public EditChildTransactionViewModel(Storages storages, ITransaction parent, IAccount activeAccount, ITransaction transaction)
+        public EditChildTransactionViewModel(Storages storages, ITransaction parent, ITransaction transaction)
         {
             _storages = storages;
-            ErrorString = String.Empty;
-            _transaction = transaction;
+            ParentTransaction = parent ?? throw new ViewModelException("There is no Parent Transaction");
+            ErrorString = string.Empty;
             Categories = _storages.CategoryStorage.MakeFlatCategoryTree();
-            if (transaction == null)
+
+            _transaction = transaction;
+            if (transaction != null)
             {
-                Timestamp = DateTime.Now;
-                Account = Accounts.FirstOrDefault(x => x.Id == activeAccount?.Id);
-            }
-            else
-            {
-                Name = transaction.Name;
-                Timestamp = transaction.Timestamp;
-                Total = transaction.Total;
-                Weight = transaction.Weight;
-                
-                Category = Categories.FirstOrDefault(x => x.Id == transaction?.Category?.Id);
+                FillFromExistingTransaction(transaction);
             }
             Account = Accounts.FirstOrDefault(x => x.Id == parent?.Account?.Id);
+            Timestamp = parent.Timestamp;
             Date = Timestamp == DateTime.MinValue ? new DateTimeOffset(DateTime.Now) : new DateTimeOffset(Timestamp);
             Time = Timestamp.TimeOfDay;
-            
-            ParentTransaction = parent;
+        }
+
+        private void FillFromExistingTransaction(ITransaction transaction)
+        {
+            Name = transaction.Name;
+            Total = transaction.Total;
+            Weight = transaction.Weight;
+
+            Category = Categories.FirstOrDefault(x => x.Id == transaction?.Category?.Id);
         }
 
         public ITransaction ParentTransaction { get; }
@@ -55,7 +55,7 @@ namespace FamilyMoney.ViewModels.NetStandard.ViewModels.Dialogs
 
         public IAccount Account
         {
-            set {
+            private set {
                 if (_account == value) return;
                 _account = value;
                 OnPropertyChanged(nameof(Accounts));
