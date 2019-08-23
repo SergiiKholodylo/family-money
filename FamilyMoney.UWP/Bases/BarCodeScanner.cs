@@ -7,12 +7,6 @@ using ZXing.Mobile;
 
 namespace FamilyMoney.UWP.Bases
 {
-    public interface IBarCodeScanner
-    {
-        void  Init();
-        Task<string> ScanBarCode();
-        void ClearUp();
-    }
 
     public class BarCodeScanner : IBarCodeScanner
     {

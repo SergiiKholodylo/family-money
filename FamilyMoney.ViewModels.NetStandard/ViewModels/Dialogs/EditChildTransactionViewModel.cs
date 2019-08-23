@@ -141,7 +141,7 @@ namespace FamilyMoney.ViewModels.NetStandard.ViewModels.Dialogs
         public IEnumerable<IAccount> Accounts => _storages.AccountStorage.GetAllAccounts();
 
         public IEnumerable<ITransaction> Transactions => _storages.TransactionStorage.GetAllTransactions();
-        public BarCode BarCode { get; set; }
+        public IBarCode BarCode { get; set; }
 
         public void CreateChildTransaction()
         {

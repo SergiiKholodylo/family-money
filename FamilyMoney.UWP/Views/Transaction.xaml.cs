@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Linq;
 using System.Threading.Tasks;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -143,15 +144,29 @@ namespace FamilyMoney.UWP.Views
 
         private async void CommandBar_ScanBarCode(object sender, RoutedEventArgs e)
         {
-            var scannedCode = await ViewModel.ScanBarCode();
+            var scannedCode = await ViewModel.ScanBarCode(new BarCodeScanner());
 
             ViewModel.ProcessScannedBarCode(scannedCode);
         }
 
         private async void CommandBar_ScanBarChildTransactionCode(object sender, RoutedEventArgs e)
         {
-            //var childTransaction = await ViewModel.ScanChildTransaction();
-            //await childTransaction.ShowAsync();
+            var barCode = await ViewModel.ScanChildTransaction(new BarCodeScanner());
+            var barCodeTransaction = ViewModel.FindBarCodeAmongExistingTransactions(barCode);
+
+            var editTransaction = new EditChildTransaction(ViewModel.Transaction, ViewModel.Account)
+            {
+                ViewModel = {BarCode = barCode, Weight = barCode.GetWeightKg(), Total = 0}
+            };
+            if (barCodeTransaction != null)
+            {
+                editTransaction.ViewModel.Category = editTransaction.ViewModel.Categories.
+                    FirstOrDefault(x => x.Id == barCodeTransaction.Category?.Id);
+                editTransaction.ViewModel.Name = barCodeTransaction.Name;
+                if (!barCode.IsWeight)
+                    editTransaction.ViewModel.Total = barCodeTransaction.Total;
+            }
+            await editTransaction.ShowAsync();
         }
     }
 }

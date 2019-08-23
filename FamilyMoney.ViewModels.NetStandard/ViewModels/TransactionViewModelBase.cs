@@ -6,6 +6,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using Windows.UI.Xaml;
+using FamilyMoney.UWP.Bases;
 using FamilyMoney.ViewModels.NetStandard.Helpers;
 using FamilyMoneyLib.NetStandard.Bases;
 using FamilyMoneyLib.NetStandard.Storages;
@@ -254,14 +255,11 @@ namespace FamilyMoney.ViewModels.NetStandard.ViewModels
             Weight = selected.Weight;
         }
 
-        public async Task<string> ScanBarCode()
+        public async Task<string> ScanBarCode(IBarCodeScanner scanner)
         {
-            //var scanner = new BarCodeScanner();
+            var result = await scanner.ScanBarCode();
 
-            //var result = await scanner.ScanBarCode();
-
-            //return result;
-            return String.Empty;
+            return result;
         }
 
         public void ProcessScannedBarCode(string barCodeString)
@@ -305,29 +303,16 @@ namespace FamilyMoney.ViewModels.NetStandard.ViewModels
 
         public bool IsExistingTransaction => _transaction != null;
 
-        //public async Task<EditChildTransaction> ScanChildTransaction()
-        //{
-        //    var barCodeString = await ScanBarCode();
+        public async Task<IBarCode> ScanChildTransaction(IBarCodeScanner scanner)
+        {
+            var barCodeString = await ScanBarCode(scanner);
+            var barCode = new BarCode(barCodeString);
+            //var transaction = FindBarCodeAmongExistingTransactions(barCode);
 
-        //    var editTransaction = new EditChildTransaction(Transaction, Account);
+            return barCode;
+        }
 
-
-        //    var barCode = new BarCode(barCodeString);
-
-        //    var transaction = FindBarCodeAmongExistingTransactions(barCode);
-
-        //    editTransaction.ViewModel.BarCode = barCode;
-        //    editTransaction.ViewModel.Weight = barCode.GetWeightKg();
-        //    editTransaction.ViewModel.Total = 0;
-        //    if (transaction == null) return editTransaction;
-        //    editTransaction.ViewModel.Category = editTransaction.ViewModel.Categories.FirstOrDefault(x => x.Id == transaction.Category?.Id);
-        //    editTransaction.ViewModel.Name = transaction.Name;
-        //    if (!barCode.IsWeight)
-        //        editTransaction.ViewModel.Total = transaction.Total;
-        //    return editTransaction;
-        //}
-
-        private ITransaction FindBarCodeAmongExistingTransactions(BarCode barCode)
+        public ITransaction FindBarCodeAmongExistingTransactions(IBarCode barCode)
         {
             var storage = _storages.BarCodeStorage;
             var transaction = storage.GetBarCodeTransaction(barCode.GetProductBarCode());

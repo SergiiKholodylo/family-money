@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Threading.Tasks;
 using Windows.UI.Xaml;
+using FamilyMoney.UWP.Bases;
 using FamilyMoneyLib.NetStandard.Bases;
 
 namespace FamilyMoney.ViewModels.NetStandard.ViewModels
@@ -31,9 +32,10 @@ namespace FamilyMoney.ViewModels.NetStandard.ViewModels
         void SaveTransaction();
         void FillFromTemplate(ITransaction selected);
         IEnumerable<ITransaction> GetSuggestions(string searchString);
-        Task<string> ScanBarCode();
+        Task<string> ScanBarCode(IBarCodeScanner scanner);
         void UpdateChildrenTransactionList();
         void ProcessScannedBarCode(string barCodeString);
-        //Task<EditChildTransaction> ScanChildTransaction();
+        Task<IBarCode> ScanChildTransaction(IBarCodeScanner scanner);
+        ITransaction FindBarCodeAmongExistingTransactions(IBarCode barCode);
     }
 }
