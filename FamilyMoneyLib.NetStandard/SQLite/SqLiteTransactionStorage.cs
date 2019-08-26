@@ -42,8 +42,7 @@ namespace FamilyMoneyLib.NetStandard.SQLite
         private readonly IAccountStorage _accountStorage;
         private readonly ICategoryStorage _categoryStorage;
 
-        private bool _isDirty = true;
-        private IEnumerable<ITransaction> _cache;
+
 
         public SqLiteTransactionStorage(ITransactionFactory transactionFactory, 
             IAccountStorage accountStorage,
@@ -61,7 +60,6 @@ namespace FamilyMoneyLib.NetStandard.SQLite
         {
             _table.InitializeDatabase();
             transaction.Id = _table.AddData(ObjectToITransactionConverter.ConvertToKeyPairList(transaction));
-            _isDirty = true;
             return transaction;
         }
 
@@ -75,12 +73,11 @@ namespace FamilyMoneyLib.NetStandard.SQLite
                 _table.DeleteRecordById(child.Id);
             }
             _table.DeleteRecordById(transaction.Id);
-            _isDirty = true;
         }
 
         public override IEnumerable<ITransaction> GetAllTransactions()
         {
-            if (!_isDirty) return _cache;
+            
             _table.InitializeDatabase();
             var lines = _table.SelectAll().ToArray();
 
@@ -90,9 +87,8 @@ namespace FamilyMoneyLib.NetStandard.SQLite
                 ObjectToITransactionConverter.UpdateParents(line, response);
             }
 
-            _cache = response;
-            _isDirty = false;
-            return _cache;
+            return response;
+            
         }
 
         public override void UpdateTransaction(ITransaction transaction)
@@ -104,31 +100,17 @@ namespace FamilyMoneyLib.NetStandard.SQLite
             //{
             //    _table.DeleteRecordById(child.Id);
             //}
-
             _table.UpdateData(ObjectToITransactionConverter.ConvertToKeyPairList(transaction), transaction.Id);
-            _isDirty = true;
             //foreach (var childrenTransaction in transaction.ChildrenTransactions)
             //{
             //    _table.AddData(ObjectToITransactionConverter.ConvertToKeyPairList(childrenTransaction));
             //}
         }
 
-
-        public void AddChildrenTransaction(ITransaction parent, ITransaction child)
-        {
-            var transaction = (Transaction) parent;
-            child.Parent = parent;
-            transaction.AddChildrenTransaction(child);
-            UpdateTransaction(child);
-            UpdateTransaction(transaction);
-            _isDirty = true;
-        }
-
         public override void DeleteAllData()
         {
             _table.InitializeDatabase();
             _table.DeleteDatabase();
-            _isDirty = true;
         }
     }
 

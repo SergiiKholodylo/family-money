@@ -11,6 +11,6 @@ namespace FamilyMoneyLib.NetStandard.Storages
         public ICategoryStorage CategoryStorage;
         public ITransactionStorage TransactionStorage;
         public IBarCodeStorage BarCodeStorage;
-        public IQuickTransactionStorageBase QuickTransactionStorage;
+        public IQuickTransactionStorage QuickTransactionStorage;
     }
 }

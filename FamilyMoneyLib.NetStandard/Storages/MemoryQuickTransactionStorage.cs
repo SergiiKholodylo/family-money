@@ -20,6 +20,11 @@ namespace FamilyMoneyLib.NetStandard.Storages
             return quickTransaction;
         }
 
+        public override void DeleteAllData()
+        {
+            _quickTransactions.Clear();
+        }
+
         public override void DeleteQuickTransaction(IQuickTransaction quickTransaction)
         {
             _quickTransactions.Remove(quickTransaction);

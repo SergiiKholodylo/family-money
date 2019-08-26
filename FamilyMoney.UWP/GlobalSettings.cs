@@ -1,5 +1,6 @@
 ﻿using FamilyMoney.ViewModels.NetStandard.ViewModels;
 using FamilyMoneyLib.NetStandard.Bases;
+using FamilyMoneyLib.NetStandard.CachedStorage;
 using FamilyMoneyLib.NetStandard.Factories;
 using FamilyMoneyLib.NetStandard.SQLite;
 using FamilyMoneyLib.NetStandard.Storages;
@@ -18,9 +19,12 @@ namespace FamilyMoney.UWP
             var transactionFactory = new RegularTransactionFactory();
             var quickTransactionFactory = new RegularQuickTransactionFactory();
 
-            var accountStorage = new SqLiteAccountStorage(accountFactory);
-            var categoryStorage = new SqLiteCategoryStorage(categoryFactory);
-            var transactionStorage = new SqLiteTransactionStorage(transactionFactory, accountStorage, categoryStorage);
+            var accountStorage = new CachedAccountStorage( 
+                new SqLiteAccountStorage(accountFactory));
+            var categoryStorage = new CachedCategoryStorage(
+                new SqLiteCategoryStorage(categoryFactory));
+            var transactionStorage = new CachedTransactionStorage(
+                new SqLiteTransactionStorage(transactionFactory, accountStorage, categoryStorage));
 
             Storages = new Storages
             {
@@ -28,8 +32,10 @@ namespace FamilyMoney.UWP
                 CategoryStorage = categoryStorage,
 
                 TransactionStorage = transactionStorage,
-                BarCodeStorage = new SqLiteBarCodeStorage(new BarCodeFactory(), transactionStorage),
-                QuickTransactionStorage = new SqLiteQuickTransactionStorage(quickTransactionFactory, accountStorage, categoryStorage)
+                BarCodeStorage = new CachedBarCodeStorage(
+                    new SqLiteBarCodeStorage(new BarCodeFactory(), transactionStorage)),
+                QuickTransactionStorage = new CachedQuickTransactionStorage(
+                    new SqLiteQuickTransactionStorage(quickTransactionFactory, accountStorage, categoryStorage))
         };
         }
 

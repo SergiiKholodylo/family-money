@@ -25,5 +25,7 @@ namespace FamilyMoneyLib.NetStandard.Storages
             var account = AccountFactory.CreateAccount(name, description, currency);
             return CreateAccount(account);
         }
+
+        public abstract void DeleteAllData();
     }
 }

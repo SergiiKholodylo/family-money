@@ -48,6 +48,11 @@ namespace FamilyMoneyLib.NetStandard.Storages
             return newTransaction;
         }
 
+        public override void DeleteAllData()
+        {
+            _storage.Clear();
+        }
+
         public override void DeleteBarCode(IBarCode barCode)
         {
             var id = barCode.GetProductBarCode();

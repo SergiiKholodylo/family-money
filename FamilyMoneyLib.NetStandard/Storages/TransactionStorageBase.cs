@@ -27,9 +27,13 @@ namespace FamilyMoneyLib.NetStandard.Storages
         public abstract void DeleteTransaction(ITransaction transaction);
         public abstract IEnumerable<ITransaction> GetAllTransactions();
         public abstract void UpdateTransaction(ITransaction transaction);
-        public void AddChildrenTransaction(Transaction parent, Transaction child)
+        public void AddChildrenTransaction(ITransaction parent, ITransaction child)
         {
-            
+            var transaction = (Transaction)parent;
+            child.Parent = parent;
+            transaction.AddChildrenTransaction(child);
+            UpdateTransaction(child);
+            UpdateTransaction(transaction);
         }
 
         public void DeleteAllChildrenTransactions(Transaction parent)

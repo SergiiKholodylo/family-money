@@ -6,7 +6,7 @@ using FamilyMoneyLib.NetStandard.Factories;
 
 namespace FamilyMoneyLib.NetStandard.Storages
 {
-    public abstract class QuickTransactionStorageBase : IQuickTransactionStorageBase
+    public abstract class QuickTransactionStorageBase : IQuickTransactionStorage
     {
         protected readonly IQuickTransactionFactory _quickTransactionFactory;
 
@@ -24,6 +24,7 @@ namespace FamilyMoneyLib.NetStandard.Storages
         }
 
         public abstract IQuickTransaction CreateQuickTransaction(IQuickTransaction quickTransaction);
+        public abstract void DeleteAllData();
 
         public abstract void DeleteQuickTransaction(IQuickTransaction quickTransaction);
         public abstract void UpdateQuickTransaction(IQuickTransaction quickTransaction);

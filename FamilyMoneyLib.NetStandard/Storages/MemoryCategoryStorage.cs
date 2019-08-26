@@ -17,6 +17,11 @@ namespace FamilyMoneyLib.NetStandard.Storages
             return category;
         }
 
+        public override void DeleteAllData()
+        {
+            _categories.Clear();
+        }
+
         public override void DeleteCategory(ICategory category)
         {
             _categories.Remove(category);

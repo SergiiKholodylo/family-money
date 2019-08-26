@@ -30,6 +30,11 @@ namespace FamilyMoneyLib.NetStandard.Storages
             return _accounts.ToArray();
         }
 
+        public override void DeleteAllData()
+        {
+            _accounts.Clear();
+        }
+
         public MemoryAccountStorage(IAccountFactory factory) : base(factory)
         {
         }

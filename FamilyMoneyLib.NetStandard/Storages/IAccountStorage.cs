@@ -13,5 +13,6 @@ namespace FamilyMoneyLib.NetStandard.Storages
 
         IEnumerable<IAccount> GetAllAccounts();
         IAccount CreateAccount(string name, string description, string currency);
+        void DeleteAllData();
     }
 }

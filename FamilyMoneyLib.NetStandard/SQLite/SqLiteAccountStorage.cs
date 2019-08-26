@@ -31,9 +31,6 @@ namespace FamilyMoneyLib.NetStandard.SQLite
         private readonly SqLiteTable _table = new SqLiteTable("familyMoney.db", "Accounts",
             $"({AccountTableStructure})");
 
-        private bool _isDirty = true;
-        private IEnumerable<IAccount> _cache;
-
         public SqLiteAccountStorage(IAccountFactory factory) : base(factory)
         {
 
@@ -45,7 +42,6 @@ namespace FamilyMoneyLib.NetStandard.SQLite
         {
             _table.InitializeDatabase();
             account.Id = _table.AddData(ObjectToIAccountConverter.ConvertToKeyPairList(account));
-            _isDirty = true;
             return account;
         }
 
@@ -53,33 +49,30 @@ namespace FamilyMoneyLib.NetStandard.SQLite
         {
             _table.InitializeDatabase();
             _table.DeleteRecordById(account.Id);
-            _isDirty = true;
+            
         }
 
         public override void UpdateAccount(IAccount account)
         {
             _table.InitializeDatabase();
             _table.UpdateData(ObjectToIAccountConverter.ConvertToKeyPairList(account),account.Id);
-            _isDirty = true;
-
         }
 
         public override IEnumerable<IAccount> GetAllAccounts()
         {
-            if (!_isDirty) return _cache;
+            
 
             _table.InitializeDatabase();
             var lines = _table.SelectAll();
-            _cache = lines.Select(objects => ObjectToIAccountConverter.Convert(objects, AccountFactory)).ToList();
-            _isDirty = false;
-            return _cache;
+            return lines.Select(objects => ObjectToIAccountConverter.Convert(objects, AccountFactory)).ToList();
+            
         }
 
-        public void DeleteAllData()
+        public override void DeleteAllData()
         {
             _table.InitializeDatabase();
             _table.DeleteDatabase();
-            _isDirty = true;
+            
         }
     }
 
