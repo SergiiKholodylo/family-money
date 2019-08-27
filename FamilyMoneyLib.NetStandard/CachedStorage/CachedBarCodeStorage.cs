@@ -55,7 +55,7 @@ namespace FamilyMoneyLib.NetStandard.CachedStorage
         {
             var result = _storage.GetBarCodeTransaction(barCode);
             _isDirty = true;
-            return null;
+            return result;
         }
 
         public void UpdateBarCode(IBarCode barCode)

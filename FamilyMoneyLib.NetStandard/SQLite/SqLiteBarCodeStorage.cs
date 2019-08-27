@@ -52,7 +52,7 @@ namespace FamilyMoneyLib.NetStandard.SQLite
 
         public override ITransaction GetBarCodeTransaction(string barCode)
         {
-            var foundBarCodes = GetAllBarCodes().OrderByDescending(x=>x.Id).FirstOrDefault(x => x.GetProductBarCode().Equals(barCode));
+            var foundBarCodes = GetAllBarCodes().OrderByDescending(x=>x.Id).FirstOrDefault(x => x.GetProductBarCode().Equals(barCode)&& x.Transaction != null);
             return foundBarCodes?.Transaction;
         }
 

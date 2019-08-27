@@ -24,7 +24,7 @@ namespace UnitTests.FilteredSources
         {
             var filteredSource = new AccountTransactionFilteredSource(_account1);
 
-            var filteredTransactions = filteredSource.GetTransactions(_transactionStorage);
+            var filteredTransactions = filteredSource.GetTransactions(_transactionStorage).ToArray();
 
 
             Assert.AreEqual(6, filteredTransactions.Count());
@@ -32,6 +32,40 @@ namespace UnitTests.FilteredSources
             {
                 Assert.IsTrue(_account1.Equals(transaction.Account));
                 Assert.IsTrue(!_account2.Equals(transaction.Account));
+            }
+
+        }
+
+        [TestMethod]
+        public void GetTransactionsTodayTest()
+        {
+            var filteredSource = new AccountTransactionFilteredSourceToday(_account1);
+
+            var filteredTransactions = filteredSource.GetTransactions(_transactionStorage).ToArray();
+
+
+            Assert.AreEqual(6, filteredTransactions.Count());
+            foreach (var transaction in filteredTransactions)
+            {
+                Assert.IsTrue(_account1.Equals(transaction.Account));
+                Assert.IsTrue(!_account2.Equals(transaction.Account));
+            }
+
+        }
+
+        [TestMethod]
+        public void GetTransactionsYesterdayTest()
+        {
+            var filteredSource = new AccountTransactionFilteredSourceYesterday(_account2);
+
+            var filteredTransactions = filteredSource.GetTransactions(_transactionStorage).ToArray();
+
+
+            Assert.AreEqual(5, filteredTransactions.Count());
+            foreach (var transaction in filteredTransactions)
+            {
+                Assert.IsTrue(!_account1.Equals(transaction.Account));
+                Assert.IsTrue(_account2.Equals(transaction.Account));
             }
 
         }
@@ -58,11 +92,11 @@ namespace UnitTests.FilteredSources
             _transactionStorage.CreateTransaction(_account1, category2, "Simple Transaction", 100, DateTime.Now, 0, 0, null, null);
             _transactionStorage.CreateTransaction(_account1, category3, "Simple Transaction", 100, DateTime.Now, 0, 0, null, null);
             _transactionStorage.CreateTransaction(_account1, category4, "Simple Transaction", 100, DateTime.Now, 0, 0, null, null);
-            _transactionStorage.CreateTransaction(_account2, category1, "Simple Transaction", 100, DateTime.Now, 0, 0, null, null);
-            _transactionStorage.CreateTransaction(_account2, category3, "Simple Transaction", 100, DateTime.Now, 0, 0, null, null);
-            _transactionStorage.CreateTransaction(_account2, category3, "Simple Transaction", 100, DateTime.Now, 0, 0, null, null);
-            _transactionStorage.CreateTransaction(_account2, category5, "Simple Transaction", 100, DateTime.Now, 0, 0, null, null);
-            _transactionStorage.CreateTransaction(_account2, category1, "Simple Transaction", 100, DateTime.Now, 0, 0, null, null);
+            _transactionStorage.CreateTransaction(_account2, category1, "Simple Transaction", 100, DateTime.Now.AddDays(-1), 0, 0, null, null);
+            _transactionStorage.CreateTransaction(_account2, category3, "Simple Transaction", 100, DateTime.Now.AddDays(-1), 0, 0, null, null);
+            _transactionStorage.CreateTransaction(_account2, category3, "Simple Transaction", 100, DateTime.Now.AddDays(-1), 0, 0, null, null);
+            _transactionStorage.CreateTransaction(_account2, category5, "Simple Transaction", 100, DateTime.Now.AddDays(-1), 0, 0, null, null);
+            _transactionStorage.CreateTransaction(_account2, category1, "Simple Transaction", 100, DateTime.Now.AddDays(-1), 0, 0, null, null);
             _transactionStorage.CreateTransaction(_account1, category2, "Simple Transaction", 100, DateTime.Now, 0, 0, null, null);
             _transactionStorage.CreateTransaction(_account1, category1, "Simple Transaction", 100, DateTime.Now, 0, 0, null, null);
 

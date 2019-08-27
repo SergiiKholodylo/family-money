@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using Windows.UI.Xaml.Data;
 
 namespace FamilyMoney.UWP.Converters
@@ -14,8 +15,13 @@ namespace FamilyMoney.UWP.Converters
 
         public object ConvertBack(object value, Type targetType, object parameter, string language)
         {
-            Decimal.TryParse((string)value, out decimal result);
+            Decimal.TryParse(ForceReplaceComaWithDot(value), NumberStyles.AllowDecimalPoint, CultureInfo.CurrentCulture.NumberFormat, out decimal result);
             return result;
+        }
+
+        private string ForceReplaceComaWithDot(object value)
+        {
+            return ((string)value).Replace(",",".");
         }
     }
 }

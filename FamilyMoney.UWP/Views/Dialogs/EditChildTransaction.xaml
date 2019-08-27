@@ -11,7 +11,7 @@
     Title="Edit Transaction"
     PrimaryButtonText="Save"
     SecondaryButtonText="Cancel"
-    
+    Loaded="EditChildTransaction_OnLoaded"
     PrimaryButtonClick="ContentDialog_PrimaryButtonClick"
     SecondaryButtonClick="ContentDialog_SecondaryButtonClick">
 
@@ -28,7 +28,7 @@
                             SuggestionChosen="AutoSuggestBox_SuggestionChosen" 
                             QueryIcon="Find" 
                             DisplayMemberPath="Name"
-
+                            Name="SuggestBoxName"
                             Text="{x:Bind ViewModel.Name, Mode=TwoWay}"/>
 
             <ComboBox HorizontalAlignment="Stretch"
@@ -51,11 +51,27 @@
                 InputScope="Number"
                 />
 
-            <TextBox 
+            <Grid 
+                HorizontalAlignment="Stretch"
+                >
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <TextBox 
                 x:Uid="WeightTextBox" 
+                HorizontalAlignment="Stretch"
+                VerticalAlignment="Bottom"
                 Text="{x:Bind ViewModel.Weight, Mode=TwoWay, Converter={StaticResource DecimalConverter}, ConverterParameter='{}{0:F3}'}"
                 InputScope="Number"
             />
+                <Button 
+                    Grid.Column="1"
+                    Content=" X "
+                    VerticalAlignment="Bottom"
+                    Click="ButtonClearWeight_OnClick"/>
+
+            </Grid>
 
             <TextBlock 
                 Foreground="Red" 

@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Threading.Tasks;
+using Windows.UI.Text.Core;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using FamilyMoney.UWP.Views;
@@ -26,7 +28,14 @@ namespace FamilyMoney.UWP
         {
             InitializeComponent();
             _viewModel.LoadQuickTransactions();
-            
+
+            CoreTextServicesManager textServiceManager = CoreTextServicesManager.GetForCurrentView();
+            textServiceManager.InputLanguageChanged += TextServiceManager_InputLanguageChanged;
+        }
+
+        private void TextServiceManager_InputLanguageChanged(CoreTextServicesManager sender, object args)
+        {
+            Debug.WriteLine("Keyboard layout is changed!");
         }
 
         private async void RunTransaction_Click(object sender, ItemClickEventArgs e)

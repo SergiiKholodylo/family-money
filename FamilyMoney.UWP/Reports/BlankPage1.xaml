@@ -31,6 +31,15 @@
 
     <Grid Padding="20">
         <StackPanel>
+            <ComboBox
+                HorizontalAlignment="Stretch"
+                ItemsSource="{x:Bind ViewModel.ReportPeriod}"
+                SelectedIndex="{x:Bind ViewModel.SelectedReportPeriod, Mode=TwoWay}"
+                SelectionChanged="ReportPeriod_OnSelectionChanged"
+                
+                >
+
+            </ComboBox>
             <TextBlock
                 Text="{x:Bind ViewModel.Header, Mode=OneWay}" />
             <ComboBox

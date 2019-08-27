@@ -30,10 +30,9 @@ namespace FamilyMoney.UWP.Reports
         public BlankPage1()
         {
             this.InitializeComponent();
-            var accountStorage = new SqLiteAccountStorage(new RegularAccountFactory());
-            var categoryStorage = new SqLiteCategoryStorage(new RegularCategoryFactory());
-            var transactionStorage = new SqLiteTransactionStorage(
-                new RegularTransactionFactory(), accountStorage, categoryStorage);
+            var accountStorage = MainPage.GlobalSettings.Storages.AccountStorage;
+            var categoryStorage = MainPage.GlobalSettings.Storages.CategoryStorage;
+            var transactionStorage = MainPage.GlobalSettings.Storages.TransactionStorage;
             var model = new Report1ViewModel(accountStorage, categoryStorage, transactionStorage);
             model.Execute();
             ViewModel = model;
@@ -60,6 +59,11 @@ namespace FamilyMoney.UWP.Reports
         }
 
         private void Selector_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            ViewModel.Execute();
+        }
+
+        private void ReportPeriod_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             ViewModel.Execute();
         }

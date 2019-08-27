@@ -299,6 +299,8 @@ namespace FamilyMoney.ViewModels.NetStandard.ViewModels
             {
                 ChildrenTransactions.Add(transaction);
             }
+
+            Total = _transaction.Total;
         }
 
         public bool IsExistingTransaction => _transaction != null;

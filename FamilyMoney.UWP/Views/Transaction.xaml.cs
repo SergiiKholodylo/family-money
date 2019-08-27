@@ -170,5 +170,17 @@ namespace FamilyMoney.UWP.Views
             await editTransaction.ShowAsync();
             ViewModel.UpdateChildrenTransactionList();
         }
+
+        private void Dummy()
+        {
+            TextBox phoneNumberTextBox = new TextBox();
+            phoneNumberTextBox.Header = "Telephone Number";
+
+            InputScope scope = new InputScope();
+            InputScopeName scopeName = new InputScopeName();
+            scopeName.NameValue = InputScopeNameValue.TelephoneNumber;
+            scope.Names.Add(scopeName);
+            phoneNumberTextBox.InputScope = scope;
+        }
     }
 }

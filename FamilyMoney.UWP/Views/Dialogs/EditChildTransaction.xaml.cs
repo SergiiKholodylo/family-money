@@ -1,4 +1,5 @@
 ﻿using System;
+using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using FamilyMoney.ViewModels.NetStandard.ViewModels;
 using FamilyMoney.ViewModels.NetStandard.ViewModels.Dialogs;
@@ -28,6 +29,7 @@ namespace FamilyMoney.UWP.Views.Dialogs
             ViewModel = new EditChildTransactionViewModel(MainPage.GlobalSettings.Storages,parent, transaction);
         }
 
+        
 
         private void InitUpdateMode()
         {
@@ -82,6 +84,16 @@ namespace FamilyMoney.UWP.Views.Dialogs
             if (args.Reason != AutoSuggestionBoxTextChangeReason.UserInput) return;
             var searchString = sender.Text;
             sender.ItemsSource = ViewModel.GetSuggestions(searchString);
+        }
+
+        private void EditChildTransaction_OnLoaded(object sender, RoutedEventArgs e)
+        {
+            SuggestBoxName.Focus(FocusState.Programmatic);
+        }
+
+        private void ButtonClearWeight_OnClick(object sender, RoutedEventArgs e)
+        {
+            ViewModel.Weight = 0;
         }
     }
 }

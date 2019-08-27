@@ -132,16 +132,20 @@
                                         </Grid.ColumnDefinitions>
                                         <TextBlock
                                             Style="{StaticResource ListViewText}"
-                                            Text="{x:Bind Name, Mode=TwoWay }" />
+                                            Text="{x:Bind Name, Mode=TwoWay }" 
+                                            VerticalAlignment="Center"
+                                            />
                                         <TextBlock
                                             Style="{StaticResource ListViewText}"
                                             Grid.Column="1"
                                             HorizontalAlignment="Right"
+                                            VerticalAlignment="Center"
                                             Text="{x:Bind Weight, Mode=TwoWay,Converter={StaticResource DecimalConverter}, ConverterParameter='{}{0:F3}'  }" />
                                         <TextBlock
                                             Style="{StaticResource ListViewBoldText}"
                                             Grid.Column="2"
                                             HorizontalAlignment="Right"
+                                            VerticalAlignment="Center"
                                             Text="{x:Bind Total, Mode=TwoWay, Converter={StaticResource DecimalConverter} }" />
                                     </Grid>
                                 </DataTemplate>

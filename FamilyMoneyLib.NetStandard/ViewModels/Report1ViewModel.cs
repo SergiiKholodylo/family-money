@@ -14,6 +14,9 @@ namespace FamilyMoneyLib.NetStandard.ViewModels
 {
     public class Report1ViewModel:INotifyPropertyChanged
     {
+        public readonly ObservableCollection<string> ReportPeriod;
+        public int SelectedReportPeriod = 0;
+
         private ObservableCollection<IGrouping<IAccount, KeyValuePair<Report1.CategoryAccountPair, ReportOutputValues>>> _lines = new ObservableCollection<IGrouping<IAccount, KeyValuePair<Report1.CategoryAccountPair, ReportOutputValues>>>();
         private ObservableCollection<IAccount> _accounts = new ObservableCollection<IAccount>();
         private readonly IAccountStorage _accountStorage;
@@ -31,6 +34,14 @@ namespace FamilyMoneyLib.NetStandard.ViewModels
 
             Accounts = new ObservableCollection<IAccount>(_accountStorage.GetAllAccounts());
             Account = Accounts.FirstOrDefault();
+            ReportPeriod = new ObservableCollection<string>
+            {
+                "All period",
+                "Today",
+                "Yesterday",
+                "This Month",
+                "Last Month"
+            };
         }
 
         public string Header
@@ -78,9 +89,29 @@ namespace FamilyMoneyLib.NetStandard.ViewModels
 
         public void Execute()
         {
+            ITransactionFilteredSource filteredSource = new AccountTransactionFilteredSource(Account);
+            switch (SelectedReportPeriod)
+            {
+                case 0:
+                    filteredSource = new AccountTransactionFilteredSource(Account);
+                    break;
+                case 1:
+                    filteredSource = new AccountTransactionFilteredSourceToday(Account);
+                    break;
+                case 2:
+                    filteredSource = new AccountTransactionFilteredSourceYesterday(Account);
+                    break;
+                case 3:
+                    filteredSource = new AccountTransactionFilteredSourceThisMonth(Account);
+                    break;
+                case 4:
+                    filteredSource = new AccountTransactionFilteredSourceLastMonth(Account);
+                    break;
+
+            }
 
             var report = new Report1(_transactionStorage,_categoryStorage);
-            var result = report.Execute(new AccountTransactionFilteredSource(Account)).GroupBy(x => x.Key.Account);
+            var result = report.Execute(filteredSource).GroupBy(x => x.Key.Account);
             var display = new ObservableCollection<IGrouping<IAccount, KeyValuePair<Report1.CategoryAccountPair, ReportOutputValues>>>(result);
             
             Lines.Clear();
