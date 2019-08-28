@@ -111,6 +111,8 @@
                                   DoubleTapped="ChildrenTransaction_OnDoubleTapped"
                                   Visibility="{x:Bind ViewModel.IsComplexTransaction, Mode=OneWay, Converter={StaticResource BooleanToVisibleConverter}, ConverterParameter=true}" 
                                   ScrollViewer.VerticalScrollBarVisibility="Visible"
+                                  RightTapped="ListView_RightTapped" 
+                                  Holding="ListView_Holding"
                                   Grid.Row="1">
                             <ListView.HeaderTemplate>
                                 <DataTemplate>

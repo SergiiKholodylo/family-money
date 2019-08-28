@@ -43,8 +43,8 @@ namespace IntegrationTests.Cached
 
             var newTransaction = storage.CreateTransaction(transaction);
 
-            storage.AddChildrenTransaction(newTransaction, storage.CreateTransaction(childTransaction));
-            storage.AddChildrenTransaction(newTransaction, storage.CreateTransaction(childTransaction1));
+            storage.AddChildTransaction(newTransaction, storage.CreateTransaction(childTransaction));
+            storage.AddChildTransaction(newTransaction, storage.CreateTransaction(childTransaction1));
 
 
             var complexTransaction = storage.GetAllTransactions().FirstOrDefault(x=>x.IsComplexTransaction);
@@ -62,8 +62,8 @@ namespace IntegrationTests.Cached
             var newTransaction = storage.CreateTransaction(transaction);
 
 
-            storage.AddChildrenTransaction(newTransaction, storage.CreateTransaction(childTransaction));
-            storage.AddChildrenTransaction(newTransaction, storage.CreateTransaction(childTransaction1));
+            storage.AddChildTransaction(newTransaction, storage.CreateTransaction(childTransaction));
+            storage.AddChildTransaction(newTransaction, storage.CreateTransaction(childTransaction1));
             var allTransactions = storage.GetAllTransactions();
             Assert.AreEqual(3, allTransactions.Count());
         }
@@ -73,8 +73,8 @@ namespace IntegrationTests.Cached
         {
 
             var newTransaction = storage.CreateTransaction(transaction);
-            storage.AddChildrenTransaction(newTransaction, storage.CreateTransaction(childTransaction));
-            storage.AddChildrenTransaction(newTransaction, storage.CreateTransaction(childTransaction1));
+            storage.AddChildTransaction(newTransaction, storage.CreateTransaction(childTransaction));
+            storage.AddChildTransaction(newTransaction, storage.CreateTransaction(childTransaction1));
 
 
 
@@ -92,8 +92,8 @@ namespace IntegrationTests.Cached
         public void DeleteChildTransactionTest()
         {
             var newTransaction = storage.CreateTransaction(transaction);
-            storage.AddChildrenTransaction(newTransaction, storage.CreateTransaction(childTransaction));
-            storage.AddChildrenTransaction(newTransaction, storage.CreateTransaction(childTransaction1));
+            storage.AddChildTransaction(newTransaction, storage.CreateTransaction(childTransaction));
+            storage.AddChildTransaction(newTransaction, storage.CreateTransaction(childTransaction1));
 
 
 
@@ -113,7 +113,7 @@ namespace IntegrationTests.Cached
         public void DeleteLastChildTransactionTest()
         {
             var newTransaction = storage.CreateTransaction(transaction);
-            storage.AddChildrenTransaction(newTransaction, storage.CreateTransaction(childTransaction));
+            storage.AddChildTransaction(newTransaction, storage.CreateTransaction(childTransaction));
 
 
             storage.DeleteTransaction(childTransaction);
@@ -132,8 +132,8 @@ namespace IntegrationTests.Cached
         public void UpdateTransactionTest()
         {
             var newTransaction = storage.CreateTransaction(transaction);
-            storage.AddChildrenTransaction(newTransaction, storage.CreateTransaction(childTransaction));
-            storage.AddChildrenTransaction(newTransaction, storage.CreateTransaction(childTransaction1));
+            storage.AddChildTransaction(newTransaction, storage.CreateTransaction(childTransaction));
+            storage.AddChildTransaction(newTransaction, storage.CreateTransaction(childTransaction1));
             childTransaction1.Name = "New Name";
             childTransaction1.Total = 515.03m;
 

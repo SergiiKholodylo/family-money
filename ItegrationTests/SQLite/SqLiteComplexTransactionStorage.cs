@@ -27,8 +27,8 @@ namespace IntegrationTests.SQLite
 
             var newTransaction = storage.CreateTransaction(transaction);
 
-            storage.AddChildrenTransaction(newTransaction, storage.CreateTransaction(childTransaction));
-            storage.AddChildrenTransaction(newTransaction, storage.CreateTransaction(childTransaction1));
+            storage.AddChildTransaction(newTransaction, storage.CreateTransaction(childTransaction));
+            storage.AddChildTransaction(newTransaction, storage.CreateTransaction(childTransaction1));
 
 
             var complexTransaction = storage.GetAllTransactions().FirstOrDefault(x=>x.IsComplexTransaction);
@@ -57,8 +57,8 @@ namespace IntegrationTests.SQLite
             var newTransaction = storage.CreateTransaction(transaction);
 
 
-            storage.AddChildrenTransaction(newTransaction, storage.CreateTransaction(childTransaction));
-            storage.AddChildrenTransaction(newTransaction, storage.CreateTransaction(childTransaction1));
+            storage.AddChildTransaction(newTransaction, storage.CreateTransaction(childTransaction));
+            storage.AddChildTransaction(newTransaction, storage.CreateTransaction(childTransaction1));
             var allTransactions = storage.GetAllTransactions();
             Assert.AreEqual(3, allTransactions.Count());
         }
@@ -77,8 +77,8 @@ namespace IntegrationTests.SQLite
             var childTransaction = CreateTransaction(accountStorage, categoryStorage, transactionFactory);
             var childTransaction1 = CreateTransaction(accountStorage, categoryStorage, transactionFactory);
             var newTransaction = storage.CreateTransaction(transaction);
-            storage.AddChildrenTransaction(newTransaction, storage.CreateTransaction(childTransaction));
-            storage.AddChildrenTransaction(newTransaction, storage.CreateTransaction(childTransaction1));
+            storage.AddChildTransaction(newTransaction, storage.CreateTransaction(childTransaction));
+            storage.AddChildTransaction(newTransaction, storage.CreateTransaction(childTransaction1));
 
 
 
@@ -106,12 +106,13 @@ namespace IntegrationTests.SQLite
             var childTransaction = CreateTransaction(accountStorage, categoryStorage, transactionFactory);
             var childTransaction1 = CreateTransaction(accountStorage, categoryStorage, transactionFactory);
             var newTransaction = storage.CreateTransaction(transaction);
-            storage.AddChildrenTransaction(newTransaction, storage.CreateTransaction(childTransaction));
-            storage.AddChildrenTransaction(newTransaction, storage.CreateTransaction(childTransaction1));
+            storage.AddChildTransaction(newTransaction, storage.CreateTransaction(childTransaction));
+            storage.AddChildTransaction(newTransaction, storage.CreateTransaction(childTransaction1));
 
 
 
-            storage.DeleteTransaction(childTransaction);
+            //storage.DeleteTransaction(childTransaction);
+            storage.DeleteChildrenTransaction(transaction, childTransaction);
 
 
             var numberOfTransactions = storage.GetAllTransactions().Count();
@@ -136,7 +137,7 @@ namespace IntegrationTests.SQLite
             var transaction = CreateTransaction(accountStorage, categoryStorage, transactionFactory);
             var childTransaction = CreateTransaction(accountStorage, categoryStorage, transactionFactory);
             var newTransaction = storage.CreateTransaction(transaction);
-            storage.AddChildrenTransaction(newTransaction, storage.CreateTransaction(childTransaction));
+            storage.AddChildTransaction(newTransaction, storage.CreateTransaction(childTransaction));
 
 
             storage.DeleteTransaction(childTransaction);
@@ -165,8 +166,8 @@ namespace IntegrationTests.SQLite
             var childTransaction = CreateTransaction(accountStorage, categoryStorage, transactionFactory);
             var childTransaction1 = CreateTransaction(accountStorage, categoryStorage, transactionFactory);
             var newTransaction = storage.CreateTransaction(transaction);
-            storage.AddChildrenTransaction(newTransaction, storage.CreateTransaction(childTransaction));
-            storage.AddChildrenTransaction(newTransaction, storage.CreateTransaction(childTransaction1));
+            storage.AddChildTransaction(newTransaction, storage.CreateTransaction(childTransaction));
+            storage.AddChildTransaction(newTransaction, storage.CreateTransaction(childTransaction1));
             childTransaction1.Name = "New Name";
             childTransaction1.Total = 515.03m;
 

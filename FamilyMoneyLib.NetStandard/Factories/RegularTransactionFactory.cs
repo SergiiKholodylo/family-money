@@ -18,7 +18,10 @@ namespace FamilyMoneyLib.NetStandard.Factories
 
         public ITransaction CreateTransaction(IAccount account, ICategory category, string name, decimal total, DateTime timestamp, long id , decimal weight , IProduct product, ITransaction parentTransaction)
         {
-            return new Transaction(account, category, name, total, timestamp,id,weight,product, parentTransaction);
+            var transaction = new Transaction(account, category, name, total, timestamp, id, weight, product, parentTransaction);
+            parentTransaction?.AddChildTransaction(transaction);
+            return transaction;
+
         }
     }
 }

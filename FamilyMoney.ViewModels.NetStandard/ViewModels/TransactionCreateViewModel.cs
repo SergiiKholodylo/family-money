@@ -35,5 +35,6 @@ namespace FamilyMoney.ViewModels.NetStandard.ViewModels
             CreateTransaction();
         }
 
+
     }
 }

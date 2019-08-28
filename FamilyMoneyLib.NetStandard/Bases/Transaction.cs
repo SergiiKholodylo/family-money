@@ -63,14 +63,14 @@ namespace FamilyMoneyLib.NetStandard.Bases
             IsComplexTransaction = false;
             BaseId = Guid.NewGuid();
             OwnerId = Guid.NewGuid();
-            parentTransaction?.Children.Add(this);
         }
 
-        internal void AddChildrenTransaction(ITransaction transaction)
+        public void AddChildTransaction(ITransaction transaction)
         {
             if(transaction == this) throw new ArgumentException();
             if(Id == transaction.Id) throw new ArgumentException();
             if(Children.Contains(transaction)) throw new ArgumentException($"Transaction Already Exists!");
+            if(Parent!=null) throw new ArgumentException("Can't add chil transaction to child transaction");
             //if (ChildrenTransactions.Count(x=>x.Id == transaction.Id)>0) throw new ArgumentException($"Transaction Already Exists!");
 
             IsComplexTransaction = true;
@@ -81,21 +81,29 @@ namespace FamilyMoneyLib.NetStandard.Bases
             Children.Add(transaction);
         }
 
-        internal void DeleteChildrenTransaction(ITransaction transaction)
+        public void DeleteChildTransaction(ITransaction childTransaction)
         {
-            var toDelete = Children.Where(x => x.Id == transaction.Id);
+            if (!IsComplexTransaction) return;
+
+            if (childTransaction.Parent != this) return;
+
+            var toDelete = Children.Where(x => x.Id == childTransaction.Id).ToArray();
             foreach (var transaction1 in toDelete)
             {
                 Children.Remove(transaction1);
             }
 
-            IsComplexTransaction = false;
+            IsComplexTransaction = Children.Any();
+            if (!IsComplexTransaction) Total = 0;
         }
 
-        internal void DeleteAllChildrenTransactions()
+        public void DeleteChildrenTransactions()
         {
+            if (!IsComplexTransaction) return;
+
             Children.Clear();
             IsComplexTransaction = false;
+            Total = 0;
         }
     }
 }

@@ -54,19 +54,19 @@ namespace FamilyMoneyLib.NetStandard.CachedStorage
             _isDirty = true;
         }
 
-        public void AddChildrenTransaction(ITransaction parent, ITransaction child)
+        public void AddChildTransaction(ITransaction parent, ITransaction child)
         {
-            _storage.AddChildrenTransaction(parent,child);
+            _storage.AddChildTransaction(parent,child);
             _isDirty = true;
         }
 
-        public void DeleteAllChildrenTransactions(Transaction parent)
+        public void DeleteAllChildrenTransactions(ITransaction parent)
         {
             _storage.DeleteTransaction(parent);
             _isDirty = true;
         }
 
-        public void DeleteChildrenTransaction(Transaction parent, Transaction child)
+        public void DeleteChildrenTransaction(ITransaction parent, ITransaction child)
         {
             _storage.DeleteChildrenTransaction(parent,child);
             _isDirty = true;

@@ -13,5 +13,9 @@ namespace FamilyMoneyLib.NetStandard.Bases
         decimal Weight { get; set; }
         IProduct Product { get; set; }
         bool IsComplexTransaction { get; set; }
+
+        void AddChildTransaction(ITransaction transaction);
+        void DeleteChildrenTransactions();
+        void DeleteChildTransaction(ITransaction transaction);
     }
 }

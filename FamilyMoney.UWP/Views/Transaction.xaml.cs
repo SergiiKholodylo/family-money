@@ -22,6 +22,7 @@ namespace FamilyMoney.UWP.Views
     {
         public ITransactionViewModel ViewModel;
         private ITransaction transaction;
+        private bool _isDialogActive = false;
 
         public Transaction()
         {
@@ -171,16 +172,40 @@ namespace FamilyMoney.UWP.Views
             ViewModel.UpdateChildrenTransactionList();
         }
 
-        private void Dummy()
+        private async void ListView_RightTapped(object sender, RightTappedRoutedEventArgs e)
         {
-            TextBox phoneNumberTextBox = new TextBox();
-            phoneNumberTextBox.Header = "Telephone Number";
 
-            InputScope scope = new InputScope();
-            InputScopeName scopeName = new InputScopeName();
-            scopeName.NameValue = InputScopeNameValue.TelephoneNumber;
-            scope.Names.Add(scopeName);
-            phoneNumberTextBox.InputScope = scope;
+            var activeTransaction = (ITransaction)((FrameworkElement)e.OriginalSource).DataContext;
+            if (activeTransaction == null) return;
+
+            await DeleteTransaction(activeTransaction);
+        }
+
+        private async void ListView_Holding(object sender, HoldingRoutedEventArgs e)
+        {
+
+            var activeTransaction = (ITransaction)(((ListView)sender).SelectedValue);
+            if (activeTransaction == null) return;
+            await DeleteTransaction(activeTransaction);
+        }
+
+        private async Task DeleteTransaction(ITransaction activeTransaction)
+        {
+            if (_isDialogActive) return;
+            var dialog = new ContentDialog
+            {
+                Title = "Delete Transaction",
+                Content = $"Delete {activeTransaction.Name}?",
+                IsPrimaryButtonEnabled = true,
+                IsSecondaryButtonEnabled = true,
+                PrimaryButtonText = "Delete",
+                SecondaryButtonText = "Cancel"
+            };
+            _isDialogActive = true;
+            var res = await dialog.ShowAsync();
+            _isDialogActive = false;
+            if (res == ContentDialogResult.Secondary) return;
+            ViewModel.DeleteChildTransaction(activeTransaction);
         }
     }
 }

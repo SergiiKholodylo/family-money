@@ -37,5 +37,8 @@ namespace FamilyMoney.ViewModels.NetStandard.ViewModels
         void ProcessScannedBarCode(string barCodeString);
         Task<IBarCode> ScanChildTransaction(IBarCodeScanner scanner);
         ITransaction FindBarCodeAmongExistingTransactions(IBarCode barCode);
+
+        void DeleteChildTransaction(ITransaction childTransaction);
+
     }
 }

@@ -169,7 +169,7 @@ namespace FamilyMoneyLib.NetStandard.SQLite
             if (transaction != null)
             {
                 transaction.Parent = parentTransaction;
-                parentTransaction?.AddChildrenTransaction(transaction);
+                parentTransaction?.AddChildTransaction(transaction);
             }
                
         }

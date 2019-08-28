@@ -11,6 +11,7 @@ namespace FamilyMoneyLib.NetStandard.CachedStorage
 
         private bool _isDirty = true;
         private IEnumerable<ICategory> _cache;
+        private IEnumerable<ICategory> _flatCategoriesCache;
         private readonly ICategoryStorage _storage;
 
         public CachedCategoryStorage(ICategoryStorage categoryStorage)
@@ -47,20 +48,27 @@ namespace FamilyMoneyLib.NetStandard.CachedStorage
         public IEnumerable<ICategory> GetAllCategories()
         {
             if (!_isDirty) return _cache;
-            _cache = _storage.GetAllCategories();
-            _isDirty = false;
+            FillTheCache();
             return _cache;
         }
 
         public IEnumerable<ICategory> MakeFlatCategoryTree()
         {
-            return _storage.MakeFlatCategoryTree();
+            if (!_isDirty) return _flatCategoriesCache;
+            FillTheCache();
+            return _flatCategoriesCache;
         }
 
         public void UpdateCategory(ICategory category)
         {
             _storage.UpdateCategory(category);
             _isDirty = true;
+        }
+        private void FillTheCache()
+        {
+            _cache = _storage.GetAllCategories();
+            _flatCategoriesCache = _storage.MakeFlatCategoryTree();
+            _isDirty = false;
         }
     }
 }

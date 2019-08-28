@@ -49,62 +49,37 @@ namespace FamilyMoney.UWP.Views
             Frame.Navigate(typeof(Report));
         }
 
-        private async void DeleteItem_ItemInvoked(SwipeItem sender, SwipeItemInvokedEventArgs args)
-        {
-            if(_isDialogActive) return;
-            var activeTransaction = (ITransaction)args.SwipeControl.DataContext;
-            var deleteConfirmation = new ContentDialog
-            {
-                Title = "Delete Transaction",
-                PrimaryButtonText = "DeleteTransaction",
-                SecondaryButtonText = "Cancel",
-                DefaultButton = ContentDialogButton.Primary,
-                Content = $"Do you want delete transaction \n '{activeTransaction.Name}({activeTransaction.Total})'?"
-            };
-            _isDialogActive = true;
-            var result = await deleteConfirmation.ShowAsync();
-            _isDialogActive = false;
-            if (result == ContentDialogResult.Primary)
-                ViewModel.DeleteTransaction(activeTransaction);
-        }
-
         private void ListView_DoubleTapped(object sender, DoubleTappedRoutedEventArgs e)
         {
             var activeTransaction = (ITransaction)(((ListView)sender).SelectedValue);
             var parameter = new TransactionPageParameter(activeTransaction);
             Frame.Navigate(typeof(Transaction), parameter);
         }
-
+        private async void DeleteItem_ItemInvoked(SwipeItem sender, SwipeItemInvokedEventArgs args)
+        {
+            var activeTransaction = (ITransaction)args.SwipeControl.DataContext;
+            await DeleteTransaction(activeTransaction);
+        }
         private async void ListView_RightTapped(object sender, RightTappedRoutedEventArgs e)
         {
-            if(_isDialogActive) return;
+            
             var activeTransaction = (ITransaction)((FrameworkElement)e.OriginalSource).DataContext;
             if(activeTransaction==null) return;
 
-            var dialog = new ContentDialog
-            {
-                Title = "Delete Transaction",
-                Content = $"Delete {activeTransaction.Name}?",
-                IsPrimaryButtonEnabled = true,
-                IsSecondaryButtonEnabled = true,
-                PrimaryButtonText = "Delete",
-                SecondaryButtonText = "Cancel"
-            };
-            _isDialogActive = true;
-            var res = await dialog.ShowAsync();
-            _isDialogActive = false;
-            if (res == ContentDialogResult.Secondary) return;
-            ViewModel.DeleteTransaction(activeTransaction);
+            await DeleteTransaction(activeTransaction);
         }
-
 
         private async void ListView_Holding(object sender, HoldingRoutedEventArgs e)
         {
-            if(_isDialogActive)return;
+
             var activeTransaction = (ITransaction)(((ListView)sender).SelectedValue);
             if (activeTransaction == null) return;
+            await DeleteTransaction(activeTransaction);
+        }
 
-
+        private async System.Threading.Tasks.Task DeleteTransaction(ITransaction activeTransaction)
+        {
+            if (_isDialogActive) return;
             var dialog = new ContentDialog
             {
                 Title = "Delete Transaction",

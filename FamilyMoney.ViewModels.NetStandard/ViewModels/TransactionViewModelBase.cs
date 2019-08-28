@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
@@ -313,6 +314,20 @@ namespace FamilyMoney.ViewModels.NetStandard.ViewModels
 
             return barCode;
         }
+
+        public void DeleteChildTransaction(ITransaction childTransaction)
+        {
+            try
+            {
+                _storages.TransactionStorage.DeleteChildrenTransaction(_transaction, childTransaction);
+                UpdateChildrenTransactionList();
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine(e);
+            }
+        }
+
 
         public ITransaction FindBarCodeAmongExistingTransactions(IBarCode barCode)
         {

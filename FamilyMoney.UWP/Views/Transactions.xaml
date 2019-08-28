@@ -32,12 +32,17 @@
     </Page.Resources>
 
     <Grid Padding="20">
-        <StackPanel>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
             <ComboBox x:Uid="AccountComboBox"
                       ItemsSource="{x:Bind ViewModel.Accounts}"
                       HorizontalAlignment="Stretch"
                       SelectedValue="{x:Bind ViewModel.ActiveAccount, Mode=TwoWay}"
                       Margin="0,0,0,10"
+                      Grid.Row="0"
                       >
                 <ComboBox.HeaderTemplate>
                     <DataTemplate>
@@ -66,7 +71,10 @@
             </ComboBox>
             <ListView x:Uid="TransactionListView"
                       ItemsSource="{x:Bind ViewModel.Transactions}"
-                      DoubleTapped="ListView_DoubleTapped" RightTapped="ListView_RightTapped" Holding="ListView_Holding"
+                      DoubleTapped="ListView_DoubleTapped" 
+                      RightTapped="ListView_RightTapped" 
+                      Holding="ListView_Holding"
+                      Grid.Row="1"
                       >
 
                 <ListView.HeaderTemplate>
@@ -112,6 +120,5 @@
                     </Style>
                 </ListView.ItemContainerStyle>
             </ListView>
-        </StackPanel>
     </Grid>
 </Page>

@@ -24,7 +24,9 @@ namespace FamilyMoneyLib.NetStandard.Storages
         public abstract void DeleteAllData();
 
         public abstract void DeleteCategory(ICategory category);
+
         public abstract IEnumerable<ICategory> GetAllCategories();
+
         public abstract void UpdateCategory(ICategory category);
 
         public IEnumerable<ICategory> MakeFlatCategoryTree()
