@@ -112,7 +112,7 @@ namespace IntegrationTests.SQLite
 
 
             //storage.DeleteTransaction(childTransaction);
-            storage.DeleteChildrenTransaction(transaction, childTransaction);
+            storage.DeleteChildTransaction(transaction, childTransaction);
 
 
             var numberOfTransactions = storage.GetAllTransactions().Count();

@@ -319,7 +319,7 @@ namespace FamilyMoney.ViewModels.NetStandard.ViewModels
         {
             try
             {
-                _storages.TransactionStorage.DeleteChildrenTransaction(_transaction, childTransaction);
+                _storages.TransactionStorage.DeleteChildTransaction(_transaction, childTransaction);
                 UpdateChildrenTransactionList();
             }
             catch (Exception e)

@@ -36,13 +36,13 @@ namespace FamilyMoneyLib.NetStandard.Storages
             UpdateTransaction(transaction);
         }
 
-        public void DeleteAllChildrenTransactions(ITransaction parent)
+        public void DeleteChildrenTransactions(ITransaction parent)
         {
             parent.DeleteChildrenTransactions();
 
         }
 
-        public void DeleteChildrenTransaction(ITransaction parent, ITransaction child)
+        public void DeleteChildTransaction(ITransaction parent, ITransaction child)
         {
             parent.DeleteChildTransaction(child);
             DeleteTransaction(child);

@@ -9,7 +9,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace IntegrationTests.Cached
 {
     [TestClass]
-    public class SqLiteQuickTransactionStorageTest
+    public class CachedQuickTransactionStorageTest
     {
         private IAccountFactory _accountFactory;
         private ICategoryFactory _categoryFactory;

@@ -10,7 +10,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace IntegrationTests.Cached
 {
     [TestClass]
-    public class SqLiteComplexTransactionStorageTest
+    public class CachedComplexTransactionStorageTest
     {
         private IAccountStorage accountStorage;
         private ICategoryStorage categoryStorage;
@@ -97,7 +97,7 @@ namespace IntegrationTests.Cached
 
 
 
-            storage.DeleteTransaction(childTransaction);
+            storage.DeleteChildTransaction(newTransaction, childTransaction);
 
 
             var numberOfTransactions = storage.GetAllTransactions().Count();
@@ -107,6 +107,9 @@ namespace IntegrationTests.Cached
             Assert.AreEqual(2, numberOfTransactions);
             Assert.AreEqual(1, numberOfComplex);
             Assert.AreEqual(1, numberOfNoComplex);
+            Assert.AreEqual(213m,newTransaction.Total);
+            Assert.IsTrue(newTransaction.IsComplexTransaction);
+            Assert.IsTrue(newTransaction.HasChild);
         }
 
         [TestMethod]
@@ -116,7 +119,7 @@ namespace IntegrationTests.Cached
             storage.AddChildTransaction(newTransaction, storage.CreateTransaction(childTransaction));
 
 
-            storage.DeleteTransaction(childTransaction);
+            storage.DeleteChildTransaction(newTransaction, childTransaction);
 
 
             var numberOfTransactions = storage.GetAllTransactions().Count();
@@ -126,6 +129,8 @@ namespace IntegrationTests.Cached
             Assert.AreEqual(1, numberOfTransactions);
             Assert.AreEqual(0, numberOfComplex);
             Assert.AreEqual(1, numberOfNoComplex);
+            Assert.IsFalse(newTransaction.IsComplexTransaction);
+            Assert.IsFalse(newTransaction.HasChild);
         }
 
         [TestMethod]
