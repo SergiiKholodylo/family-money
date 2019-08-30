@@ -19,7 +19,7 @@ namespace FamilyMoney.UWP.Bases
         {
             Scanner = new MobileBarcodeScanner();
 
-            var overlay = CreateOverlay(Scanner);
+            var overlay = CreateOverlay();
 
             Scanner.CustomOverlay = overlay;
             Scanner.UseCustomOverlay = true;
@@ -30,7 +30,7 @@ namespace FamilyMoney.UWP.Bases
 
         private MobileBarcodeScanner Scanner { get; set; }
 
-        private UIElement CreateOverlay(MobileBarcodeScanner scanner)
+        private UIElement CreateOverlay()
         {
             var grid = new Grid();
 
