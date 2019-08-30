@@ -59,6 +59,8 @@
                                     Width="20" />
                                 <ColumnDefinition
                                     Width="*" />
+                                <ColumnDefinition
+                                    Width="30" />
                             </Grid.ColumnDefinitions>
                             <TextBlock
                                 Text=" > "
@@ -71,6 +73,13 @@
                                 Text="{x:Bind Name}" 
                                 DoubleTapped="UIElement_OnDoubleTapped"
                                 />
+                            <TextBlock
+                                Grid.Column="2"
+                                Style="{StaticResource ListViewText}"
+                                Text="{x:Bind Id}" 
+                                DoubleTapped="UIElement_OnDoubleTapped"
+                            />
+
                         </Grid>
                     </DataTemplate>
                 </ListView.ItemTemplate>
