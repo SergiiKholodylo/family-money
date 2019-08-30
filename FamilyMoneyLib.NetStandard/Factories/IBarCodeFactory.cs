@@ -4,6 +4,6 @@ namespace FamilyMoneyLib.NetStandard.Factories
 {
     public interface IBarCodeFactory
     {
-        IBarCode CreateBarCode(string code, bool isWeight = false, int numberOfDigitsForWeight = 0);
+        IBarCode CreateBarCode(string code, bool isWeight = false, int numberOfDigitsForWeight = 0, long id = 0);
     }
 }

@@ -41,8 +41,10 @@ namespace FamilyMoneyLib.NetStandard.SQLite
         public override ICategory CreateCategory(ICategory category)
         {
             _table.InitializeDatabase();
-            category.Id = _table.AddData(ObjectToICategoryConverter.ConvertToKeyPairList(category));
-
+            if(category.Id == 0)
+                category.Id = _table.AddData(ObjectToICategoryConverter.ConvertToKeyPairList(category));
+            else
+                _table.AddData(ObjectToICategoryConverter.ConvertToKeyPairListWithId(category));
             return category;
         }
 
@@ -115,6 +117,13 @@ namespace FamilyMoneyLib.NetStandard.SQLite
                 new KeyValuePair<string, object>("baseId", category.BaseId),
             };
             return returnList;
+        }
+
+        public static List<KeyValuePair<string, object>> ConvertToKeyPairListWithId(ICategory category)
+        {
+            var list = ConvertToKeyPairList(category);
+            list.Add(new KeyValuePair<string, object>("id", category.Id));
+            return list;
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using FamilyMoneyLib.NetStandard.Bases;
 using FamilyMoneyLib.NetStandard.Factories;
 
@@ -15,14 +16,27 @@ namespace FamilyMoneyLib.NetStandard.Storages
 
         public override ITransaction CreateTransaction(ITransaction transaction)
         {
-            transaction.Id = ++_counter;
+            if (IsExists(transaction))
+            {
+                _transactions.Remove(transaction);
+            }
+            else
+            {
+                if (transaction.Id == 0)
+                    transaction.Id = ++_counter;
+            }
+            
             _transactions.Add(transaction);
             return transaction;
         }
 
         public override void DeleteTransaction(ITransaction transaction)
         {
-            _transactions.Remove(transaction);
+            var quickTransactionsToDelete = _transactions.Where(x => x.Id == transaction.Id).ToArray();
+            foreach (var qtTransaction in quickTransactionsToDelete)
+            {
+                _transactions.Remove(qtTransaction);
+            }
         }
 
         public override void UpdateTransaction(ITransaction transaction)
@@ -33,6 +47,11 @@ namespace FamilyMoneyLib.NetStandard.Storages
         public override IEnumerable<ITransaction> GetAllTransactions()
         {
             return _transactions.ToArray();
+        }
+
+        private bool IsExists(ITransaction transaction)
+        {
+            return (transaction.Id != 0 && _transactions.Any(x => x.Id == transaction.Id));
         }
     }
 }

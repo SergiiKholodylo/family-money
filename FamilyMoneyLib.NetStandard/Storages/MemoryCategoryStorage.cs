@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using FamilyMoneyLib.NetStandard.Bases;
 using FamilyMoneyLib.NetStandard.Factories;
 
@@ -12,7 +13,15 @@ namespace FamilyMoneyLib.NetStandard.Storages
 
         public override ICategory CreateCategory(ICategory category)
         {
-            category.Id = ++_counter;
+            if (IsExists(category))
+            {
+                DeleteCategory(category);
+            }
+            else
+            {
+                if(category.Id == 0)
+                    category.Id = ++_counter;
+            }
             _categories.Add(category);
             return category;
         }
@@ -24,7 +33,11 @@ namespace FamilyMoneyLib.NetStandard.Storages
 
         public override void DeleteCategory(ICategory category)
         {
-            _categories.Remove(category);
+            var categoryToDelete = _categories.Where(x => x.Id == category.Id).ToArray();
+            foreach (var category1 in categoryToDelete)
+            {
+                _categories.Remove(category1);
+            }
         }
 
         public override void UpdateCategory(ICategory category)
@@ -39,6 +52,11 @@ namespace FamilyMoneyLib.NetStandard.Storages
 
         public MemoryCategoryStorage(ICategoryFactory categoryFactory) : base(categoryFactory)
         {
+        }
+
+        private bool IsExists(ICategory category)
+        {
+            return (category.Id != 0 && _categories.Any(x => x.Id == category.Id));
         }
     }
 }

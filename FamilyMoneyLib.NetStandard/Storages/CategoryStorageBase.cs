@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using FamilyMoneyLib.NetStandard.Bases;
 using FamilyMoneyLib.NetStandard.Factories;
@@ -41,6 +42,10 @@ namespace FamilyMoneyLib.NetStandard.Storages
                 AddTreeLeaves(getAllCategories, flatTree, category);
             }
 
+            foreach (var category in flatTree)
+            {
+                Debug.WriteLine($"{category.Id} : {category.Name} ");
+            }
             return flatTree;
         }
 

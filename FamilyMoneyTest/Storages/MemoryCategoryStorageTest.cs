@@ -9,48 +9,90 @@ namespace UnitTests.Storages
     [TestClass]
     public class MemoryCategoryStorageTest
     {
-        [TestMethod]
-        public void CreateAccountTest()
+        private RegularCategoryFactory _factory;
+        private MemoryCategoryStorage _storage;
+
+        [TestInitialize]
+        public void Setup()
         {
-            var factory = new RegularCategoryFactory();
-            var storage = new MemoryCategoryStorage(factory);
+            _factory = new RegularCategoryFactory();
+            _storage = new MemoryCategoryStorage(_factory);
+        }
+
+
+        [TestMethod]
+        public void CreateCategoryTest()
+        {
+
             var category = CreateCategory();
 
 
-            var newCategory = storage.CreateCategory(category);
+            var newCategory = _storage.CreateCategory(category);
 
 
             Assert.AreEqual(category.Name, newCategory.Name);
             Assert.AreEqual(category.Description, newCategory.Description);
         }
 
-        [TestMethod]
-        public void GetAllAccountsTest()
-        {
-            var factory = new RegularCategoryFactory();
-            var storage = new MemoryCategoryStorage(factory);
-            var category = CreateCategory();
-            storage.CreateCategory(category);
 
-            var firstCategory= storage.GetAllCategories().First();
+        [TestMethod]
+        public void CreateCategoryWithCodeTest()
+        {
+
+            var category = _factory.CreateCategory("Category", "Description", 5, null);
+
+
+            var newCategory = _storage.CreateCategory(category);
+
+
+            Assert.AreEqual(5, newCategory.Id);
+        }
+
+        [TestMethod]
+        public void CreateTwoCategoriesWithSameCodeTest()
+        {
+
+            var category = _factory.CreateCategory("Category", "Description", 5, null);
+            var category2 = _factory.CreateCategory("Updated Category", "Updated Description", 5, null);
+
+
+            _storage.CreateCategory(category);
+            _storage.CreateCategory(category2);
+            var categoriesList = _storage.GetAllCategories().ToArray();
+            var categoryFromStorage = categoriesList.FirstOrDefault();
+
+            Assert.IsNotNull(categoryFromStorage);
+            Assert.IsNotNull(categoriesList);
+            Assert.AreEqual(1,categoriesList.Count());
+            Assert.AreEqual(5, categoryFromStorage.Id);
+            Assert.AreEqual("Updated Category",categoryFromStorage.Name);
+        }
+
+        [TestMethod]
+        public void GetAllCategoriesTest()
+        {
+
+            var category = CreateCategory();
+            _storage.CreateCategory(category);
+
+            var firstCategory= _storage.GetAllCategories().First();
 
             Assert.AreEqual(category.Name, firstCategory.Name);
             Assert.AreEqual(category.Description, firstCategory.Description);
         }
 
         [TestMethod]
-        public void DeleteAccountTest()
+        public void DeleteCategoryTest()
         {
-            var factory = new RegularCategoryFactory();
-            var storage = new MemoryCategoryStorage(factory);
+
             var category = CreateCategory();
-            storage.CreateCategory(category);
+            _storage.CreateCategory(category);
 
-            var numberOfCategoriesAfterCreate = storage.GetAllCategories().Count();
-            storage.DeleteCategory(category);
+            var numberOfCategoriesAfterCreate = _storage.GetAllCategories().Count();
+            _storage.DeleteCategory(category);
 
 
-            var numberOfCategories = storage.GetAllCategories().Count();
+            var numberOfCategories = _storage.GetAllCategories().Count();
 
 
             Assert.AreEqual(0, numberOfCategories);
@@ -59,21 +101,20 @@ namespace UnitTests.Storages
 
 
         [TestMethod]
-        public void UpdateAccountTest()
+        public void UpdateCategoryTest()
         {
-            var factory = new RegularCategoryFactory();
-            var storage = new MemoryCategoryStorage(factory);
+
             var category = CreateCategory();
-            storage.CreateCategory(category);
+            _storage.CreateCategory(category);
             category.Name = "New Name";
             category.Description = "New Description";
 
 
-            storage.UpdateCategory(category);
+            _storage.UpdateCategory(category);
 
 
             var firstCategory
-                = storage.GetAllCategories().First();
+                = _storage.GetAllCategories().First();
             Assert.AreEqual(category.Name, firstCategory.Name);
             Assert.AreEqual(category.Description, firstCategory.Description);
         }
@@ -81,15 +122,13 @@ namespace UnitTests.Storages
         [TestMethod]
         public void CreateTreeCategoryTest()
         {
-            var factory = new RegularCategoryFactory();
-            var storage = new MemoryCategoryStorage(factory);
             var category = CreateCategory();
-            storage.CreateCategory(category);
+            _storage.CreateCategory(category);
             var childCategory = CreateChildCategory(category);
-            storage.CreateCategory(childCategory);
+            _storage.CreateCategory(childCategory);
 
 
-            var categoryList = storage.GetAllCategories().ToArray();
+            var categoryList = _storage.GetAllCategories().ToArray();
             var categoryFromStorage = categoryList.FirstOrDefault(x => x.Id == category.Id);
             var childCategoryFromStorage = categoryList.FirstOrDefault(x => x.Id == childCategory.Id);
 

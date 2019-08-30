@@ -44,6 +44,24 @@ namespace IntegrationTests.Cached
         }
 
         [TestMethod]
+        public void Create2CategoriesTest()
+        {
+
+            var account1 = _factory.CreateAccount("Account 1", "Description", "UAH",5);
+            var account2 = _factory.CreateAccount("Account 2", "Description 2", "USD", 5);
+            _storage.CreateAccount(account1);
+            _storage.CreateAccount(account2);
+
+            var newAccount = _storage.GetAllAccounts().FirstOrDefault();
+
+            Assert.IsNotNull(newAccount);
+            Assert.AreEqual(1, _storage.GetAllAccounts().Count());
+            Assert.AreEqual(account2.Name, newAccount.Name);
+            Assert.AreEqual(account2.Description, newAccount.Description);
+            Assert.AreEqual(5, newAccount.Id);
+        }
+
+        [TestMethod]
         public void GetAllAccountsTest()
         {
             var factory = new RegularAccountFactory();

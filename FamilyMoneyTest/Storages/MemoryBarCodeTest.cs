@@ -10,6 +10,20 @@ namespace UnitTests.Storages
     [TestClass]
     public class MemoryBarCodeTest
     {
+        private IBarCodeFactory _factory;
+        private MemoryBarCodeStorage _storage;
+        private MemoryTransactionStorage _transactionStorage;
+        private const string SilpoZefir = "2710041003240";
+        private const string BarCode2 = "7100241003240";
+
+        [TestInitialize]
+        public void Setup()
+        {
+            _factory = new BarCodeFactory();
+            _transactionStorage = new MemoryTransactionStorage(new RegularTransactionFactory());
+            _storage = new MemoryBarCodeStorage(_factory,_transactionStorage);
+        }
+
         [TestMethod]
         public void CreateBarCodeTest()
         {
@@ -46,6 +60,24 @@ namespace UnitTests.Storages
             Assert.AreEqual(code, barCode.GetProductBarCode());
             Assert.AreEqual(0m, barCode.GetWeightKg());
 
+        }
+
+        [TestMethod]
+        public void CreateTwoBarCodesWithSameCodeTest()
+        {
+
+            var barCode1 = _factory.CreateBarCode(SilpoZefir, true, 6, 99L);
+            var barCode2 = _factory.CreateBarCode(BarCode2, false, 0, 99L);
+            _storage.CreateBarCode(barCode1);
+            _storage.CreateBarCode(barCode2);
+
+            var newBarCode = _storage.GetAllBarCodes().FirstOrDefault();
+
+            Assert.IsNotNull(newBarCode);
+            Assert.AreEqual(1, _storage.GetAllBarCodes().Count());
+            Assert.AreEqual(barCode2.Code, newBarCode.Code);
+            Assert.AreEqual(barCode2.IsWeight, newBarCode.IsWeight);
+            Assert.AreEqual(99L, newBarCode.Id);
         }
 
         [TestMethod]

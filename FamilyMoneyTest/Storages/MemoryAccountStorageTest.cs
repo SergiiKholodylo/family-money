@@ -9,48 +9,85 @@ namespace UnitTests.Storages
     [TestClass]
     public class MemoryAccountStorageTest
     {
+        private IAccountFactory _factory;
+        private MemoryAccountStorage _storage;
+        private IAccount _account;
+
+        [TestInitialize]
+        public void Setup()
+        {
+            _factory = new RegularAccountFactory();
+            _storage = new MemoryAccountStorage(_factory);
+            _account = CreateAccount();
+        }
+
         [TestMethod]
         public void CreateAccountTest()
         {
-            var factory = new RegularAccountFactory();
-            var storage = new MemoryAccountStorage(factory);
-            var account = CreateAccount();
+
+            var newAccount = _storage.CreateAccount(_account);
 
 
-            var newAccount = storage.CreateAccount(account);
+            Assert.AreEqual(_account.Name, newAccount.Name);
+            Assert.AreEqual(_account.Description, newAccount.Description);
+            Assert.AreEqual(_account.Currency, newAccount.Currency);
+        }
+
+        [TestMethod]
+        public void CreateAccountWithCodeTest()
+        {
+
+            var account = _factory.CreateAccount("Account", "Description", "UAH",5);
 
 
-            Assert.AreEqual(account.Name, newAccount.Name);
-            Assert.AreEqual(account.Description, newAccount.Description);
-            Assert.AreEqual(account.Currency, newAccount.Currency);
+            var newAccount = _storage.CreateAccount(account);
+
+
+            Assert.AreEqual(5, newAccount.Id);
+        }
+
+        [TestMethod]
+        public void CreateTwoAccountsWithSameCodeTest()
+        {
+
+            var account1 = _factory.CreateAccount("Category", "Description","UAH", 5);
+            var account2 = _factory.CreateAccount("Updated Category", "Updated Description","USD", 5);
+
+
+            _storage.CreateAccount(account1);
+            _storage.CreateAccount(account2);
+            var accountsList = _storage.GetAllAccounts().ToArray();
+            var accountFromStorage = accountsList.FirstOrDefault();
+
+            Assert.IsNotNull(accountFromStorage);
+            Assert.IsNotNull(accountsList);
+            Assert.AreEqual(1, accountsList.Count());
+            Assert.AreEqual(5, accountFromStorage.Id);
+            Assert.AreEqual("Updated Category", accountFromStorage.Name);
         }
 
         [TestMethod]
         public void GetAllAccountsTest()
         {
-            var factory = new RegularAccountFactory();
-            var storage = new MemoryAccountStorage(factory);
-            var account = CreateAccount();
-            storage.CreateAccount(account);
 
-            var firstAccount = storage.GetAllAccounts().First();
+            _storage.CreateAccount(_account);
 
-            Assert.AreEqual(account.Name, firstAccount.Name);
-            Assert.AreEqual(account.Description, firstAccount.Description);
-            Assert.AreEqual(account.Currency, firstAccount.Currency);
+            var firstAccount = _storage.GetAllAccounts().First();
+
+            Assert.AreEqual(_account.Name, firstAccount.Name);
+            Assert.AreEqual(_account.Description, firstAccount.Description);
+            Assert.AreEqual(_account.Currency, firstAccount.Currency);
         }
 
         [TestMethod]
         public void DeleteAccountTest()
         {
-            var factory = new RegularAccountFactory();
-            var storage = new MemoryAccountStorage(factory);
-            var account = CreateAccount();
-            storage.CreateAccount(account);
-            storage.DeleteAccount(account);
+
+            _storage.CreateAccount(_account);
+            _storage.DeleteAccount(_account);
 
 
-            var numberOfAccounts = storage.GetAllAccounts().Count();
+            var numberOfAccounts = _storage.GetAllAccounts().Count();
 
 
             Assert.AreEqual(0, numberOfAccounts);
@@ -60,33 +97,29 @@ namespace UnitTests.Storages
         [TestMethod]
         public void UpdateAccountTest()
         {
-            var factory = new RegularAccountFactory();
-            var storage = new MemoryAccountStorage(factory);
-            var account = CreateAccount();
-            storage.CreateAccount(account);
-            account.Name = "New Name";
-            account.Description = "New Description";
+            _storage.CreateAccount(_account);
+            _account.Name = "New Name";
+            _account.Description = "New Description";
 
 
-            storage.UpdateAccount(account);
+            _storage.UpdateAccount(_account);
 
 
-            var firstAccount = storage.GetAllAccounts().First();
-            Assert.AreEqual(account.Name, firstAccount.Name);
-            Assert.AreEqual(account.Description, firstAccount.Description);
+            var firstAccount = _storage.GetAllAccounts().First();
+            Assert.AreEqual(_account.Name, firstAccount.Name);
+            Assert.AreEqual(_account.Description, firstAccount.Description);
         }
 
         private IAccount CreateAccount()
         {
-            var factory = new RegularAccountFactory();
             var accountName = "Test Account";
             var accountDescription = "Test Description";
             var accountCurrency = "USD";
 
 
-            var account = factory.CreateAccount(accountName, accountDescription, accountCurrency);
+            var account1 = _factory.CreateAccount(accountName, accountDescription, accountCurrency);
 
-            return account;
+            return account1;
         }
     }
 }

@@ -1,0 +1,60 @@
+﻿1 : 🚗Car 
+2 : 🅿Parking 
+3 : 💷Insurance 
+4 : 🛒Accessories 
+6 : 🛠Service 
+7 : ⛽Fuel 
+5 : 🚘Other 
+8 : 🎈Relaxation 
+9 : 🏅Sport 
+10 : 🎠Entertainment 
+11 : 🏆Sport/Fitness 
+12 : 🏡Home 
+13 : 📆Rent 
+14 : 🪑🪑 Furniture 
+15 : 👨‍⚕Healthcare 
+16 : 💊Medicine 
+17 : 🏥Hospital 
+18 : 🦷Dentist 
+19 : ⚕Medical Insurance 
+20 : 💉Analysis 
+21 : 📚Books 
+22 : 🗃Bills 
+23 : 🚿Water 
+24 : 🔥Gas 
+25 : 🔌Electricity 
+26 : 📡Internet 
+27 : 📶Mobile 
+28 : 🏚Rental fee 
+29 : 🥵Central Heating 
+30 : 👕Clothes 
+31 : 👔C00per clothes 
+32 : 🥻Gerda clothes 
+33 : 👗Sam clothes 
+34 : 🍝Food 
+35 : 🥩Meat 
+36 : 🦈Fish 
+37 : 🍅Vegetables 
+57 : 🧅 Onion 
+58 : 🍅 Tomatoes 
+59 : 🥒 Cucamber 
+60 : 🥔 Potatoes 
+38 : 🍎Fruit 
+39 : 🥣Cereals 
+40 : 🚇Transport 
+41 : 🚇Metro 
+42 : 🚌Bus 
+43 : 🚋Tram 
+44 : 🚎Trolleybus 
+45 : 🚐Minibus 
+46 : 🚬Cigarettes 
+47 : 🌏Journey 
+48 : 🛌Hotels 
+49 : 🚙Car 
+50 : 🍜Food 
+51 : ☕Coffee 
+52 : 🏛Museum 
+53 : 🎌Souvenirs 
+54 : ✈Tickets 
+55 : 🏺Drinks 
+56 : 📔Books and Guides 

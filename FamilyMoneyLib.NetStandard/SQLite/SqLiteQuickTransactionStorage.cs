@@ -38,7 +38,10 @@ namespace FamilyMoneyLib.NetStandard.SQLite
         public override IQuickTransaction CreateQuickTransaction(IQuickTransaction quickTransaction)
         {
             _table.InitializeDatabase();
-            quickTransaction.Id = _table.AddData(ObjectToIQuickTransactionConverter.ConvertToKeyPairList(quickTransaction));
+            if(quickTransaction.Id == 0)
+                quickTransaction.Id = _table.AddData(ObjectToIQuickTransactionConverter.ConvertToKeyPairList(quickTransaction));
+            else
+                _table.AddData(ObjectToIQuickTransactionConverter.ConvertToKeyPairListWithId(quickTransaction));
             return quickTransaction;
         }
 
@@ -101,6 +104,15 @@ namespace FamilyMoneyLib.NetStandard.SQLite
             };
             return returnList;
         }
+
+        public static IEnumerable<KeyValuePair<string, object>>
+            ConvertToKeyPairListWithId(IQuickTransaction quickTransaction)
+        {
+            var list = ConvertToKeyPairList(quickTransaction).ToList();
+            list.Add(new KeyValuePair<string, object>("id", quickTransaction.Id));
+            return list;
+        }
+
 
         public static IQuickTransaction Convert(IDictionary<string, object> line, 
             IQuickTransactionFactory quickTransactionFactory, IAccountStorage accountStorage, 

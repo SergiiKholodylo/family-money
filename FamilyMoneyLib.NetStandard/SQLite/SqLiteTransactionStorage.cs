@@ -59,7 +59,10 @@ namespace FamilyMoneyLib.NetStandard.SQLite
         public override ITransaction CreateTransaction(ITransaction transaction)
         {
             _table.InitializeDatabase();
-            transaction.Id = _table.AddData(ObjectToITransactionConverter.ConvertToKeyPairList(transaction));
+            if(transaction.Id == 0)
+                transaction.Id = _table.AddData(ObjectToITransactionConverter.ConvertToKeyPairList(transaction));
+            else
+                _table.AddData(ObjectToITransactionConverter.ConvertToKeyPairListWithId(transaction));
             return transaction;
         }
 
@@ -133,6 +136,13 @@ namespace FamilyMoneyLib.NetStandard.SQLite
                 new KeyValuePair<string, object>("parentId", transaction.Parent?.Id),
             };
             return returnList;
+        }
+
+        public static List<KeyValuePair<string, object>> ConvertToKeyPairListWithId(ITransaction transaction)
+        {
+            var list = ConvertToKeyPairList(transaction).ToList();
+            list.Add(new KeyValuePair<string, object>("id", transaction.Id));
+            return list;
         }
 
         public static ITransaction Convert(IDictionary<string, object> line, ITransactionFactory transactionFactory,

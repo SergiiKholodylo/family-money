@@ -26,14 +26,14 @@ namespace IntegrationTests.Cached
             {
                 var name = "Test Category";
                 var description = "Test Description";
-                _category = _factory.CreateCategory(name, description, 0, null);
+                _category = _factory.CreateCategory(name, description, 1, null);
             }
 
             
             {
                 var name = $"Child {_category.Name} Category";
                 var description = $"Child {_category.Name} Description";
-                _childCategory = _factory.CreateCategory(name, description, 0, _category);
+                _childCategory = _factory.CreateCategory(name, description, 2, _category);
 
             }
         }
@@ -48,6 +48,24 @@ namespace IntegrationTests.Cached
 
             Assert.AreEqual(_category.Name, newCategory.Name);
             Assert.AreEqual(_category.Description, newCategory.Description);
+        }
+
+        [TestMethod]
+        public void Create2CategoriesTest()
+        {
+
+            var category1 = _factory.CreateCategory("Category 1", "Description", 5, null);
+            var category2 = _factory.CreateCategory("Category 2", "Description 2", 5, null);
+            _storage.CreateCategory(category1);
+            _storage.CreateCategory(category2);
+
+            var newCategory = _storage.GetAllCategories().FirstOrDefault();
+
+            Assert.IsNotNull(newCategory);
+            Assert.AreEqual(1, _storage.GetAllCategories().Count());
+            Assert.AreEqual(category2.Name, newCategory.Name);
+            Assert.AreEqual(category2.Description, newCategory.Description);
+            Assert.AreEqual(5,newCategory.Id);
         }
 
         [TestMethod]

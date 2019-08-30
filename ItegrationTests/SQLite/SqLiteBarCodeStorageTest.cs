@@ -12,18 +12,25 @@ namespace IntegrationTests.SQLite
     public class SqLiteBarCodeStorageTest
     {
         private const string SilpoZefir = "2710041003240";
+        private const string BarCode2 = "7100241003240";
         private IAccountStorage _accountStorage;
         private ICategoryStorage _categoryStorage;
         private ITransactionStorage _transactionStorage;
+        private BarCodeFactory _factory;
+        private SqLiteBarCodeStorage _storage;
 
         [TestInitialize]
         public void Setup()
         {
-        _accountStorage = new SqLiteAccountStorage(new RegularAccountFactory());
+            _factory = new BarCodeFactory();
+            _accountStorage = new SqLiteAccountStorage(new RegularAccountFactory());
         _categoryStorage = new SqLiteCategoryStorage(new RegularCategoryFactory());
         _transactionStorage =
             new SqLiteTransactionStorage(new RegularTransactionFactory(), _accountStorage, _categoryStorage);
-    }
+        _storage = new SqLiteBarCodeStorage(
+            new BarCodeFactory(), _transactionStorage);
+        _storage.DeleteAllData();
+        }
 
     [TestMethod]
         public void CreateBarCodeTest()
@@ -40,6 +47,23 @@ namespace IntegrationTests.SQLite
             Assert.AreEqual(0.324m, weight);
         }
 
+        [TestMethod]
+        public void Create2BarCodesTest()
+        {
+
+            var barCode1 = _factory.CreateBarCode(SilpoZefir, true, 6, 99L);
+            var barCode2 = _factory.CreateBarCode(BarCode2, false, 0, 99L);
+            _storage.CreateBarCode(barCode1);
+            _storage.CreateBarCode(barCode2);
+
+            var newBarCode = _storage.GetAllBarCodes().FirstOrDefault();
+
+            Assert.IsNotNull(newBarCode);
+            Assert.AreEqual(1, _storage.GetAllBarCodes().Count());
+            Assert.AreEqual(barCode2.Code, newBarCode.Code);
+            Assert.AreEqual(barCode2.IsWeight, newBarCode.IsWeight);
+            Assert.AreEqual(99L, newBarCode.Id);
+        }
 
         [TestMethod]
         public void GetAllBarCodeTest()

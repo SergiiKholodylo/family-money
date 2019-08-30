@@ -10,6 +10,7 @@ namespace FamilyMoneyLib.NetStandard.Storages
     {
         private readonly Dictionary<string, IBarCode> _storage;
         private readonly ITransactionStorage _transactionStorage;
+        private long _counter = 0;
 
         public MemoryBarCodeStorage(IBarCodeFactory factory, ITransactionStorage transactionStorage):base(factory)
         {
@@ -28,6 +29,15 @@ namespace FamilyMoneyLib.NetStandard.Storages
         {
             try
             {
+                if (IsExists(barCode))
+                {
+                    DeleteBarCode(barCode);
+                }
+                else
+                {
+                    if (barCode.Id == 0)
+                        barCode.Id = ++_counter;
+                }
                 _storage.Add(barCode.GetProductBarCode(), barCode);
                 return barCode;
             }
@@ -44,6 +54,7 @@ namespace FamilyMoneyLib.NetStandard.Storages
             if (transaction == null) return transaction;
 
             transaction.Timestamp = DateTime.Now;
+            transaction.Id = 0;
             var newTransaction = _transactionStorage.CreateTransaction(transaction);
             return newTransaction;
         }
@@ -55,6 +66,12 @@ namespace FamilyMoneyLib.NetStandard.Storages
 
         public override void DeleteBarCode(IBarCode barCode)
         {
+            var categoryToDelete = _storage.Where(x => x.Value.Id == barCode.Id).ToArray();
+            foreach (var category1 in categoryToDelete)
+            {
+                _storage.Remove(category1.Key);
+            }
+
             var id = barCode.GetProductBarCode();
             _storage.Remove(id);
         }
@@ -68,6 +85,10 @@ namespace FamilyMoneyLib.NetStandard.Storages
         {
             var foundBarCode = _storage.FirstOrDefault(x => x.Key.Equals(barCode)).Value;
             return foundBarCode?.Transaction;
+        }
+        private bool IsExists(IBarCode barCode)
+        {
+            return (barCode.Id != 0 && _storage.Any(x => x.Value.Id == barCode.Id));
         }
     }
 }

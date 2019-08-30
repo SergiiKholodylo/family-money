@@ -4,6 +4,6 @@ namespace FamilyMoneyLib.NetStandard.Factories
 {
     public interface IAccountFactory
     {
-        IAccount CreateAccount(string name, string description, string currency);
+        IAccount CreateAccount(string name, string description, string currency, long id=0);
     }
 }

@@ -12,10 +12,10 @@ namespace FamilyMoneyLib.NetStandard.Bases
 
         public  int NumberOfDigitsForWeight { get; private set; }
 
-        public BarCode(string code, bool isWeight = false, int numberOfDigitsForWeight = 0)
+        public BarCode(string code, bool isWeight = false, int numberOfDigitsForWeight = 0, long id = 0)
         {
             if (code.Length < numberOfDigitsForWeight) throw new ArgumentException();
-
+            Id = id;
             Code = code;
             IsWeight = isWeight;
             NumberOfDigitsForWeight = numberOfDigitsForWeight;

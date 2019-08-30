@@ -104,7 +104,7 @@ namespace FamilyMoneyLib.NetStandard.SQLite
 
                     var insertCommand = new SqliteCommand
                     {
-                        Connection = db, CommandText = $"INSERT INTO {_tableName} ({fields}) VALUES ({values});SELECT last_insert_rowid();",CommandType = CommandType.Text
+                        Connection = db, CommandText = $"INSERT OR REPLACE INTO {_tableName} ({fields}) VALUES ({values});SELECT last_insert_rowid();",CommandType = CommandType.Text
                     };
 
                     foreach (var parameter in keyValuePairs)
@@ -127,7 +127,6 @@ namespace FamilyMoneyLib.NetStandard.SQLite
                 throw new StorageException(e.Message);
             }
         }
-
 
         public void UpdateData(IEnumerable<KeyValuePair<string, object>> parameters, long id)
         {

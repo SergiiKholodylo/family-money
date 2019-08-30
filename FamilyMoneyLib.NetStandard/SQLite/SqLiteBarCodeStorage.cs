@@ -30,9 +30,11 @@ namespace FamilyMoneyLib.NetStandard.SQLite
         public override IBarCode CreateBarCode(IBarCode barCode)
         {
             _table.InitializeDatabase();
-            var id = _table.AddData(ObjectToIBarCodeConvertor.ConvertToKeyValuePair(barCode));
-            barCode.Id = id;
-            
+            if (barCode.Id == 0)
+                barCode.Id = _table.AddData(ObjectToIBarCodeConvertor.ConvertToKeyValuePair(barCode));
+            else
+                _table.AddData(ObjectToIBarCodeConvertor.ConvertToKeyValuePairWithId(barCode));
+
             return barCode;
         }
 
@@ -62,6 +64,7 @@ namespace FamilyMoneyLib.NetStandard.SQLite
             if (transaction == null) return transaction;
 
             transaction.Timestamp = DateTime.Now;
+            transaction.Id = 0;
             var newTransaction = _transactionStorage.CreateTransaction(transaction);
             return newTransaction;
 
@@ -93,6 +96,13 @@ namespace FamilyMoneyLib.NetStandard.SQLite
                 new KeyValuePair<string, object>("isWeight", barCode.IsWeight?1:0),
                 new KeyValuePair<string, object>("numberOfDigits", barCode.NumberOfDigitsForWeight),
             };
+            return returnList;
+        }
+
+        public static IEnumerable<KeyValuePair<string, object>> ConvertToKeyValuePairWithId(IBarCode barCode)
+        {
+            var returnList = ConvertToKeyValuePair(barCode).ToList();
+            returnList.Add(new KeyValuePair<string, object>("id", barCode.Id));
             return returnList;
         }
 
