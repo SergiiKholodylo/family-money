@@ -8,13 +8,14 @@ namespace FamilyMoneyLib.NetStandard.Storages
 {
     public class MemoryBarCodeStorage : BarCodeStorageBase
     {
-        private readonly Dictionary<string, IBarCode> _storage;
+
         private readonly ITransactionStorage _transactionStorage;
-        private long _counter = 0;
+
+        private readonly MemoryStorageBase _storageEngine = new MemoryStorageBase();
+
 
         public MemoryBarCodeStorage(IBarCodeFactory factory, ITransactionStorage transactionStorage):base(factory)
         {
-            _storage = new Dictionary<string, IBarCode>();
             _transactionStorage = transactionStorage;
         }
 
@@ -29,17 +30,7 @@ namespace FamilyMoneyLib.NetStandard.Storages
         {
             try
             {
-                if (IsExists(barCode))
-                {
-                    DeleteBarCode(barCode);
-                }
-                else
-                {
-                    if (barCode.Id == 0)
-                        barCode.Id = ++_counter;
-                }
-                _storage.Add(barCode.GetProductBarCode(), barCode);
-                return barCode;
+                return _storageEngine.Create(barCode) as IBarCode;
             }
             catch (ArgumentException e)
             {
@@ -61,34 +52,24 @@ namespace FamilyMoneyLib.NetStandard.Storages
 
         public override void DeleteAllData()
         {
-            _storage.Clear();
+            _storageEngine.DeleteAllData();
         }
 
         public override void DeleteBarCode(IBarCode barCode)
         {
-            var categoryToDelete = _storage.Where(x => x.Value.Id == barCode.Id).ToArray();
-            foreach (var category1 in categoryToDelete)
-            {
-                _storage.Remove(category1.Key);
-            }
-
-            var id = barCode.GetProductBarCode();
-            _storage.Remove(id);
+            _storageEngine.Delete(barCode);
         }
 
         public override IEnumerable<IBarCode> GetAllBarCodes()
         {
-            return _storage.Select(x => x.Value);
+            return _storageEngine.GetAll().Cast<IBarCode>();
         }
 
         public override ITransaction GetBarCodeTransaction(string barCode)
         {
-            var foundBarCode = _storage.FirstOrDefault(x => x.Key.Equals(barCode)).Value;
+            //var foundBarCode = _storage.FirstOrDefault(x => x.Key.Equals(barCode)).Value;
+            var foundBarCode = GetAllBarCodes().FirstOrDefault(x => x.GetProductBarCode().Equals(barCode));
             return foundBarCode?.Transaction;
-        }
-        private bool IsExists(IBarCode barCode)
-        {
-            return (barCode.Id != 0 && _storage.Any(x => x.Value.Id == barCode.Id));
         }
     }
 }

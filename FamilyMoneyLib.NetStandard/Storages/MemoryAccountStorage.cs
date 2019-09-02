@@ -5,33 +5,21 @@ using FamilyMoneyLib.NetStandard.Factories;
 
 namespace FamilyMoneyLib.NetStandard.Storages
 {
-    public class MemoryAccountStorage: AccountStorageBase, IAccountStorage
+    public class MemoryAccountStorage: AccountStorageBase
     {
-        private readonly List<IAccount> _accounts = new List<IAccount>();
-        private static long _counter = 0;
+        private readonly MemoryStorageBase _storageEngine = new MemoryStorageBase();
+        public MemoryAccountStorage(IAccountFactory factory) : base(factory)
+        {
+        }
 
         public override IAccount CreateAccount(IAccount account)
         {
-            if (IsExists(account))
-            {
-                DeleteAccount(account);
-            }
-            else
-            {
-                if (account.Id == 0)
-                    account.Id = ++_counter;
-            }
-            _accounts.Add(account);
-            return account;
+            return _storageEngine.Create(account) as IAccount;
         }
 
         public override void DeleteAccount(IAccount account)
         {
-            var accountsToDelete = _accounts.Where(x => x.Id == account.Id).ToArray();
-            foreach (var account1Account in accountsToDelete)
-            {
-                _accounts.Remove(account1Account);
-            }
+           _storageEngine.Delete(account);
         }
 
         public override void UpdateAccount(IAccount account)
@@ -41,21 +29,14 @@ namespace FamilyMoneyLib.NetStandard.Storages
 
         public override IEnumerable<IAccount> GetAllAccounts()
         {
-            return _accounts.ToArray();
+            return _storageEngine.GetAll().Cast<IAccount>();
         }
 
         public override void DeleteAllData()
         {
-            _accounts.Clear();
+            _storageEngine.DeleteAllData();
         }
 
-        public MemoryAccountStorage(IAccountFactory factory) : base(factory)
-        {
-        }
 
-        private bool IsExists(IAccount category)
-        {
-            return (category.Id != 0 && _accounts.Any(x => x.Id == category.Id));
-        }
     }
 }

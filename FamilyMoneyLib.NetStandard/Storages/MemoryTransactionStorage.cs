@@ -7,8 +7,7 @@ namespace FamilyMoneyLib.NetStandard.Storages
 {
     public class MemoryTransactionStorage : TransactionStorageBase
     {
-        private readonly List<ITransaction> _transactions = new List<ITransaction>();
-        private static long _counter = 0;
+        private readonly MemoryStorageBase _storageEngine = new MemoryStorageBase();
 
         public MemoryTransactionStorage(ITransactionFactory transactionFactory) : base(transactionFactory)
         {
@@ -16,27 +15,12 @@ namespace FamilyMoneyLib.NetStandard.Storages
 
         public override ITransaction CreateTransaction(ITransaction transaction)
         {
-            if (IsExists(transaction))
-            {
-                _transactions.Remove(transaction);
-            }
-            else
-            {
-                if (transaction.Id == 0)
-                    transaction.Id = ++_counter;
-            }
-            
-            _transactions.Add(transaction);
-            return transaction;
+            return _storageEngine.Create(transaction) as ITransaction;
         }
 
         public override void DeleteTransaction(ITransaction transaction)
         {
-            var quickTransactionsToDelete = _transactions.Where(x => x.Id == transaction.Id).ToArray();
-            foreach (var qtTransaction in quickTransactionsToDelete)
-            {
-                _transactions.Remove(qtTransaction);
-            }
+            _storageEngine.Delete(transaction);
         }
 
         public override void UpdateTransaction(ITransaction transaction)
@@ -46,12 +30,7 @@ namespace FamilyMoneyLib.NetStandard.Storages
 
         public override IEnumerable<ITransaction> GetAllTransactions()
         {
-            return _transactions.ToArray();
-        }
-
-        private bool IsExists(ITransaction transaction)
-        {
-            return (transaction.Id != 0 && _transactions.Any(x => x.Id == transaction.Id));
+            return _storageEngine.GetAll().Cast<ITransaction>();
         }
     }
 }

@@ -9,8 +9,7 @@ namespace FamilyMoneyLib.NetStandard.Storages
 {
     public class MemoryQuickTransactionStorage:QuickTransactionStorageBase
     {
-        private readonly List<IQuickTransaction> _quickTransactions = new List<IQuickTransaction>();
-        private long _counter = 0;
+        private readonly MemoryStorageBase _storageEngine = new MemoryStorageBase();
 
         public MemoryQuickTransactionStorage(IQuickTransactionFactory quickTransactionFactory) : 
             base(quickTransactionFactory)
@@ -19,46 +18,26 @@ namespace FamilyMoneyLib.NetStandard.Storages
 
         public override IQuickTransaction CreateQuickTransaction(IQuickTransaction quickTransaction)
         {
-            if (IsExists(quickTransaction))
-            {
-                _quickTransactions.Remove(quickTransaction);
-            }
-            else
-            {
-                if (quickTransaction.Id == 0)
-                    quickTransaction.Id = ++_counter;
-            }
-            _quickTransactions.Add(quickTransaction);
-            return quickTransaction;
+            return _storageEngine.Create(quickTransaction) as IQuickTransaction;
         }
 
         public override void DeleteAllData()
         {
-            _quickTransactions.Clear();
+            _storageEngine.DeleteAllData();
         }
 
         public override void DeleteQuickTransaction(IQuickTransaction quickTransaction)
         {
-            var quickTransactionsToDelete = _quickTransactions.Where(x => x.Id == quickTransaction.Id).ToArray();
-            foreach (var qtTransaction in quickTransactionsToDelete)
-            {
-                _quickTransactions.Remove(qtTransaction);
-            }
+            _storageEngine.Delete(quickTransaction);
         }
 
         public override IEnumerable<IQuickTransaction> GetAllQuickTransactions()
         {
-            return _quickTransactions.ToArray();
+            return _storageEngine.GetAll().Cast<IQuickTransaction>();
         }
 
         public override void UpdateQuickTransaction(IQuickTransaction quickTransaction)
         {
         }
-
-        private bool IsExists(IQuickTransaction quickTransaction)
-        {
-            return (quickTransaction.Id != 0 && _quickTransactions.Any(x => x.Id == quickTransaction.Id));
-        }
-
     }
 }
