@@ -135,6 +135,9 @@
     <Compile Include="Reports\BlankPage1.xaml.cs">
       <DependentUpon>BlankPage1.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\Settings\BarCodes.xaml.cs">
+      <DependentUpon>BarCodes.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\Report.xaml.cs">
       <DependentUpon>Report.xaml</DependentUpon>
     </Compile>
@@ -234,6 +237,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Reports\BlankPage1.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Settings\BarCodes.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

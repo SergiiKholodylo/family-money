@@ -11,7 +11,7 @@ namespace FamilyMoney.UWP.Bases
     public class BarCodeScanner : IBarCodeScanner
     {
 
-        public async void Init()
+        public void Init()
         {
         }
 
@@ -103,7 +103,7 @@ namespace FamilyMoney.UWP.Bases
             Scanner.AutoFocus();
         }
 
-        public async void ClearUp()
+        public void ClearUp()
         {
         }
     }

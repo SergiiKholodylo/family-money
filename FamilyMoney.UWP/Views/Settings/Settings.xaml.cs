@@ -44,5 +44,10 @@ namespace FamilyMoney.UWP.Views.Settings
         {
             Frame.Navigate(typeof(Categories));
         }
+
+        private void BtBarCodes_OnClick(object sender, RoutedEventArgs e)
+        {
+            Frame.Navigate(typeof(BarCodes));
+        }
     }
 }

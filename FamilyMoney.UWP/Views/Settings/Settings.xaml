@@ -47,6 +47,14 @@
                     Margin="0,20"
                     Height="50">
             </Button>
+
+            <Button Content="Bar Codes"
+                    Click="BtBarCodes_OnClick" 
+                    HorizontalAlignment="Stretch" 
+                    BorderThickness="1,1,1,1"
+                    Margin="0,20"
+                    Height="50">
+            </Button>
         </StackPanel>
     </Grid>
 </Page>

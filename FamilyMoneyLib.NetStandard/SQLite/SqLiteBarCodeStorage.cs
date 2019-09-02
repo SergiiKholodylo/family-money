@@ -20,11 +20,10 @@ namespace FamilyMoneyLib.NetStandard.SQLite
 
 
 
-        private readonly ITransactionStorage _transactionStorage;
+        
 
-        public SqLiteBarCodeStorage(IBarCodeFactory factory, ITransactionStorage storage):base(factory)
+        public SqLiteBarCodeStorage(IBarCodeFactory factory, ITransactionStorage storage):base(factory, storage)
         {
-            _transactionStorage = storage;
         }
 
         public override IBarCode CreateBarCode(IBarCode barCode)
@@ -52,23 +51,7 @@ namespace FamilyMoneyLib.NetStandard.SQLite
             return barCodes.Select(objects => ObjectToIBarCodeConvertor.Convert(objects, BarCodeFactory, _transactionStorage)).ToList();
         }
 
-        public override ITransaction GetBarCodeTransaction(string barCode)
-        {
-            var foundBarCodes = GetAllBarCodes().OrderByDescending(x=>x.Id).FirstOrDefault(x => x.GetProductBarCode().Equals(barCode)&& x.Transaction != null);
-            return foundBarCodes?.Transaction;
-        }
 
-        public override ITransaction CreateBarCodeBasedTransaction(string barCode)
-        {
-            var transaction = GetBarCodeTransaction(barCode);
-            if (transaction == null) return transaction;
-
-            transaction.Timestamp = DateTime.Now;
-            transaction.Id = 0;
-            var newTransaction = _transactionStorage.CreateTransaction(transaction);
-            return newTransaction;
-
-        }
 
         public override void UpdateBarCode(IBarCode barCode)
         {

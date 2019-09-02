@@ -3,7 +3,6 @@
     public interface IBarCode:IIdAble
     {
         ITransaction Transaction { get; set; }
-        long Id { get; set; }
         string Code { get; }
         bool IsWeight { get; }
         int NumberOfDigitsForWeight { get; }
