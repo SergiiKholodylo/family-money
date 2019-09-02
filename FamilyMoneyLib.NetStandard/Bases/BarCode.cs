@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 
 namespace FamilyMoneyLib.NetStandard.Bases
 {
@@ -26,7 +27,7 @@ namespace FamilyMoneyLib.NetStandard.Bases
             if (Code.Length < NumberOfDigitsForWeight) return 0;
             var lastNSymbols = Code.Substring(Code.Length - NumberOfDigitsForWeight);
             var weightKg = Convert.ToDecimal(lastNSymbols) / BarCodeWeightFactor;
-            return weightKg;
+            return Math.Round(weightKg,3);
         }
 
         public long Id { get; set; }
@@ -47,18 +48,32 @@ namespace FamilyMoneyLib.NetStandard.Bases
             if(weightInKg > 99.99m) return;
 
 
-            var weightString = weightInKg.ToString("N3").Replace(".", "").Replace(",", "");
-            var isCodeContainWeight = Code.Contains(weightString);
-            if(!isCodeContainWeight) return;
-            var index = Code.IndexOf(weightString, StringComparison.Ordinal);
-            var weightInCode = Code.Substring(index);
-
-            IsWeight = true;
-            if(Code.Substring(index-1,1).Equals("0"))
-                NumberOfDigitsForWeight = weightInCode.Length+1;
-            else
-                NumberOfDigitsForWeight = weightInCode.Length;
+            for (var i = 6; i > 4; i--)
+            for (var j = 2; j > 0; j--)
+            {
+                Debug.WriteLine($"{i} {j}");
+                var weightStr = LastNDigits(i);
+                var weight = IntegerPartMSymbols(weightStr, j);
+                if (weight != weightInKg) continue;
+                IsWeight = true;
+                NumberOfDigitsForWeight = i;
+                return;
+            }
         }
+
+        private string LastNDigits(int n)
+        {
+            return Code.Length < n ? string.Empty : Code.Substring(Code.Length - n);
+        }
+
+        private decimal IntegerPartMSymbols(string withNumberNoPoint, int m)
+        {
+            if (withNumberNoPoint.Length < m+1) return 0;
+            var integerPart = withNumberNoPoint.Substring(0, m);
+            var rest = withNumberNoPoint.Substring(m);
+            return Math.Round(Convert.ToDecimal(integerPart + "." + rest),3);
+        }
+
 
         public ITransaction Transaction { set; get; }
 

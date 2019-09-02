@@ -37,7 +37,7 @@ namespace UnitTests.Storages
 
 
             Assert.AreEqual("2734336", barCode.GetProductBarCode());
-            Assert.AreEqual(1.0584m, barCode.GetWeightKg());
+            Assert.AreEqual(1.058m, barCode.GetWeightKg());
 
         }
 
