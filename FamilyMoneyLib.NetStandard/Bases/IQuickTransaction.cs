@@ -1,6 +1,6 @@
 ﻿namespace FamilyMoneyLib.NetStandard.Bases
 {
-    public interface IQuickTransaction:ISecurity 
+    public interface IQuickTransaction:ISecurity,IIdAble 
     {
         IAccount Account { get; set; }
         ICategory Category { get; set; }
@@ -9,6 +9,5 @@
         decimal Weight { get; set; }
         bool AskForTotal { set; get; }
         bool AskForWeight { set; get; }
-        long Id { get; set; }
     }
 }

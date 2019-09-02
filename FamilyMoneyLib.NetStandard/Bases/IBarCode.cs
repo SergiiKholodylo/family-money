@@ -1,6 +1,6 @@
 ﻿namespace FamilyMoneyLib.NetStandard.Bases
 {
-    public interface IBarCode
+    public interface IBarCode:IIdAble
     {
         ITransaction Transaction { get; set; }
         long Id { get; set; }

@@ -4,9 +4,8 @@ using System.Text;
 
 namespace FamilyMoneyLib.NetStandard.Bases
 {
-    public interface ITreeNode<T>
+    public interface ITreeNode<T>:IIdAble
     {
-        long Id { set; get; }
         ITreeNode<T> Parent { set; get; }
         List<ITreeNode<T>> Children { get; }
 
