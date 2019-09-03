@@ -8,6 +8,7 @@ using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using Windows.UI.Xaml;
 using FamilyMoney.UWP.Bases;
+using FamilyMoney.ViewModels.NetStandard.Annotations;
 using FamilyMoney.ViewModels.NetStandard.Helpers;
 using FamilyMoneyLib.NetStandard.Bases;
 using FamilyMoneyLib.NetStandard.Storages;
@@ -33,7 +34,7 @@ namespace FamilyMoney.ViewModels.NetStandard.ViewModels
         protected readonly Storages _storages;
         //private Visibility _isChildTransactionVisible;
 
-        protected TransactionViewModelBase(Storages storages)
+        public TransactionViewModelBase(Storages storages)
         {
             _storages = storages ?? throw new ArgumentException("storages mustn't NULL");
             Accounts = _storages.AccountStorage.GetAllAccounts();
@@ -43,8 +44,6 @@ namespace FamilyMoney.ViewModels.NetStandard.ViewModels
             Date = new DateTimeOffset(Timestamp);
             Time = Timestamp.TimeOfDay;
             ChildrenTransactions = new ObservableCollection<ITransaction>();
-
-
         }
 
 
@@ -93,7 +92,7 @@ namespace FamilyMoney.ViewModels.NetStandard.ViewModels
             get => _name;
         }
 
-        protected DateTime Timestamp
+        public DateTime Timestamp
         {
             set
             {
@@ -101,7 +100,7 @@ namespace FamilyMoney.ViewModels.NetStandard.ViewModels
                 _timestamp = value;
                 OnPropertyChanged();
             }
-            private get => _timestamp;
+            get => _timestamp;
         }
 
         public DateTimeOffset Date
@@ -147,8 +146,6 @@ namespace FamilyMoney.ViewModels.NetStandard.ViewModels
                 if(_isComplexTransaction ==  value) return;
                 _isComplexTransaction = value; 
                 OnPropertyChanged();
-                //OnPropertyChanged(nameof(IsChildTransactionVisible));
-                //OnPropertyChanged(nameof(IsChildTransactionHidden));
             }
             get => _isComplexTransaction;
         }
@@ -178,7 +175,7 @@ namespace FamilyMoney.ViewModels.NetStandard.ViewModels
             }
         }
 
-        protected void CreateTransaction()
+        public void CreateTransaction()
         {
             try
             {
@@ -198,18 +195,20 @@ namespace FamilyMoney.ViewModels.NetStandard.ViewModels
             }
         }
 
-        private void CreateBarCodeWithTransaction()
+        public void CreateBarCodeWithTransaction()
         {
             //BarCode = MainPage.GlobalSettings.ScannedBarCode;
             if ( BarCode == null) return;
+            if(_transaction == null) throw new ViewModelException("Save transaction before saving Bar Code!");
             var barCodeStorage = _storages.BarCodeStorage;
             BarCode.AnalyzeCodeByWeightKg(Weight);
             BarCode.Transaction = _transaction;
             barCodeStorage.CreateBarCode(BarCode);
         }
 
-        protected void UpdateTransaction()
+        public void UpdateTransaction()
         {
+            if(_transaction == null) throw new ViewModelException("Transaction mustn't be NULL!");
             try
             {
                 DateTimeFromDateAndTime();
@@ -347,7 +346,7 @@ namespace FamilyMoney.ViewModels.NetStandard.ViewModels
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        //[NotifyPropertyChangedInvocator]
+        [NotifyPropertyChangedInvocator]
         private void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));

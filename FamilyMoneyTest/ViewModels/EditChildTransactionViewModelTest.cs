@@ -74,11 +74,14 @@ namespace UnitTests.ViewModels
         [TestMethod]
         public void CreateChildTransactionNewTest()
         {
-            var viewModel = new EditChildTransactionViewModel(_storages, _transaction, null);
+            var viewModel = new EditChildTransactionViewModel(_storages, _transaction, null)
+            {
+                Category = _category
+            };
             viewModel.CreateChildTransaction();
 
             Assert.AreEqual(_transaction.Account,viewModel.Account);
-            Assert.IsNull(viewModel.Category);
+            Assert.IsNotNull(viewModel.Category);
             Assert.IsNotNull(viewModel.Accounts);
             Assert.IsNotNull(viewModel.Categories);
 
@@ -91,10 +94,7 @@ namespace UnitTests.ViewModels
             var viewModel = new EditChildTransactionViewModel(_storages, _transaction,  null);
             viewModel.UpdateChildTransaction();
 
-            Assert.IsNotNull(viewModel.Account);
-            Assert.IsNull(viewModel.Category);
-            Assert.IsNotNull(viewModel.Accounts);
-            Assert.IsNotNull(viewModel.Categories);
+            Assert.IsTrue(false);
 
         }
 

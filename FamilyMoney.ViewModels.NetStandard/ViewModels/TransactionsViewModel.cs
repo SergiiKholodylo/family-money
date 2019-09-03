@@ -13,6 +13,14 @@ namespace FamilyMoney.ViewModels.NetStandard.ViewModels
         private ObservableCollection<ITransaction> _transactions = new ObservableCollection<ITransaction>();
         private IAccount _activeAccount;
 
+        public TransactionsViewModel(Storages storages)
+        {
+            _storages = storages;
+            Accounts = new ObservableCollection<IAccount>(_storages.AccountStorage.GetAllAccounts());
+            _activeAccount = Accounts.FirstOrDefault();
+            RefreshTransactionByAccount();
+        }
+
         public ObservableCollection<ITransaction> Transactions
         {
             set
@@ -38,17 +46,6 @@ namespace FamilyMoney.ViewModels.NetStandard.ViewModels
         private ObservableCollection<IAccount> _accounts;
         private readonly Storages _storages;
 
-        public string CurrentInfo
-        {
-            
-
-        get
-        {
-            var totalTransactions = "TotalTransactions";
-            return $"{totalTransactions} - {Transactions.Sum(x => x.Total)}";
-        }
-        }
-
         public IAccount ActiveAccount
         {
             get => _activeAccount;
@@ -58,18 +55,9 @@ namespace FamilyMoney.ViewModels.NetStandard.ViewModels
                 _activeAccount = value;
                 OnPropertyChanged();
                 RefreshTransactionByAccount();
-                OnPropertyChanged("CurrentInfo");
             }
         }
 
-
-        public TransactionsViewModel(Storages storages)
-        {
-            _storages = storages;
-            Accounts = new ObservableCollection<IAccount>(_storages.AccountStorage.GetAllAccounts());
-            _activeAccount = Accounts.FirstOrDefault();
-            RefreshTransactionByAccount();
-        }
 
         private void RefreshTransactionByAccount()
         {
@@ -80,13 +68,6 @@ namespace FamilyMoney.ViewModels.NetStandard.ViewModels
             {
                 Transactions.Add(transaction);
             }
-        }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        private void OnPropertyChanged([CallerMemberName] string propertyName = null)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
 
@@ -101,6 +82,11 @@ namespace FamilyMoney.ViewModels.NetStandard.ViewModels
             }
             _storages.TransactionStorage.DeleteTransaction(activeTransaction);
             Transactions.Remove(activeTransaction);
+        }public event PropertyChangedEventHandler PropertyChanged;
+
+        private void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }
