@@ -15,7 +15,15 @@ namespace FamilyMoneyLib.NetStandard.Storages
 
         public override ITransaction CreateTransaction(ITransaction transaction)
         {
+            CheckParameters(transaction);
+
             return _storageEngine.Create(transaction) as ITransaction;
+        }
+
+        private static void CheckParameters(ITransaction transaction)
+        {
+            if (transaction.Account == null) throw new StorageException("Account mustn't be NULL");
+            if (transaction.Category == null) throw new StorageException("Category mustn't be NULL");
         }
 
         public override void DeleteTransaction(ITransaction transaction)
@@ -25,7 +33,7 @@ namespace FamilyMoneyLib.NetStandard.Storages
 
         public override void UpdateTransaction(ITransaction transaction)
         {
-
+            CheckParameters(transaction);
         }
 
         public override IEnumerable<ITransaction> GetAllTransactions()

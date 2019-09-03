@@ -24,10 +24,18 @@ namespace FamilyMoney.ViewModels.NetStandard.ViewModels
                 IsComplexTransaction = transaction.IsComplexTransaction;
                 ParentTransaction = (ITransaction)transaction.Parent;
             }
+            CopyChildrenTransactions(transaction);
+        }
 
-            ChildrenTransactions = transaction == null ?
-                new ObservableCollection<ITransaction>() :
-                new ObservableCollection<ITransaction>(transaction.Children.Select(x => (ITransaction)x));
+        private void CopyChildrenTransactions(ITransaction transaction)
+        {
+            if(transaction == null)return;
+            ChildrenTransactions.Clear();
+            var children = transaction.Children.Select(x => (ITransaction) x);
+            foreach (var child in children)
+            {
+                ChildrenTransactions.Add(child);
+            }
         }
 
         public void SaveTransaction()
