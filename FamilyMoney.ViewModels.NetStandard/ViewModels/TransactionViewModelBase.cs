@@ -35,14 +35,16 @@ namespace FamilyMoney.ViewModels.NetStandard.ViewModels
 
         protected TransactionViewModelBase(Storages storages)
         {
-            _storages = storages;
+            _storages = storages ?? throw new ArgumentException("storages mustn't NULL");
             Accounts = _storages.AccountStorage.GetAllAccounts();
             Categories = _storages.CategoryStorage.MakeFlatCategoryTree();
             Transactions = _storages.TransactionStorage.GetAllTransactions();
             Timestamp = DateTime.Now;
             Date = new DateTimeOffset(Timestamp);
             Time = Timestamp.TimeOfDay;
-            
+            ChildrenTransactions = new ObservableCollection<ITransaction>();
+
+
         }
 
 
