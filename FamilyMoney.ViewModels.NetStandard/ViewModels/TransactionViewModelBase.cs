@@ -6,7 +6,6 @@ using System.Diagnostics;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
-using Windows.UI.Xaml;
 using FamilyMoney.UWP.Bases;
 using FamilyMoney.ViewModels.NetStandard.Annotations;
 using FamilyMoney.ViewModels.NetStandard.Helpers;
@@ -269,18 +268,8 @@ namespace FamilyMoney.ViewModels.NetStandard.ViewModels
             if (string.IsNullOrWhiteSpace(barCodeString)) return;
 
             BarCode = new BarCode(barCodeString);
-            var storage = _storages.BarCodeStorage;
-            var transaction = storage.GetBarCodeTransaction(BarCode.GetProductBarCode());
-            if (transaction == null)
-            {
-                BarCode.TryExtractWeight(5);
-                transaction = storage.GetBarCodeTransaction(BarCode.GetProductBarCode());
-                if (transaction == null)
-                {
-                    BarCode.TryExtractWeight(6);
-                    transaction = storage.GetBarCodeTransaction(BarCode.GetProductBarCode());
-                }
-            }
+
+            var transaction = FindBarCodeAmongExistingTransactions(BarCode);
 
             //MainPage.GlobalSettings.ScannedBarCode = BarCode;
             Weight = BarCode.GetWeightKg();

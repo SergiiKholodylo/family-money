@@ -31,7 +31,7 @@ namespace FamilyMoneyLib.NetStandard.Storages
             return foundBarCodes?.Transaction;
         }
 
-        public virtual ITransaction CreateBarCodeBasedTransaction(string barCode)
+        public virtual ITransaction CreateTransactionBarCodeRelatedFromStorage(string barCode)
         {
             var transaction = GetBarCodeTransaction(barCode);
             if (transaction == null) return transaction;

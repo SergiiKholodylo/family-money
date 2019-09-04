@@ -136,7 +136,7 @@ namespace UnitTests.Storages
             barCodeStorage.UpdateBarCode(barCode);
             barCodeStorage.CreateBarCode(CreateBarCode("5060207697224"));
 
-            barCodeStorage.CreateBarCodeBasedTransaction("2734336");
+            barCodeStorage.CreateTransactionBarCodeRelatedFromStorage("2734336");
 
             var transactions = transactionStorage.GetAllTransactions();
             Assert.AreEqual(2,transactions.Count());

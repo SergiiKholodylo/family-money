@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using FamilyMoney.ViewModels.NetStandard.ViewModels;
 using FamilyMoneyLib.NetStandard.Bases;
 using FamilyMoneyLib.NetStandard.Factories;
@@ -16,8 +14,8 @@ namespace UnitTests.ViewModels
         private FamilyMoneyLib.NetStandard.Storages.Storages _storages;
         private IAccount _account;
         private ICategory _category;
-        private ITransaction _transaction;
         private IAccount _additionalAccount;
+        private ICategory _additionalCategory;
 
         [TestInitialize]
         public void Setup()
@@ -34,8 +32,7 @@ namespace UnitTests.ViewModels
             _account = _storages.AccountStorage.CreateAccount("Main Account", "Description", "UAH");
             _additionalAccount = _storages.AccountStorage.CreateAccount("Main Account", "Description", "UAH");
             _category = _storages.CategoryStorage.CreateCategory("Main Category", "Description", 0, null);
-            _transaction = _storages.TransactionStorage.CreateTransaction(_account, _category,
-                "Test", 22m, DateTime.Now, 0, 0.451m, null, null);
+            _additionalCategory = _storages.CategoryStorage.CreateCategory("Main Category", "Description", 0, null);
         }
 
         [TestMethod]
@@ -92,10 +89,7 @@ namespace UnitTests.ViewModels
             };
 
             viewModel.CreateTransaction();
-            var newTransaction =
-                _storages.TransactionStorage.GetAllTransactions().
-                    FirstOrDefault(x => x.Account.Equals(_additionalAccount));
-
+            
 
             Assert.IsTrue(false);
         }
@@ -207,12 +201,100 @@ namespace UnitTests.ViewModels
             };
 
             viewModel.UpdateTransaction();
-            var newTransaction =
-                _storages.TransactionStorage.GetAllTransactions().
-                    FirstOrDefault(x => x.Account.Equals(_additionalAccount));
-
+            
 
             Assert.IsTrue(false);
         }
+
+        [TestMethod]
+        public void ProcessScannedBarCodeTest_UnknownBarCodeString_TransactionNull()
+        {
+            var viewModel = new TransactionViewModelBase(_storages);
+
+
+            viewModel.ProcessScannedBarCode("555555555555");
+
+
+            Assert.IsTrue(string.IsNullOrWhiteSpace(viewModel.Name));
+            Assert.AreEqual(0, viewModel.Total);
+            Assert.AreEqual(55.556m,viewModel.Weight);
+            Assert.IsNull(viewModel.Category);
+        }
+
+        [TestMethod]
+        public void ProcessScannedBarCodeTest_KnownBarCodeString_NoWeight()
+        {
+            var viewModel = new TransactionViewModelBase(_storages);
+            LoadBarCodes();
+
+            viewModel.ProcessScannedBarCode("111111111111");
+
+
+            Assert.IsFalse(string.IsNullOrWhiteSpace(viewModel.Name));
+            Assert.AreEqual(1m, viewModel.Total);
+            Assert.AreEqual(0, viewModel.Weight);
+            Assert.AreEqual(_additionalCategory,viewModel.Category);
+        }
+
+        [TestMethod]
+        public void ProcessScannedBarCodeTest_KnownBarCodeString_Weight6Digits()
+        {
+            var viewModel = new TransactionViewModelBase(_storages);
+            LoadBarCodes();
+
+            viewModel.ProcessScannedBarCode("222222222222");
+
+
+            Assert.IsFalse(string.IsNullOrWhiteSpace(viewModel.Name));
+            Assert.AreEqual(0, viewModel.Total);
+            Assert.AreEqual(22.222m, viewModel.Weight);
+            Assert.AreEqual(_additionalCategory, viewModel.Category);
+        }
+
+        [TestMethod]
+        public void ProcessScannedBarCodeTest_KnownBarCodeString_Weight5Digits()
+        {
+            var viewModel = new TransactionViewModelBase(_storages);
+            LoadBarCodes();
+
+            viewModel.ProcessScannedBarCode("333333333333");
+
+
+            Assert.IsFalse(string.IsNullOrWhiteSpace(viewModel.Name));
+            Assert.AreEqual(0, viewModel.Total);
+            Assert.AreEqual(3.333m, viewModel.Weight);
+            Assert.AreEqual(_additionalCategory, viewModel.Category);
+        }
+
+        private void LoadBarCodes()
+        {
+            var barCodeStorage = _storages.BarCodeStorage;
+            var transaction1 = _storages.TransactionStorage.CreateTransaction(_account,_additionalCategory,"Transaction 111111111111",
+            1m,DateTime.Now,0,0,null,null);
+            var transaction2 = _storages.TransactionStorage.CreateTransaction(_account, _category, "Transaction 222222222222",
+                2m, DateTime.Now, 0, 22.222m, null, null);
+            var transaction3 = _storages.TransactionStorage.CreateTransaction(_account, _category, "Transaction 333333333333",
+                3m, DateTime.Now, 0, 3.333m, null, null);
+
+
+            
+            var barCode1 = new BarCode("111111111111")
+            {
+                Transaction = transaction1
+            };
+            var barCode2 = new BarCode("222222222222", true, 6)
+            {
+                Transaction = transaction2
+            };
+            var barCode3 = new BarCode("333333333333", true, 5)
+            {
+                Transaction = transaction3
+            };
+
+            barCodeStorage.CreateBarCode(barCode1);
+            barCodeStorage.CreateBarCode(barCode2);
+            barCodeStorage.CreateBarCode(barCode3);
+        }
+
     }
 }

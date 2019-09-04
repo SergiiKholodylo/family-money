@@ -6,7 +6,7 @@ namespace FamilyMoneyLib.NetStandard.Storages
     public interface IBarCodeStorage
     {
         IBarCode CreateBarCode(IBarCode barCode);
-        ITransaction CreateBarCodeBasedTransaction(string barCode);
+        ITransaction CreateTransactionBarCodeRelatedFromStorage(string barCode);
         void DeleteAllData();
         void DeleteBarCode(IBarCode barCode);
         IEnumerable<IBarCode> GetAllBarCodes();

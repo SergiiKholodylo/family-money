@@ -94,7 +94,7 @@ namespace IntegrationTests.Cached
             _storage.UpdateBarCode(barCode);
             _storage.CreateBarCode(CreateBarCode("5060207697224"));
 
-            _storage.CreateBarCodeBasedTransaction("2734336");
+            _storage.CreateTransactionBarCodeRelatedFromStorage("2734336");
 
             var transactions = _transactionStorage.GetAllTransactions();
             Assert.AreEqual(2, transactions.Count());

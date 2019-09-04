@@ -24,9 +24,9 @@ namespace FamilyMoneyLib.NetStandard.CachedStorage
             return returnBarCode;
         }
 
-        public ITransaction CreateBarCodeBasedTransaction(string barCode)
+        public ITransaction CreateTransactionBarCodeRelatedFromStorage(string barCode)
         {
-            var result = _storage.CreateBarCodeBasedTransaction(barCode);
+            var result = _storage.CreateTransactionBarCodeRelatedFromStorage(barCode);
             _isDirty = true;
             return result;
         }
