@@ -1,11 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using FamilyMoneyLib.NetStandard.Bases;
 using FamilyMoneyLib.NetStandard.Factories;
 
-namespace FamilyMoneyLib.NetStandard.Storages
+namespace FamilyMoneyLib.NetStandard.Storages.Memory
 {
     public class MemoryQuickTransactionStorage:QuickTransactionStorageBase
     {

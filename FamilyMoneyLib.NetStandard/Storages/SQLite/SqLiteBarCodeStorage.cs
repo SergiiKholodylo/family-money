@@ -1,11 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using FamilyMoneyLib.NetStandard.Bases;
 using FamilyMoneyLib.NetStandard.Factories;
-using FamilyMoneyLib.NetStandard.Storages;
+using FamilyMoneyLib.NetStandard.Storages.Interfaces;
 
-namespace FamilyMoneyLib.NetStandard.SQLite
+namespace FamilyMoneyLib.NetStandard.Storages.SQLite
 {
     public class SqLiteBarCodeStorage:BarCodeStorageBase
     {

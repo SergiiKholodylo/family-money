@@ -1,10 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 using FamilyMoneyLib.NetStandard.Bases;
-using FamilyMoneyLib.NetStandard.Storages;
+using FamilyMoneyLib.NetStandard.Storages.Interfaces;
 
-namespace FamilyMoneyLib.NetStandard.CachedStorage
+namespace FamilyMoneyLib.NetStandard.Storages.Cached
 {
     public class CachedQuickTransactionStorage:IQuickTransactionStorage
     {

@@ -14,7 +14,6 @@ using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 using FamilyMoney.UWP.Views;
 using FamilyMoneyLib.NetStandard.Factories;
-using FamilyMoneyLib.NetStandard.SQLite;
 using FamilyMoneyLib.NetStandard.ViewModels;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238

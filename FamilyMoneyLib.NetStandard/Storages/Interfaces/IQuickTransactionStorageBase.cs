@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using FamilyMoneyLib.NetStandard.Bases;
 
-namespace FamilyMoneyLib.NetStandard.Storages
+namespace FamilyMoneyLib.NetStandard.Storages.Interfaces
 {
     public interface IQuickTransactionStorage
     {

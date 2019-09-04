@@ -5,6 +5,7 @@ using FamilyMoney.ViewModels.NetStandard.ViewModels;
 using FamilyMoneyLib.NetStandard.Bases;
 using FamilyMoneyLib.NetStandard.Factories;
 using FamilyMoneyLib.NetStandard.Storages;
+using FamilyMoneyLib.NetStandard.Storages.Memory;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace UnitTests.ViewModels

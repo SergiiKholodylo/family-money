@@ -3,7 +3,7 @@ using System.Linq;
 using FamilyMoneyLib.NetStandard.Bases;
 using FamilyMoneyLib.NetStandard.Factories;
 
-namespace FamilyMoneyLib.NetStandard.Storages
+namespace FamilyMoneyLib.NetStandard.Storages.Memory
 {
     public class MemoryTransactionStorage : TransactionStorageBase
     {

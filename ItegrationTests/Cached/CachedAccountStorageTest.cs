@@ -2,7 +2,7 @@
 using System.Linq;
 using FamilyMoneyLib.NetStandard.Bases;
 using FamilyMoneyLib.NetStandard.Factories;
-using FamilyMoneyLib.NetStandard.SQLite;
+using FamilyMoneyLib.NetStandard.Storages.SQLite;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace IntegrationTests.Cached

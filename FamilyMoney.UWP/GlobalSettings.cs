@@ -1,9 +1,9 @@
 ﻿using FamilyMoney.ViewModels.NetStandard.ViewModels;
 using FamilyMoneyLib.NetStandard.Bases;
-using FamilyMoneyLib.NetStandard.CachedStorage;
 using FamilyMoneyLib.NetStandard.Factories;
-using FamilyMoneyLib.NetStandard.SQLite;
 using FamilyMoneyLib.NetStandard.Storages;
+using FamilyMoneyLib.NetStandard.Storages.Cached;
+using FamilyMoneyLib.NetStandard.Storages.SQLite;
 
 namespace FamilyMoney.UWP
 {

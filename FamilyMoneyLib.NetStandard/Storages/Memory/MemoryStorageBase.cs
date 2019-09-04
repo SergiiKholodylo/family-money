@@ -1,10 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using FamilyMoneyLib.NetStandard.Bases;
 
-namespace FamilyMoneyLib.NetStandard.Storages
+namespace FamilyMoneyLib.NetStandard.Storages.Memory
 {
     public class MemoryStorageBase
     {

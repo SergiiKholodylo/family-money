@@ -35,7 +35,7 @@ namespace FamilyMoney.ViewModels.NetStandard.ViewModels.Dialogs
             {
                 FillFromExistingTransaction(transaction);
             }
-            Account = Accounts.FirstOrDefault(x => x.Id == parent?.Account?.Id);
+            Account = Accounts.FirstOrDefault(x => x.Id == parent.Account?.Id);
             Timestamp = parent.Timestamp;
             Date = Timestamp == DateTime.MinValue ? new DateTimeOffset(DateTime.Now) : new DateTimeOffset(Timestamp);
             Time = Timestamp.TimeOfDay;

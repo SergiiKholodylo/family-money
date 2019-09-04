@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Linq;
 using FamilyMoneyLib.NetStandard.Bases;
-using FamilyMoneyLib.NetStandard.CachedStorage;
 using FamilyMoneyLib.NetStandard.Factories;
-using FamilyMoneyLib.NetStandard.SQLite;
 using FamilyMoneyLib.NetStandard.Storages;
+using FamilyMoneyLib.NetStandard.Storages.Cached;
+using FamilyMoneyLib.NetStandard.Storages.Interfaces;
+using FamilyMoneyLib.NetStandard.Storages.SQLite;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace IntegrationTests.Cached

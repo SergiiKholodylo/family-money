@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using FamilyMoneyLib.NetStandard.SQLite;
+using FamilyMoneyLib.NetStandard.Storages.Interfaces;
 
 namespace FamilyMoneyLib.NetStandard.Storages
 {

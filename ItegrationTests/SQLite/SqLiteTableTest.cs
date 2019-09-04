@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using FamilyMoneyLib.NetStandard.SQLite;
+using FamilyMoneyLib.NetStandard.Storages.SQLite;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace IntegrationTests.SQLite

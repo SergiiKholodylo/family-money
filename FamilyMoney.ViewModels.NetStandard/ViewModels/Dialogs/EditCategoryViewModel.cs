@@ -4,6 +4,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using FamilyMoneyLib.NetStandard.Bases;
 using FamilyMoneyLib.NetStandard.Storages;
+using FamilyMoneyLib.NetStandard.Storages.Interfaces;
 
 namespace FamilyMoney.ViewModels.NetStandard.ViewModels.Dialogs
 {

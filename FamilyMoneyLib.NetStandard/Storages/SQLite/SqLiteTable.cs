@@ -1,12 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Data;
 using System.Diagnostics;
 using System.Linq;
-using FamilyMoneyLib.NetStandard.Storages;
 using Microsoft.Data.Sqlite;
 
-namespace FamilyMoneyLib.NetStandard.SQLite
+namespace FamilyMoneyLib.NetStandard.Storages.SQLite
 {
     //(Primary_Key INTEGER PRIMARY KEY, Text_Entry NVARCHAR(2048) NULL)
     //https://docs.microsoft.com/en-us/windows/uwp/data-access/sqlite-databases

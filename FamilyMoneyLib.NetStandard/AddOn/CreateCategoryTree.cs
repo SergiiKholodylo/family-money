@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using FamilyMoneyLib.NetStandard.Factories;
-using FamilyMoneyLib.NetStandard.SQLite;
+using FamilyMoneyLib.NetStandard.Storages.SQLite;
 
 namespace FamilyMoneyLib.NetStandard.AddOn
 {
