@@ -1,0 +1,29 @@
+﻿
+
+Вы можете использовать CustomXamlResourceLoader:
+
+public class XamlResourceLoader : CustomXamlResourceLoader
+{
+    private readonly ResourceLoader _loader;
+
+    public XamlResourceLoader()
+    {
+        _loader = ResourceLoader.GetForViewIndependentUse();
+    }
+
+    protected override object GetResource(string resourceId, string objectType, string propertyName, string propertyType)
+    {
+        return _loader.GetString(resourceId) ?? resourceId;
+    }
+}
+
+Затем в вашем конструкторе App.xaml.cs:
+CustomXamlResourceLoader.Current = new XamlResourceLoader();
+
+И, наконец, в вашем xaml:
+<Button Content = "{CustomResource buttonLabel}" />
+
+
+CREATE TABLE phonebook(name TEXT PRIMARY KEY, phonenumber TEXT);
+INSERT INTO phonebook(name,phonenumber) VALUES('Alice','704-555-1212')
+  ON CONFLICT(name) DO UPDATE SET phonenumber=excluded.phonenumber;

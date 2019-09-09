@@ -1,0 +1,44 @@
+﻿<xaml:ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" 
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:xaml="clr-namespace:Windows.UI.Xaml;assembly=Windows.Foundation.UniversalApiContract"
+    xmlns:controls="clr-namespace:Windows.UI.Xaml.Controls;assembly=Windows.Foundation.UniversalApiContract">
+
+    <xaml:Style TargetType="controls:Border" x:Key="PageBackground">
+        <xaml:Setter Property="Background" Value="Blue"/>
+    </xaml:Style>
+    <xaml:Style TargetType="controls:TextBlock" x:Key="TitleText">
+        <xaml:Setter Property="FontSize" Value="18"/>
+        <xaml:Setter Property="Foreground" Value="#4E87D4"/>
+        <xaml:Setter Property="FontFamily" Value="Trebuchet MS"/>
+        <xaml:Setter Property="Margin" Value="0,40,10,10"/>
+    </xaml:Style>
+    <xaml:Style TargetType="controls:TextBlock" x:Key="Label">
+    </xaml:Style>
+
+    <xaml:Style TargetType="controls:TextBlock" x:Key="ListViewText">
+        <xaml:Setter Property="FontSize" Value="16"/>
+        <xaml:Setter Property="Margin" Value="0"/>
+        <xaml:Setter Property="FontWeight" Value="Normal"/>
+    </xaml:Style>
+
+    <xaml:Style TargetType="controls:TextBlock" x:Key="ListViewData">
+        <xaml:Setter Property="FontSize" Value="12"/>
+        <xaml:Setter Property="Margin" Value="0"/>
+        <xaml:Setter Property="FontWeight" Value="Normal"/>
+    </xaml:Style>
+
+    <xaml:Style TargetType="controls:TextBlock" x:Key="ListViewBoldText">
+        <xaml:Setter Property="FontSize" Value="12"/>
+        <xaml:Setter Property="Margin" Value="0"/>
+        <xaml:Setter Property="FontWeight" Value="Bold"/>
+    </xaml:Style>
+
+    <xaml:Style TargetType="controls:TextBlock" x:Key="ListViewHeaders">
+        <xaml:Setter Property="FontSize" Value="14"/>
+        <xaml:Setter Property="Margin" Value="10"/>
+        <xaml:Setter Property="FontWeight" Value="Bold"/>
+    </xaml:Style>
+
+
+</xaml:ResourceDictionary>
