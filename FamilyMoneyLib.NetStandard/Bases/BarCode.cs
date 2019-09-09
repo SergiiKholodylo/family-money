@@ -7,11 +7,11 @@ namespace FamilyMoneyLib.NetStandard.Bases
     {
         private const int BarCodeWeightFactor = 10000;
 
-        public string Code { get; private set; }
+        public string Code { get; protected set; }
 
-        public  bool IsWeight { get; private set; }
+        public  bool IsWeight { get;  set; }
 
-        public  int NumberOfDigitsForWeight { get; private set; }
+        public  int NumberOfDigitsForWeight { get; protected set; }
 
         public BarCode(string code, bool isWeight = false, int numberOfDigitsForWeight = 0, long id = 0)
         {
@@ -21,6 +21,11 @@ namespace FamilyMoneyLib.NetStandard.Bases
             IsWeight = isWeight;
             NumberOfDigitsForWeight = numberOfDigitsForWeight;
         }
+
+        public BarCode()
+        {
+        }
+
         public decimal GetWeightKg()
         {
             if (!IsWeight) return 0;

@@ -1,9 +1,9 @@
 ﻿using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using FamilyMoney.ViewModels.NetStandard.Annotations;
 using FamilyMoneyLib.NetStandard.Bases;
-using FamilyMoneyLib.NetStandard.Storages;
 using FamilyMoneyLib.NetStandard.Storages.Interfaces;
 
 namespace FamilyMoney.ViewModels.NetStandard.ViewModels
@@ -18,11 +18,18 @@ namespace FamilyMoney.ViewModels.NetStandard.ViewModels
         {
             _storage = storage;
             LoadBarCodes();
+            _barCodes.CollectionChanged += _barCodes_CollectionChanged;
+            
+        }
+
+        private void _barCodes_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            
         }
 
         public ObservableCollection<IBarCode> BarCodes => _barCodes;
 
-        public void LoadBarCodes()
+        private void LoadBarCodes()
         {
             _barCodes.Clear();
             var barCodes = _storage.GetAllBarCodes();
@@ -43,5 +50,16 @@ namespace FamilyMoney.ViewModels.NetStandard.ViewModels
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
+
+        public void InverseIsWeight(IBarCode barCode)
+        {
+            barCode.IsWeight = !barCode.IsWeight;
+            _storage.UpdateBarCode(barCode);
+            LoadBarCodes();
+
+
+        }
     }
+
+
 }

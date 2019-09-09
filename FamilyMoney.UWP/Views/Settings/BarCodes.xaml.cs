@@ -46,6 +46,8 @@ namespace FamilyMoney.UWP.Views
 
         private void ListView_DoubleTapped(object sender, DoubleTappedRoutedEventArgs e)
         {
+            var barCode = ((FrameworkElement) e.OriginalSource).DataContext as IBarCode;
+            ViewModel.InverseIsWeight(barCode);
         }
 
         private async void ListView_RightTapped(object sender, RightTappedRoutedEventArgs e)
@@ -57,7 +59,7 @@ namespace FamilyMoney.UWP.Views
 
         private async void ListView_Holding(object sender, HoldingRoutedEventArgs e)
         {
-            var activeBarCode = (IBarCode)(((ListView)sender).SelectedValue);
+            var activeBarCode = (IBarCode)((ListView)sender).SelectedValue;
             if (activeBarCode == null) return;
             await DeleteBarCode(activeBarCode);
         }
