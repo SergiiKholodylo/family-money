@@ -41,5 +41,10 @@ namespace FamilyMoney.UWP.Views
         {
             Frame.Navigate(typeof(BlankPage1));
         }
+
+        private void Report2_OnClick(object sender, RoutedEventArgs e)
+        {
+            Frame.Navigate(typeof(CategoryTransactionsReport));
+        }
     }
 }

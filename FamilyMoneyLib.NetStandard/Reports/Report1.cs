@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
 using FamilyMoneyLib.NetStandard.Bases;
-using FamilyMoneyLib.NetStandard.Storages;
 using FamilyMoneyLib.NetStandard.Storages.Interfaces;
 
 namespace FamilyMoneyLib.NetStandard.Reports
@@ -173,15 +171,29 @@ namespace FamilyMoneyLib.NetStandard.Reports
 
     public interface ITransactionFilteredSource
     {
+        IAccount Account { get; set; }
+        ICategory Category { get; set; }
+        bool IncludeSubCategories { get; set; }
+
+        DateTime DataStart { get; set; }
+        DateTime DataEnd { get; set; }
+
         IEnumerable<ITransaction> GetTransactions(ITransactionStorage transactionStorage);
     }
 
     public class AllTransactionFilteredSource : ITransactionFilteredSource
     {
+        public IAccount Account { get; set; }
+        public ICategory Category { get; set; }
+        public bool IncludeSubCategories { get; set; }
+        public DateTime DataStart { get; set; }
+        public DateTime DataEnd { get; set; }
 
         public IEnumerable<ITransaction> GetTransactions(ITransactionStorage transactionStorage)
         {
             return transactionStorage.GetAllTransactions();
         }
+
+
     }
 }

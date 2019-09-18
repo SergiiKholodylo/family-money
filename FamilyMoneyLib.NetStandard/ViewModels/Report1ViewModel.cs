@@ -5,9 +5,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using FamilyMoneyLib.NetStandard.Bases;
-using FamilyMoneyLib.NetStandard.Factories;
 using FamilyMoneyLib.NetStandard.Reports;
-using FamilyMoneyLib.NetStandard.Storages;
 using FamilyMoneyLib.NetStandard.Storages.Interfaces;
 
 namespace FamilyMoneyLib.NetStandard.ViewModels
@@ -15,7 +13,7 @@ namespace FamilyMoneyLib.NetStandard.ViewModels
     public class Report1ViewModel:INotifyPropertyChanged
     {
         public readonly ObservableCollection<string> ReportPeriod;
-        public int SelectedReportPeriod = 0;
+        public int SelectedReportPeriod = 1;
 
         private ObservableCollection<IGrouping<IAccount, KeyValuePair<Report1.CategoryAccountPair, ReportOutputValues>>> _lines = new ObservableCollection<IGrouping<IAccount, KeyValuePair<Report1.CategoryAccountPair, ReportOutputValues>>>();
         private ObservableCollection<IAccount> _accounts = new ObservableCollection<IAccount>();
